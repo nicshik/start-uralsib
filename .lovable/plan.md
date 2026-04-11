@@ -1,74 +1,54 @@
 
-## Uralsib IP/OOO Registration Prototype — Implementation Plan
 
-### Overview
-A mobile-first, Russian-language clickable prototype for the redesigned Uralsib business registration flow. Frontend-only with mock data, localStorage drafts, and console.log analytics.
+## Apply Uralsib Brand Design System
 
-### Screens & Flow
+The current prototype uses a generic blue theme. The uploaded design spec defines Uralsib's actual brand: purple primary (`#6440BF`), Roboto font, specific component styles, and spacing conventions. This plan applies that design system across the entire prototype.
 
-**1. Landing Page**
-- Hero: "Зарегистрируйте ИП или ООО за ~10 минут онлайн"
-- Badges: бесплатно, без госпошлины
-- 3 CTAs: "Открыть ИП" / "Открыть ООО" / "Помогите выбрать"
-- Document checklist (паспорт, ИНН, СНИЛС)
-- Support block, FAQ accordion
+### Changes
 
-**2. Branching Questions**
-- For ИП: citizenship, self-service vs. manager, city
-- For ООО: founder count, director = founder?, foreign citizens, city
-- "Помогите выбрать" → mini quiz (solo/partners, liability, hiring)
-- Routes to online flow or manager handoff per rules in TZ
+**1. Update CSS variables and font (`src/index.css`)**
+- Primary color → `#6440BF` (purple) in HSL: `~262 50% 57%`
+- Primary dark (hover) → `#4B2D96`
+- Background → `#FFFFFF`, light bg → `#F4F3F7`
+- Text primary → `#212121`, secondary → `#6B6B6B`
+- Border → `#E5E0EB`
+- Input bg → `#F5F5F5`
+- Success → `#34C759`, destructive → `#FF3B30`
+- Add `@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap')`
+- Set body font-family to `'Roboto', sans-serif`
+- Increase `--radius` to `0.75rem` (12px for inputs, 16px for cards)
 
-**3. Manager Handoff Screen**
-- Positive framing: "Для вашего случая удобнее оформить с менеджером"
-- 3 contact options: callback, chat, office visit
-- Shows previously collected answers will be passed to manager
+**2. Update Tailwind config (`tailwind.config.ts`)**
+- No structural changes needed — colors flow from CSS variables
 
-**4. SMS Auth Screen**
-- Phone input → mock OTP with timer and resend
-- Reassurance: "Ваш прогресс сохранится"
-- Mini roadmap: бизнес → паспорт → проверка → встреча
-- Draft warning if existing draft detected
+**3. Update `index.html`**
+- Add Roboto font preconnect for performance
 
-**5. Step 1/3: Business**
-- Progress bar "Шаг 1 из 3 · ~3 минуты"
-- OKVED selector with search by name/code, list view default, reset button, tooltips for linked codes
-- Tax regime picker (УСН 6%, УСН 15%, ОСН)
-- For ООО: company name, shortcuts on by default (director=founder, legal address=founder address)
-- Autosave indicator
-- Support: "Не знаете ОКВЭД? Поможем выбрать"
-- Completion message: "Шаг 1 готов. Осталось подтвердить паспорт"
+**4. Restyle components to match Uralsib conventions**
+- **Buttons**: `border-radius: 8px`, padding `12px 24px`, font-weight 500
+- **Cards**: `border-radius: 16px`, bg `#F4F3F7` or white with `#E5E0EB` border, no shadow
+- **Inputs**: height 56px, bg `#F5F5F5`, border-radius 12px, focus ring purple
+- **Progress bar**: purple indicator color (already follows `--primary`)
 
-**6. Step 2/3: Passport & OCR**
-- Progress bar "Шаг 2 из 3 · ~5 минут"
-- CTA: "Сфотографируйте паспорт" with fake upload
-- Animated OCR progress: "Распознаём → Проверяем → Готово"
-- Shows 8 auto-filled fields (ФИО, DOB, gender, birthplace, passport series/number, issued by, issue date, division code)
-- Remaining manual fields: ИНН, СНИЛС
-- Fallback: manual entry option
-- Message: "Заполнили 8 полей, проверьте данные"
+**5. Update Landing page hero section**
+- Add dark purple gradient hero background (`#2D1B69 → #1A0E45`) with white text
+- Style CTA buttons: primary purple bg, outline variant with purple border
+- Badges: use Uralsib-style light purple badges (`#F0ECFA` bg, `#6440BF` text)
 
-**7. Step 3/3: Review & Submit**
-- Summary cards: business data, passport data, tax regime
-- "Что уточнит сотрудник на встрече" block
-- Submit CTA → success state
-- Message: "Онлайн-часть готова. Остальные детали уточним на встрече"
+**6. Update all page headers**
+- Style "УРАЛСИБ" text in purple (`#6440BF`) consistently
+- Clean flat design, remove unnecessary shadows
 
-**8. Success / Final State**
-- "Заявка отправлена, менеджер свяжется для встречи"
-- Clear office visit explanation
-- Support contacts
+### Files to modify
+- `index.html` — font preconnect
+- `src/index.css` — CSS custom properties, font import
+- `src/pages/Landing.tsx` — hero gradient styling, badge colors
+- `src/components/ui/button.tsx` — border-radius 8px default
+- `src/components/ui/card.tsx` — border-radius 16px, flat style
+- `src/components/ui/input.tsx` — height, bg, border-radius adjustments
 
-### Cross-cutting Features
-- **localStorage autosave** with draft resume and "У вас есть черновик" warning
-- **Analytics debug panel** (toggleable) logging all events from TZ section 7
-- **Support entry points** on every key screen
-- **Mobile-first responsive** layout with clean bank UI (Uralsib blue/green palette)
-- **Progress indicators** and micro-reinforcements throughout
+### What stays the same
+- All routing, state management, flow logic — untouched
+- All page content and copy — untouched
+- Component structure — untouched
 
-### Technical Approach
-- React pages with react-router, state managed via React context
-- Mock OKVED data (~20 popular codes with hierarchy)
-- Mock OCR with 1.5s delay animation
-- All copy in Russian per TZ
-- Tailwind for styling, shadcn/ui components
