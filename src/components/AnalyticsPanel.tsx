@@ -9,7 +9,8 @@ export function AnalyticsPanel() {
 
   useEffect(() => {
     setEvents(getEvents());
-    return subscribe(() => setEvents(getEvents()));
+    const unsub = subscribe(() => setEvents(getEvents()));
+    return () => { unsub(); };
   }, []);
 
   return (
