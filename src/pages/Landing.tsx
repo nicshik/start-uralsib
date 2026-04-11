@@ -46,7 +46,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-card">
         <div className="container py-3 flex items-center justify-between">
@@ -55,25 +55,27 @@ export default function Landing() {
         </div>
       </header>
 
-      <main className="container max-w-lg mx-auto py-8 space-y-8">
-        {/* Hero */}
-        <div className="text-center space-y-3">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight">
+      {/* Hero with gradient */}
+      <div className="bg-gradient-to-br from-[hsl(262,60%,25%)] to-[hsl(262,70%,15%)] text-primary-foreground">
+        <div className="container max-w-lg mx-auto py-10 space-y-4 text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
             Зарегистрируйте ИП или ООО<br />за ~10 минут онлайн
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-primary-foreground/70">
             Онлайн-часть заявки — бесплатно и без госпошлины
           </p>
           <div className="flex justify-center gap-3 flex-wrap">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 text-success px-3 py-1 text-sm font-medium">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/15 text-primary-foreground px-3 py-1 text-sm font-medium">
               <Shield className="h-3.5 w-3.5" /> Бесплатно
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary px-3 py-1 text-sm font-medium">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/15 text-primary-foreground px-3 py-1 text-sm font-medium">
               <Clock className="h-3.5 w-3.5" /> ~10 минут
             </span>
           </div>
         </div>
+      </div>
 
+      <main className="container max-w-lg mx-auto py-8 space-y-6">
         {/* Draft Warning */}
         {showDraftWarning && (
           <Card className="border-primary">
@@ -103,7 +105,7 @@ export default function Landing() {
             <button
               key={item.type}
               onClick={() => handleChoice(item.type)}
-              className="w-full text-left rounded-lg border bg-card p-4 hover:border-primary hover:shadow-md transition-all flex items-center justify-between group"
+              className="w-full text-left rounded-2xl border bg-card p-4 hover:border-primary hover:shadow-sm transition-all flex items-center justify-between group"
             >
               <div>
                 <p className="font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</p>
