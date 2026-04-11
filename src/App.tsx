@@ -3,23 +3,41 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { AppProvider } from "@/context/AppContext";
+import { AnalyticsPanel } from "@/components/AnalyticsPanel";
+import Landing from "./pages/Landing";
+import Branching from "./pages/Branching";
+import ManagerHandoff from "./pages/ManagerHandoff";
+import SmsAuth from "./pages/SmsAuth";
+import Step1Business from "./pages/Step1Business";
+import Step2Passport from "./pages/Step2Passport";
+import Step3Review from "./pages/Step3Review";
+import Success from "./pages/Success";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AppProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/branching" element={<Branching />} />
+            <Route path="/manager" element={<ManagerHandoff />} />
+            <Route path="/sms-auth" element={<SmsAuth />} />
+            <Route path="/step/1" element={<Step1Business />} />
+            <Route path="/step/2" element={<Step2Passport />} />
+            <Route path="/step/3" element={<Step3Review />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+        <AnalyticsPanel />
+      </AppProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
