@@ -35,65 +35,67 @@ export default function Step3Review() {
   return (
     <div className="min-h-screen pb-24">
       <header className="border-b bg-card sticky top-0 z-10">
-        <div className="container py-3 flex items-center gap-3">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="p-1 rounded hover:bg-muted">
             <ArrowLeft className="h-5 w-5" />
           </button>
           <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
           <div className="ml-auto"><AutosaveIndicator /></div>
         </div>
-        <div className="container pb-3">
+        <div className="max-w-2xl mx-auto px-4 pb-3">
           <ProgressHeader step={3} totalSteps={3} />
         </div>
       </header>
 
-      <main className="container max-w-lg mx-auto py-6 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         <MicroReinforcement message="Онлайн-часть готова. Остальные детали уточним на встрече" />
 
         <h2 className="text-lg font-semibold">Проверьте данные заявки</h2>
 
-        {/* Business summary */}
-        <Card>
-          <CardContent className="p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-primary" />
-                <span className="font-medium text-sm">Бизнес</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Business summary */}
+          <Card>
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm">Бизнес</span>
+                </div>
+                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1">
+                  <Edit className="h-3 w-3" /> Изменить
+                </button>
               </div>
-              <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1">
-                <Edit className="h-3 w-3" /> Изменить
-              </button>
-            </div>
-            <div className="space-y-1 text-sm">
-              <p><span className="text-muted-foreground">Форма:</span> {state.productType === "ooo" ? "ООО" : "ИП"}</p>
-              {state.business.companyName && (
-                <p><span className="text-muted-foreground">Название:</span> {state.business.companyName}</p>
-              )}
-              <p><span className="text-muted-foreground">ОКВЭД:</span></p>
-              <ul className="ml-4 space-y-0.5">
-                {selectedOkveds.map((c) => (
-                  <li key={c.code} className="text-xs">{c.code} — {c.name}</li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="space-y-1 text-sm">
+                <p><span className="text-muted-foreground">Форма:</span> {state.productType === "ooo" ? "ООО" : "ИП"}</p>
+                {state.business.companyName && (
+                  <p><span className="text-muted-foreground">Название:</span> {state.business.companyName}</p>
+                )}
+                <p><span className="text-muted-foreground">ОКВЭД:</span></p>
+                <ul className="ml-4 space-y-0.5">
+                  {selectedOkveds.map((c) => (
+                    <li key={c.code} className="text-xs">{c.code} — {c.name}</li>
+                  ))}
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Tax summary */}
-        <Card>
-          <CardContent className="p-4 space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Receipt className="h-4 w-4 text-primary" />
-                <span className="font-medium text-sm">Налоги</span>
+          {/* Tax summary */}
+          <Card>
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Receipt className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm">Налоги</span>
+                </div>
+                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1">
+                  <Edit className="h-3 w-3" /> Изменить
+                </button>
               </div>
-              <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1">
-                <Edit className="h-3 w-3" /> Изменить
-              </button>
-            </div>
-            <p className="text-sm">{tax?.name} — {tax?.description}</p>
-          </CardContent>
-        </Card>
+              <p className="text-sm">{tax?.name} — {tax?.description}</p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Passport summary */}
         <Card>
@@ -135,7 +137,7 @@ export default function Step3Review() {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 border-t bg-card p-4">
-        <div className="container max-w-lg mx-auto">
+        <div className="max-w-2xl mx-auto px-4">
           <Button className="w-full" onClick={handleSubmit} disabled={submitting}>
             {submitting ? "Отправляем..." : "Отправить заявку"}
           </Button>

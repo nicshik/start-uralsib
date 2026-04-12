@@ -63,7 +63,7 @@ export default function SmsAuth() {
   return (
     <div className="min-h-screen">
       <header className="border-b bg-card">
-        <div className="container py-3 flex items-center gap-3">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="p-1 rounded hover:bg-muted">
             <ArrowLeft className="h-5 w-5" />
           </button>
@@ -71,7 +71,7 @@ export default function SmsAuth() {
         </div>
       </header>
 
-      <main className="container max-w-lg mx-auto py-8 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-xl font-bold">Подтвердите номер телефона</h1>
           <p className="text-sm text-muted-foreground">
@@ -80,7 +80,7 @@ export default function SmsAuth() {
         </div>
 
         {!smsSent ? (
-          <div className="space-y-4">
+          <div className="max-w-sm mx-auto space-y-4">
             <div className="space-y-2">
               <Input
                 type="tel"
@@ -94,7 +94,7 @@ export default function SmsAuth() {
             <Button className="w-full" onClick={sendSms}>Получить код</Button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="max-w-sm mx-auto space-y-4">
             <div className="flex justify-center">
               <InputOTP maxLength={4} value={otp} onChange={setOtp}>
                 <InputOTPGroup>
@@ -118,7 +118,7 @@ export default function SmsAuth() {
         )}
 
         {/* Mini roadmap */}
-        <div className="rounded-lg bg-muted/50 p-4 space-y-3">
+        <div className="max-w-md mx-auto rounded-lg bg-muted/50 p-4 space-y-3">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Что вас ждёт</p>
           <div className="space-y-2">
             {roadmap.map((item, i) => (

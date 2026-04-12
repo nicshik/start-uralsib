@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { AnalyticsPanel } from "@/components/AnalyticsPanel";
 import Landing from "./pages/Landing";
-import Branching from "./pages/Branching";
 import ManagerHandoff from "./pages/ManagerHandoff";
 import SmsAuth from "./pages/SmsAuth";
 import Step1Business from "./pages/Step1Business";
@@ -26,7 +25,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/branching" element={<Branching />} />
             <Route path="/manager" element={<ManagerHandoff />} />
             <Route path="/sms-auth" element={<SmsAuth />} />
             <Route path="/step/1" element={<Step1Business />} />
