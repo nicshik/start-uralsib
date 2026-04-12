@@ -16,66 +16,52 @@ export default function ManagerHandoff() {
   }, [state.productType]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate("/")} className="p-1 rounded hover:bg-muted">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate("/")} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
+          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-10 space-y-8">
         <div className="text-center space-y-3">
-          <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-            <UserCheck className="h-7 w-7 text-primary" />
+          <div className="mx-auto w-14 h-14 rounded-2xl bg-accent flex items-center justify-center">
+            <UserCheck className="h-7 w-7 text-accent-foreground" />
           </div>
-          <h1 className="text-xl font-bold">Поможем подобрать форму и оформить заявку</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-2xl font-bold tracking-tight">Поможем подобрать форму и оформить заявку</h1>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
             Менеджер поможет подготовить все документы и ответит на вопросы. Ваши ответы уже сохранены — не придётся повторять.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Card className="hover:border-primary transition-all cursor-pointer" onClick={() => { trackEvent("manager_contact", { method: "callback" }); alert("Заявка на звонок отправлена (демо)"); }}>
-            <CardContent className="p-4 flex items-center gap-3 md:flex-col md:text-center">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <Phone className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-medium text-sm">Заказать обратный звонок</p>
-                <p className="text-xs text-muted-foreground">Перезвоним в течение 15 минут</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:border-primary transition-all cursor-pointer" onClick={() => { trackEvent("manager_contact", { method: "chat" }); alert("Чат открыт (демо)"); }}>
-            <CardContent className="p-4 flex items-center gap-3 md:flex-col md:text-center">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <MessageCircle className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-medium text-sm">Написать в чат</p>
-                <p className="text-xs text-muted-foreground">Онлайн-консультант на связи</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:border-primary transition-all cursor-pointer" onClick={() => { trackEvent("manager_contact", { method: "office" }); alert("Запись в офис (демо)"); }}>
-            <CardContent className="p-4 flex items-center gap-3 md:flex-col md:text-center">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <MapPin className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="font-medium text-sm">Записаться в офис</p>
-                <p className="text-xs text-muted-foreground">Выберите удобное отделение и время</p>
-              </div>
-            </CardContent>
-          </Card>
+          {[
+            { icon: Phone, title: "Заказать обратный звонок", desc: "Перезвоним в течение 15 минут", method: "callback" },
+            { icon: MessageCircle, title: "Написать в чат", desc: "Онлайн-консультант на связи", method: "chat" },
+            { icon: MapPin, title: "Записаться в офис", desc: "Выберите удобное отделение и время", method: "office" },
+          ].map((item) => (
+            <Card
+              key={item.method}
+              className="hover:border-primary hover:shadow-md transition-all cursor-pointer group"
+              onClick={() => { trackEvent("manager_contact", { method: item.method }); alert(`${item.title} (демо)`); }}
+            >
+              <CardContent className="p-5 flex flex-col items-center text-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-accent flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                  <item.icon className="h-5 w-5 text-accent-foreground group-hover:text-primary transition-colors" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">{item.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
+        <Button variant="outline" className="w-full h-12" onClick={() => navigate("/")}>
           Вернуться на главную
         </Button>
 

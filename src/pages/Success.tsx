@@ -16,35 +16,35 @@ export default function Success() {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
-        <div className="max-w-5xl mx-auto px-4 py-3">
-          <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4">
+          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-10 space-y-8">
         <div className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center">
             <CheckCircle2 className="h-8 w-8 text-success" />
           </div>
-          <h1 className="text-xl font-bold">Заявка отправлена!</h1>
-          <p className="text-muted-foreground text-sm">
+          <h1 className="text-2xl font-bold tracking-tight">Заявка отправлена!</h1>
+          <p className="text-muted-foreground text-sm max-w-sm mx-auto">
             Менеджер свяжется с вами для согласования встречи в офисе
           </p>
         </div>
 
         <Card>
-          <CardContent className="p-4 space-y-4">
-            <p className="font-medium text-sm">Что дальше</p>
+          <CardContent className="p-5 space-y-4">
+            <p className="font-semibold text-sm">Что дальше</p>
             {[
               { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня" },
               { icon: Clock, title: "Назначение встречи", desc: "В удобное для вас время" },
               { icon: Building, title: "Визит в офис", desc: "Подписание документов и открытие счёта" },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <item.icon className="h-4 w-4 text-primary" />
+                <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shrink-0 mt-0.5">
+                  <item.icon className="h-4 w-4 text-accent-foreground" />
                 </div>
                 <div>
                   <p className="text-sm font-medium">{item.title}</p>
@@ -55,9 +55,9 @@ export default function Success() {
           </CardContent>
         </Card>
 
-        <Card className="bg-muted/50">
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">
+        <Card className="bg-muted/50 border-dashed">
+          <CardContent className="p-5">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               <strong className="text-foreground">Важно:</strong> для завершения регистрации потребуется личный визит в отделение банка с оригиналами документов. Менеджер поможет выбрать удобное отделение и время.
             </p>
           </CardContent>
@@ -65,7 +65,7 @@ export default function Success() {
 
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full h-12"
           onClick={() => {
             clearDraft();
             navigate("/");

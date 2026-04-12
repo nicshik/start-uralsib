@@ -33,16 +33,16 @@ export default function Step3Review() {
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 bg-background">
       <header className="border-b bg-card sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1 rounded hover:bg-muted">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
+          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
           <div className="ml-auto"><AutosaveIndicator /></div>
         </div>
-        <div className="max-w-2xl mx-auto px-4 pb-3">
+        <div className="max-w-2xl mx-auto px-4 pb-4">
           <ProgressHeader step={3} totalSteps={3} />
         </div>
       </header>
@@ -50,81 +50,96 @@ export default function Step3Review() {
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         <MicroReinforcement message="Онлайн-часть готова. Остальные детали уточним на встрече" />
 
-        <h2 className="text-lg font-semibold">Проверьте данные заявки</h2>
+        <h2 className="text-xl font-bold tracking-tight">Проверьте данные заявки</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Business summary */}
           <Card>
-            <CardContent className="p-4 space-y-3">
+            <CardContent className="p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4 text-primary" />
-                  <span className="font-medium text-sm">Бизнес</span>
+                  <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
+                    <Building2 className="h-3.5 w-3.5 text-accent-foreground" />
+                  </div>
+                  <span className="font-semibold text-sm">Бизнес</span>
                 </div>
-                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1">
+                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1 hover:underline">
                   <Edit className="h-3 w-3" /> Изменить
                 </button>
               </div>
-              <div className="space-y-1 text-sm">
+              <div className="space-y-1.5 text-sm">
                 <p><span className="text-muted-foreground">Форма:</span> {state.productType === "ooo" ? "ООО" : "ИП"}</p>
                 {state.business.companyName && (
                   <p><span className="text-muted-foreground">Название:</span> {state.business.companyName}</p>
                 )}
-                <p><span className="text-muted-foreground">ОКВЭД:</span></p>
-                <ul className="ml-4 space-y-0.5">
-                  {selectedOkveds.map((c) => (
-                    <li key={c.code} className="text-xs">{c.code} — {c.name}</li>
-                  ))}
-                </ul>
+                {selectedOkveds.length > 0 && (
+                  <>
+                    <p className="text-muted-foreground">ОКВЭД:</p>
+                    <ul className="ml-4 space-y-0.5">
+                      {selectedOkveds.map((c) => (
+                        <li key={c.code} className="text-xs text-muted-foreground">{c.code} — {c.name}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>
 
-          {/* Tax summary */}
           <Card>
-            <CardContent className="p-4 space-y-2">
+            <CardContent className="p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Receipt className="h-4 w-4 text-primary" />
-                  <span className="font-medium text-sm">Налоги</span>
+                  <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
+                    <Receipt className="h-3.5 w-3.5 text-accent-foreground" />
+                  </div>
+                  <span className="font-semibold text-sm">Налоги</span>
                 </div>
-                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1">
+                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1 hover:underline">
                   <Edit className="h-3 w-3" /> Изменить
                 </button>
               </div>
-              <p className="text-sm">{tax?.name} — {tax?.description}</p>
+              {tax ? (
+                <div className="text-sm">
+                  <p className="font-medium">{tax.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{tax.description}</p>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">Не выбрано</p>
+              )}
             </CardContent>
           </Card>
         </div>
 
-        {/* Passport summary */}
         <Card>
-          <CardContent className="p-4 space-y-2">
+          <CardContent className="p-5 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
-                <span className="font-medium text-sm">Паспортные данные</span>
+                <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
+                  <User className="h-3.5 w-3.5 text-accent-foreground" />
+                </div>
+                <span className="font-semibold text-sm">Паспортные данные</span>
               </div>
-              <button onClick={() => navigate("/step/2")} className="text-xs text-primary flex items-center gap-1">
+              <button onClick={() => navigate("/step/2")} className="text-xs text-primary flex items-center gap-1 hover:underline">
                 <Edit className="h-3 w-3" /> Изменить
               </button>
             </div>
-            <div className="text-sm space-y-0.5">
-              <p>{state.passport.lastName} {state.passport.firstName} {state.passport.middleName}</p>
+            <div className="text-sm space-y-1">
+              <p className="font-medium">{state.passport.lastName} {state.passport.firstName} {state.passport.middleName}</p>
               <p className="text-muted-foreground">Паспорт: {state.passport.passportSeries} {state.passport.passportNumber}</p>
               {state.passport.inn && <p className="text-muted-foreground">ИНН: {state.passport.inn}</p>}
             </div>
           </CardContent>
         </Card>
 
-        {/* What manager will clarify */}
-        <Card className="bg-muted/50">
-          <CardContent className="p-4 space-y-2">
+        <Card className="bg-muted/50 border-dashed">
+          <CardContent className="p-5 space-y-3">
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
-              <span className="font-medium text-sm">Что уточнит сотрудник на встрече</span>
+              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Calendar className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <span className="font-semibold text-sm">Что уточнит сотрудник на встрече</span>
             </div>
-            <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
+            <ul className="text-sm text-muted-foreground space-y-1.5 ml-9 list-disc">
               <li>Проверка оригиналов документов</li>
               <li>Подписание заявления на регистрацию</li>
               <li>Открытие расчётного счёта</li>
@@ -136,9 +151,9 @@ export default function Step3Review() {
         <SupportBlock compact />
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-card p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-card/95 backdrop-blur-sm p-4">
         <div className="max-w-2xl mx-auto px-4">
-          <Button className="w-full" onClick={handleSubmit} disabled={submitting}>
+          <Button className="w-full h-12" onClick={handleSubmit} disabled={submitting}>
             {submitting ? "Отправляем..." : "Отправить заявку"}
           </Button>
         </div>

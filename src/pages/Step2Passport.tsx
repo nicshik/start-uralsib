@@ -4,14 +4,11 @@ import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { MOCK_PASSPORT_DATA } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
-import { ArrowLeft, Camera, ScanLine, Check, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import OcrCapture from "@/components/step2/OcrCapture";
 import OcrProgress from "@/components/step2/OcrProgress";
@@ -53,32 +50,29 @@ export default function Step2Passport() {
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 bg-background">
       <header className="border-b bg-card sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1 rounded hover:bg-muted">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
+          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
           <div className="ml-auto"><AutosaveIndicator /></div>
         </div>
-        <div className="max-w-2xl mx-auto px-4 pb-3">
+        <div className="max-w-2xl mx-auto px-4 pb-4">
           <ProgressHeader step={2} totalSteps={3} timeEstimate="5 минут" />
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {/* OCR idle */}
         {ocrPhase === "idle" && !manualMode && (
           <OcrCapture onStartOcr={startOcr} onManualMode={() => { setManualMode(true); trackEvent("manual_entry_selected"); }} />
         )}
 
-        {/* OCR progress */}
         {(ocrPhase === "scanning" || ocrPhase === "checking") && (
           <OcrProgress phase={ocrPhase} />
         )}
 
-        {/* OCR done / Manual mode */}
         {(ocrPhase === "done" || manualMode) && (
           <>
             {ocrPhase === "done" && (
@@ -103,9 +97,9 @@ export default function Step2Passport() {
       </main>
 
       {(ocrPhase === "done" || manualMode) && (
-        <div className="fixed bottom-0 left-0 right-0 border-t bg-card p-4">
+        <div className="fixed bottom-0 left-0 right-0 border-t bg-card/95 backdrop-blur-sm p-4">
           <div className="max-w-2xl mx-auto px-4">
-            <Button className="w-full" disabled={!canProceed} onClick={handleNext}>
+            <Button className="w-full h-12" disabled={!canProceed} onClick={handleNext}>
               Продолжить
             </Button>
           </div>
