@@ -54,32 +54,32 @@ export default function SmsAuth() {
   }, [otp, verifySms]);
 
   const roadmap = [
-    { icon: FileText, label: "Бизнес", desc: "~3 мин · выберите вид деятельности и налоговый режим" },
-    { icon: ScanLine, label: "Паспорт", desc: "~2 мин · автоматически по фото" },
-    { icon: CheckCircle2, label: "Готово", desc: "Проверьте данные — мы всё подготовим" },
+    { icon: FileText, label: "Бизнес", desc: "~3 мин · выберите вид деятельности и налоговый режим", color: "bg-accent" },
+    { icon: ScanLine, label: "Паспорт", desc: "~2 мин · автоматически по фото", color: "bg-accent" },
+    { icon: CheckCircle2, label: "Готово", desc: "Проверьте данные — мы всё подготовим", color: "bg-success/10" },
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1 rounded hover:bg-muted">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
+          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-md mx-auto px-4 py-10 space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-xl font-bold">Подтвердите номер телефона</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Подтвердите номер телефона</h1>
           <p className="text-sm text-muted-foreground">
             {smsSent ? `Код отправлен на ${phone}` : "Для сохранения прогресса"}
           </p>
         </div>
 
         {!smsSent ? (
-          <div className="max-w-sm mx-auto space-y-4">
+          <div className="space-y-4">
             <div className="space-y-2">
               <Input
                 type="tel"
@@ -90,10 +90,10 @@ export default function SmsAuth() {
               />
               {error && <p className="text-sm text-destructive text-center">{error}</p>}
             </div>
-            <Button className="w-full" onClick={sendSms}>Получить код</Button>
+            <Button className="w-full h-12" onClick={sendSms}>Получить код</Button>
           </div>
         ) : (
-          <div className="max-w-sm mx-auto space-y-4">
+          <div className="space-y-4">
             <div className="flex justify-center">
               <InputOTP maxLength={4} value={otp} onChange={setOtp}>
                 <InputOTPGroup>
@@ -117,25 +117,25 @@ export default function SmsAuth() {
         )}
 
         {/* Mini roadmap */}
-        <div className="max-w-md mx-auto rounded-lg bg-muted/50 p-4 space-y-3">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Что вас ждёт</p>
-          <div className="space-y-2">
+        <div className="rounded-2xl bg-card border p-5 space-y-4">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Что вас ждёт</p>
+          <div className="space-y-3">
             {roadmap.map((item, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <item.icon className="h-4 w-4 text-primary" />
+              <div key={i} className="flex items-start gap-3">
+                <div className={`w-9 h-9 rounded-xl ${item.color} flex items-center justify-center shrink-0 mt-0.5`}>
+                  <item.icon className="h-4 w-4 text-accent-foreground" />
                 </div>
                 <div>
                   <p className="text-sm font-medium">{item.label}</p>
-                  <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          <Shield className="h-3 w-3 inline mr-1" />
+        <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+          <Shield className="h-3.5 w-3.5" />
           Ваш прогресс сохранится автоматически
         </p>
 

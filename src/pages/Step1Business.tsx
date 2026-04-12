@@ -25,7 +25,6 @@ export default function Step1Business() {
     trackEvent("page_view", { page: "step1_business" });
   }, []);
 
-  // Inline manager redirect for complex OOO cases
   const showManagerPrompt = isOoo && state.business.directorIsFounder === false;
 
   const filteredCodes = useMemo(() => {
@@ -67,16 +66,16 @@ export default function Step1Business() {
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 bg-background">
       <header className="border-b bg-card sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1 rounded hover:bg-muted">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
+          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
           <div className="ml-auto"><AutosaveIndicator /></div>
         </div>
-        <div className="max-w-2xl mx-auto px-4 pb-3">
+        <div className="max-w-2xl mx-auto px-4 pb-4">
           <ProgressHeader step={1} totalSteps={3} timeEstimate="3 минуты" />
         </div>
       </header>
@@ -86,13 +85,12 @@ export default function Step1Business() {
           <MicroReinforcement message="Шаг 1 готов. Осталось подтвердить паспорт" />
         )}
 
-        {/* OKVED + Tax side by side on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* OKVED */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-base font-semibold">Виды деятельности (ОКВЭД)</Label>
-              <button className="text-xs text-primary flex items-center gap-1" onClick={() => alert("Подбор ОКВЭД с менеджером (демо)")}>
+              <button className="text-xs text-primary flex items-center gap-1 hover:underline" onClick={() => alert("Подбор ОКВЭД с менеджером (демо)")}>
                 <HelpCircle className="h-3 w-3" /> Помочь выбрать
               </button>
             </div>
@@ -116,51 +114,55 @@ export default function Step1Business() {
                 {state.business.okvedCodes.map((code) => (
                   <span
                     key={code}
-                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-medium"
+                    className="inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground px-2.5 py-1 text-xs font-medium"
                   >
                     {code}
-                    <button onClick={() => toggleOkved(code)}>
+                    <button onClick={() => toggleOkved(code)} className="hover:text-destructive transition-colors">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
                 ))}
                 <button
                   onClick={() => dispatch({ type: "UPDATE_BUSINESS", payload: { okvedCodes: [] } })}
-                  className="text-xs text-destructive underline"
+                  className="text-xs text-destructive hover:underline"
                 >
-                  Сбросить все
+                  Сбросить
                 </button>
               </div>
             )}
 
-            <div className="max-h-64 overflow-y-auto space-y-1 rounded-lg border p-2">
-              {filteredCodes.map((c) => {
-                const selected = state.business.okvedCodes.includes(c.code);
-                return (
-                  <button
-                    key={c.code}
-                    onClick={() => toggleOkved(c.code)}
-                    className={`w-full text-left p-2 rounded text-sm flex items-start gap-2 transition-colors ${selected ? "bg-primary/5" : "hover:bg-muted"}`}
-                  >
-                    <div className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center shrink-0 ${selected ? "bg-primary border-primary" : "border-input"}`}>
-                      {selected && <Check className="h-3 w-3 text-primary-foreground" />}
-                    </div>
-                    <div>
-                      <span className="font-mono text-xs text-muted-foreground">{c.code}</span>{" "}
-                      <span>{c.name}</span>
-                      {c.linked && (
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          Связанные: {c.linked.join(", ")}
-                        </p>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-              {filteredCodes.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">Ничего не найдено</p>
-              )}
-            </div>
+            <Card>
+              <CardContent className="p-0">
+                <div className="max-h-72 overflow-y-auto divide-y">
+                  {filteredCodes.map((c) => {
+                    const selected = state.business.okvedCodes.includes(c.code);
+                    return (
+                      <button
+                        key={c.code}
+                        onClick={() => toggleOkved(c.code)}
+                        className={`w-full text-left px-4 py-3 text-sm flex items-start gap-3 transition-colors ${selected ? "bg-accent/50" : "hover:bg-muted/50"}`}
+                      >
+                        <div className={`mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${selected ? "bg-primary border-primary" : "border-muted-foreground/30"}`}>
+                          {selected && <Check className="h-3 w-3 text-primary-foreground" />}
+                        </div>
+                        <div>
+                          <span className="font-mono text-xs text-muted-foreground">{c.code}</span>{" "}
+                          <span>{c.name}</span>
+                          {c.linked && (
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              Связанные: {c.linked.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                  {filteredCodes.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-6">Ничего не найдено</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </section>
 
           {/* Tax regime */}
@@ -170,16 +172,16 @@ export default function Step1Business() {
               {TAX_REGIMES.map((t) => (
                 <Card
                   key={t.id}
-                  className={`cursor-pointer transition-all ${state.business.taxRegime === t.id ? "border-primary ring-1 ring-primary" : "hover:border-primary/50"}`}
+                  className={`cursor-pointer transition-all ${state.business.taxRegime === t.id ? "border-primary ring-2 ring-primary/20 bg-accent/30" : "hover:border-primary/40"}`}
                   onClick={() => setTax(t.id)}
                 >
-                  <CardContent className="p-3 flex items-start gap-3">
-                    <div className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${state.business.taxRegime === t.id ? "border-primary" : "border-input"}`}>
-                      {state.business.taxRegime === t.id && <div className="w-2 h-2 rounded-full bg-primary" />}
+                  <CardContent className="p-4 flex items-start gap-3">
+                    <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${state.business.taxRegime === t.id ? "border-primary" : "border-muted-foreground/30"}`}>
+                      {state.business.taxRegime === t.id && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                     </div>
                     <div>
                       <p className="font-medium text-sm">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.description}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t.description}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -190,62 +192,60 @@ export default function Step1Business() {
 
         {/* OOO extras */}
         {isOoo && (
-          <section className="space-y-4">
-            <div className="space-y-2">
-              <Label className="text-base font-semibold">Название компании</Label>
-              <Input
-                placeholder='ООО "Название"'
-                value={state.business.companyName || ""}
-                onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { companyName: e.target.value } })}
-              />
-            </div>
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-muted-foreground">Упрощённые параметры</p>
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">Директор = учредитель</Label>
-                <Switch
-                  checked={state.business.directorIsFounder ?? true}
-                  onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { directorIsFounder: v } })}
+          <Card>
+            <CardContent className="p-5 space-y-4">
+              <div className="space-y-2">
+                <Label className="text-base font-semibold">Название компании</Label>
+                <Input
+                  placeholder='ООО "Название"'
+                  value={state.business.companyName || ""}
+                  onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { companyName: e.target.value } })}
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">Юр. адрес = адрес учредителя</Label>
-                <Switch
-                  checked={state.business.addressIsFounder ?? true}
-                  onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { addressIsFounder: v } })}
-                />
+              <div className="space-y-3 pt-2 border-t">
+                <p className="text-sm font-medium text-muted-foreground">Упрощённые параметры</p>
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">Директор = учредитель</Label>
+                  <Switch
+                    checked={state.business.directorIsFounder ?? true}
+                    onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { directorIsFounder: v } })}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm">Юр. адрес = адрес учредителя</Label>
+                  <Switch
+                    checked={state.business.addressIsFounder ?? true}
+                    onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { addressIsFounder: v } })}
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Inline manager redirect for complex cases */}
-            {showManagerPrompt && (
-              <Card className="border-primary bg-primary/5">
-                <CardContent className="p-4 space-y-3">
+              {showManagerPrompt && (
+                <div className="rounded-xl border border-primary bg-accent/50 p-4 space-y-3 mt-2">
                   <div className="flex items-start gap-2">
                     <UserCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                     <div>
                       <p className="font-medium text-sm">Для такой структуры удобнее оформить с менеджером</p>
                       <p className="text-sm text-muted-foreground">
-                        Когда директор и учредитель — разные лица, менеджер поможет подготовить все документы. Ваши данные уже сохранены.
+                        Когда директор и учредитель — разные лица, менеджер поможет подготовить все документы.
                       </p>
                     </div>
                   </div>
                   <Button size="sm" onClick={() => { trackEvent("manager_redirect", { reason: "director_not_founder" }); navigate("/manager"); }}>
                     Связаться с менеджером
                   </Button>
-                </CardContent>
-              </Card>
-            )}
-          </section>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         )}
 
         <SupportBlock compact />
       </main>
 
-      {/* Fixed bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-card p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-card/95 backdrop-blur-sm p-4">
         <div className="max-w-2xl mx-auto px-4">
-          <Button className="w-full" disabled={!canProceed} onClick={handleNext}>
+          <Button className="w-full h-12" disabled={!canProceed} onClick={handleNext}>
             Продолжить
           </Button>
         </div>
