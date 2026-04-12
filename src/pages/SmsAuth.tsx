@@ -54,10 +54,9 @@ export default function SmsAuth() {
   }, [otp, verifySms]);
 
   const roadmap = [
-    { icon: FileText, label: "Бизнес", desc: "ОКВЭД, налоги" },
-    { icon: ScanLine, label: "Паспорт", desc: "Фото → автозаполнение" },
-    { icon: CheckCircle2, label: "Проверка", desc: "Проверить и отправить" },
-    { icon: Shield, label: "Встреча", desc: "В офисе банка" },
+    { icon: FileText, label: "Бизнес", desc: "~3 мин · выберите вид деятельности и налоговый режим" },
+    { icon: ScanLine, label: "Паспорт", desc: "~2 мин · автоматически по фото" },
+    { icon: CheckCircle2, label: "Готово", desc: "Проверьте данные — мы всё подготовим" },
   ];
 
   return (
