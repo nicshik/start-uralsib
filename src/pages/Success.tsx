@@ -18,12 +18,12 @@ export default function Success() {
   return (
     <div className="min-h-screen">
       <header className="border-b bg-card">
-        <div className="container py-3">
+        <div className="max-w-5xl mx-auto px-4 py-3">
           <span className="text-lg font-bold text-primary">УРАЛСИБ</span>
         </div>
       </header>
 
-      <main className="container max-w-lg mx-auto py-8 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center space-y-4">
           <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
             <CheckCircle2 className="h-8 w-8 text-success" />

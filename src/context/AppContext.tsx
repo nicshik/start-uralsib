@@ -3,19 +3,6 @@ import React, { createContext, useContext, useReducer, useEffect, useCallback } 
 export type ProductType = "ip" | "ooo" | "help";
 export type FlowType = "online" | "manager";
 
-export interface BranchingAnswers {
-  citizenship?: "russian" | "foreign";
-  selfService?: boolean;
-  city?: string;
-  founderCount?: "one" | "multiple";
-  directorIsFounder?: boolean;
-  hasForeignFounders?: boolean;
-  // help quiz
-  workAlone?: boolean;
-  needLimitedLiability?: boolean;
-  planToHire?: boolean;
-}
-
 export interface BusinessData {
   okvedCodes: string[];
   taxRegime?: string;
@@ -44,7 +31,6 @@ export interface PassportData {
 export interface AppState {
   productType?: ProductType;
   flowType?: FlowType;
-  branchingAnswers: BranchingAnswers;
   phone?: string;
   smsVerified: boolean;
   currentStep: number;
@@ -55,7 +41,6 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-  branchingAnswers: {},
   smsVerified: false,
   currentStep: 0,
   business: { okvedCodes: [], directorIsFounder: true, addressIsFounder: true },
@@ -66,7 +51,6 @@ const initialState: AppState = {
 type Action =
   | { type: "SET_PRODUCT"; payload: ProductType }
   | { type: "SET_FLOW"; payload: FlowType }
-  | { type: "SET_BRANCHING"; payload: Partial<BranchingAnswers> }
   | { type: "SET_PHONE"; payload: string }
   | { type: "SET_SMS_VERIFIED" }
   | { type: "SET_STEP"; payload: number }
@@ -80,7 +64,6 @@ function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case "SET_PRODUCT": return { ...state, productType: action.payload };
     case "SET_FLOW": return { ...state, flowType: action.payload };
-    case "SET_BRANCHING": return { ...state, branchingAnswers: { ...state.branchingAnswers, ...action.payload } };
     case "SET_PHONE": return { ...state, phone: action.payload };
     case "SET_SMS_VERIFIED": return { ...state, smsVerified: true };
     case "SET_STEP": return { ...state, currentStep: action.payload };
@@ -108,7 +91,6 @@ const AppContext = createContext<AppContextType | null>(null);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Autosave
   useEffect(() => {
     if (state.currentStep > 0 || state.smsVerified || state.productType) {
       const toSave = { ...state, lastSaved: new Date().toISOString() };

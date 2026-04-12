@@ -18,7 +18,7 @@ export default function ManagerHandoff() {
   return (
     <div className="min-h-screen">
       <header className="border-b bg-card">
-        <div className="container py-3 flex items-center gap-3">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <button onClick={() => navigate("/")} className="p-1 rounded hover:bg-muted">
             <ArrowLeft className="h-5 w-5" />
           </button>
@@ -26,20 +26,20 @@ export default function ManagerHandoff() {
         </div>
       </header>
 
-      <main className="container max-w-lg mx-auto py-8 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center space-y-3">
           <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
             <UserCheck className="h-7 w-7 text-primary" />
           </div>
-          <h1 className="text-xl font-bold">Для вашего случая удобнее оформить заявку с менеджером</h1>
+          <h1 className="text-xl font-bold">Поможем подобрать форму и оформить заявку</h1>
           <p className="text-sm text-muted-foreground">
             Менеджер поможет подготовить все документы и ответит на вопросы. Ваши ответы уже сохранены — не придётся повторять.
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Card className="hover:border-primary transition-all cursor-pointer" onClick={() => { trackEvent("manager_contact", { method: "callback" }); alert("Заявка на звонок отправлена (демо)"); }}>
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="p-4 flex items-center gap-3 md:flex-col md:text-center">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <Phone className="h-5 w-5 text-primary" />
               </div>
@@ -51,7 +51,7 @@ export default function ManagerHandoff() {
           </Card>
 
           <Card className="hover:border-primary transition-all cursor-pointer" onClick={() => { trackEvent("manager_contact", { method: "chat" }); alert("Чат открыт (демо)"); }}>
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="p-4 flex items-center gap-3 md:flex-col md:text-center">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <MessageCircle className="h-5 w-5 text-primary" />
               </div>
@@ -63,7 +63,7 @@ export default function ManagerHandoff() {
           </Card>
 
           <Card className="hover:border-primary transition-all cursor-pointer" onClick={() => { trackEvent("manager_contact", { method: "office" }); alert("Запись в офис (демо)"); }}>
-            <CardContent className="p-4 flex items-center gap-3">
+            <CardContent className="p-4 flex items-center gap-3 md:flex-col md:text-center">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <MapPin className="h-5 w-5 text-primary" />
               </div>
