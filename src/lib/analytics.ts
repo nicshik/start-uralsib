@@ -22,7 +22,12 @@ export function getEvents() {
   return [...events];
 }
 
+export function clearEvents() {
+  events.length = 0;
+  listeners.forEach((fn) => fn());
+}
+
 export function subscribe(fn: () => void) {
   listeners.add(fn);
-  return () => listeners.delete(fn);
+  return () => { listeners.delete(fn); };
 }

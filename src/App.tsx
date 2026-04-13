@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { MetrikaConsole } from "./components/MetrikaConsole";
+import { RouteGuard } from "./components/RouteGuard";
 
 import Landing from "./pages/Landing";
 import ManagerHandoff from "./pages/ManagerHandoff";
@@ -29,10 +30,10 @@ const App = () => (
             <Route path="/" element={<Landing />} />
             <Route path="/manager" element={<ManagerHandoff />} />
             <Route path="/sms-auth" element={<SmsAuth />} />
-            <Route path="/step/1" element={<Step1Business />} />
-            <Route path="/step/2" element={<Step2Passport />} />
-            <Route path="/step/3" element={<Step3Review />} />
-            <Route path="/success" element={<Success />} />
+            <Route path="/step/1" element={<RouteGuard requireSms><Step1Business /></RouteGuard>} />
+            <Route path="/step/2" element={<RouteGuard requireSms requireStep={1}><Step2Passport /></RouteGuard>} />
+            <Route path="/step/3" element={<RouteGuard requireSms requireStep={2}><Step3Review /></RouteGuard>} />
+            <Route path="/success" element={<RouteGuard requireSms><Success /></RouteGuard>} />
             <Route path="/office-agent" element={<ManagerWorkspace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

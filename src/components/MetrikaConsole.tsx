@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getEvents, subscribe, AnalyticsEvent } from "@/lib/analytics";
+import { getEvents, subscribe, clearEvents, AnalyticsEvent } from "@/lib/analytics";
 import { Activity, X, ChevronDown, ChevronUp, Clock, Bug } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -105,10 +105,7 @@ export function MetrikaConsole() {
               variant="ghost" 
               size="sm" 
               className="h-6 text-[10px] text-slate-400 hover:text-white"
-              onClick={() => {
-                // Since our analytics lib doesn't have a clear, let's just ignore for now or 
-                // we could improve the lib
-              }}
+              onClick={() => clearEvents()}
             >
               Очистить
             </Button>
