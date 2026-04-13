@@ -7,6 +7,8 @@ import { SupportBlock } from "@/components/SupportBlock";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import heroCard3d from "@/assets/hero-card-3d.png";
+import { useState, useEffect } from "react";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -73,25 +75,37 @@ export default function Landing() {
       </header>
 
       {/* Hero */}
-      <div className="-mt-[60px] bg-gradient-to-br from-[hsl(262,55%,28%)] via-[hsl(262,60%,22%)] to-[hsl(262,70%,14%)] text-primary-foreground">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-[80px] pb-14 md:pt-[100px] md:pb-20 text-center space-y-5">
-          <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight tracking-tight">
-            Зарегистрируйте ИП или ООО
-            <br className="hidden sm:block" />
-            <span className="text-primary-foreground/90"> за ~10 минут онлайн</span>
-          </h1>
-          <p className="text-primary-foreground/60 text-sm md:text-base max-w-lg mx-auto">
-            Заполните заявку онлайн — бесплатно и без госпошлины.
-            <br className="hidden sm:block" />
-            Менеджер поможет завершить оформление.
-          </p>
-          <div className="flex justify-center gap-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 border border-primary-foreground/15 text-primary-foreground px-4 py-1.5 text-sm font-medium">
-              <Shield className="h-3.5 w-3.5" /> Бесплатно
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 border border-primary-foreground/15 text-primary-foreground px-4 py-1.5 text-sm font-medium">
-              <Clock className="h-3.5 w-3.5" /> ~10 минут
-            </span>
+      <div className="-mt-[60px] relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #2D1B69 0%, #1A0E45 100%)' }}>
+        {/* Radial glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(100, 64, 191, 0.4) 0%, transparent 70%)' }} />
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-[80px] pb-14 md:pt-[100px] md:pb-20 relative z-10">
+          <div className="flex flex-col md:flex-row items-center md:items-center gap-8 md:gap-12">
+            {/* Text */}
+            <div className="flex-1 text-center md:text-left space-y-5">
+              <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight tracking-tight text-white">
+                Зарегистрируйте ИП или ООО
+                <br className="hidden sm:block" />
+                <span className="text-white/90"> за ~10 минут онлайн</span>
+              </h1>
+              <p className="text-white/60 text-sm md:text-base max-w-lg">
+                Заполните заявку онлайн — бесплатно и без госпошлины.
+                <br className="hidden sm:block" />
+                Менеджер поможет завершить оформление.
+              </p>
+              <div className="flex justify-center md:justify-start gap-3">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 text-white px-4 py-1.5 text-sm font-medium">
+                  <Shield className="h-3.5 w-3.5" /> Бесплатно
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 text-white px-4 py-1.5 text-sm font-medium">
+                  <Clock className="h-3.5 w-3.5" /> ~10 минут
+                </span>
+              </div>
+            </div>
+            {/* 3D Illustration */}
+            <div className="shrink-0 hidden md:block">
+              <img src={heroCard3d} alt="" width={280} height={280} className="drop-shadow-2xl" />
+            </div>
           </div>
         </div>
       </div>
