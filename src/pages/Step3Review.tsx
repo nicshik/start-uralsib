@@ -6,7 +6,6 @@ import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
-import { MicroReinforcement } from "@/components/MicroReinforcement";
 import { Pencil, CheckCircle2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 
@@ -45,9 +44,10 @@ export default function Step3Review() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-5">
-        <MicroReinforcement message="Онлайн-часть готова. Остальные детали уточним на встрече" />
-
-        <h2 className="text-lg font-bold tracking-tight">Проверьте данные</h2>
+        <div>
+          <h2 className="text-lg font-bold tracking-tight">Проверьте данные перед отправкой</h2>
+          <p className="text-sm text-muted-foreground mt-1">Убедитесь, что всё заполнено верно — после отправки изменить данные можно будет только через менеджера.</p>
+        </div>
 
         {/* Summary card */}
         <div className="rounded-2xl border border-[#E5E0EB] bg-white divide-y divide-[#E5E0EB]">
@@ -90,9 +90,12 @@ export default function Step3Review() {
               )}
             </div>
             {selectedOkveds.length > 0 && (
-              <div className="text-xs text-muted-foreground pt-1">
-                ОКВЭД: {selectedOkveds.map((c) => c.code).join(", ")}
-                {selectedOkveds.length > 3 && ` и ещё ${selectedOkveds.length - 3}`}
+              <div className="text-xs text-muted-foreground pt-1 space-y-0.5">
+                <p>ОКВЭД:</p>
+                {selectedOkveds.slice(0, 5).map((c) => (
+                  <p key={c.code}>{c.code} — {c.name}</p>
+                ))}
+                {selectedOkveds.length > 5 && <p>и ещё {selectedOkveds.length - 5}</p>}
               </div>
             )}
           </div>
@@ -109,10 +112,40 @@ export default function Step3Review() {
               <div className="col-span-2">
                 <span className="font-medium">{fullName}</span>
               </div>
+              {state.passport.birthDate && (
+                <div>
+                  <span className="text-muted-foreground">Дата рождения: </span>
+                  <span className="font-medium">{state.passport.birthDate}</span>
+                </div>
+              )}
+              {state.passport.birthPlace && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Место рождения: </span>
+                  <span className="font-medium">{state.passport.birthPlace}</span>
+                </div>
+              )}
               <div>
                 <span className="text-muted-foreground">Паспорт: </span>
                 <span className="font-medium">{state.passport.passportSeries} {state.passport.passportNumber}</span>
               </div>
+              {state.passport.issueDate && (
+                <div>
+                  <span className="text-muted-foreground">Выдан: </span>
+                  <span className="font-medium">{state.passport.issueDate}</span>
+                </div>
+              )}
+              {state.passport.issuedBy && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Кем выдан: </span>
+                  <span className="font-medium">{state.passport.issuedBy}</span>
+                </div>
+              )}
+              {state.passport.divisionCode && (
+                <div>
+                  <span className="text-muted-foreground">Код подразд.: </span>
+                  <span className="font-medium">{state.passport.divisionCode}</span>
+                </div>
+              )}
               {state.passport.inn && (
                 <div>
                   <span className="text-muted-foreground">ИНН: </span>
