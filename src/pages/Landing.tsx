@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
 import uralsibLogo from "@/assets/uralsib-logo-clean.png";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.png";
+import { ProductQuiz } from "@/components/ProductQuiz";
 
 
 export default function Landing() {
@@ -18,6 +19,7 @@ export default function Landing() {
   const [showDraftWarning, setShowDraftWarning] = useState(false);
   const [pendingProduct, setPendingProduct] = useState<"ip" | "ooo" | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -56,10 +58,19 @@ export default function Landing() {
     if (pendingProduct) proceed(pendingProduct);
   };
 
-  const goToManager = () => {
-    dispatch({ type: "SET_PRODUCT", payload: "help" });
-    trackEvent("product_selected", { product: "help" });
-    navigate("/manager");
+  const openQuiz = () => {
+    setIsQuizOpen(true);
+  };
+
+  const handleQuizChoice = (choice: "ip" | "ooo" | "help") => {
+    setIsQuizOpen(false);
+    if (choice === "help") {
+      dispatch({ type: "SET_PRODUCT", payload: "help" });
+      trackEvent("product_selected", { product: "help" });
+      navigate("/manager");
+    } else {
+      handleChoice(choice);
+    }
   };
 
   return (
@@ -157,7 +168,7 @@ export default function Landing() {
           ))}
 
           <button
-            onClick={goToManager}
+            onClick={openQuiz}
             className="text-left rounded-[20px] border border-[#E5E0EB] bg-white p-5 hover:border-primary hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col gap-3 group"
           >
             <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
@@ -274,6 +285,8 @@ export default function Landing() {
       >
         <MessageCircle className="h-6 w-6" />
       </button>
+
+      <ProductQuiz open={isQuizOpen} onOpenChange={setIsQuizOpen} onResultChoice={handleQuizChoice} />
     </div>
   );
 }
