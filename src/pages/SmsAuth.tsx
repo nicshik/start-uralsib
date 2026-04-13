@@ -5,8 +5,9 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { ArrowLeft, Shield, FileText, ScanLine, CheckCircle2 } from "lucide-react";
+import { Shield, FileText, ScanLine, CheckCircle2 } from "lucide-react";
 import { SupportBlock } from "@/components/SupportBlock";
+import { AppHeader } from "@/components/AppHeader";
 
 export default function SmsAuth() {
   const navigate = useNavigate();
@@ -61,14 +62,7 @@ export default function SmsAuth() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
-        </div>
-      </header>
+      <AppHeader showBack />
 
       <main className="max-w-md mx-auto px-4 py-10 space-y-8">
         <div className="text-center space-y-2">

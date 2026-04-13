@@ -5,7 +5,8 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SupportBlock } from "@/components/SupportBlock";
-import { ArrowLeft, Phone, MessageCircle, MapPin, UserCheck } from "lucide-react";
+import { AppHeader } from "@/components/AppHeader";
+import { Phone, MessageCircle, MapPin, UserCheck } from "lucide-react";
 
 export default function ManagerHandoff() {
   const navigate = useNavigate();
@@ -17,14 +18,7 @@ export default function ManagerHandoff() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
-          <button onClick={() => navigate("/")} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
-        </div>
-      </header>
+      <AppHeader showBack backTo="/" />
 
       <main className="max-w-2xl mx-auto px-4 py-10 space-y-8">
         <div className="text-center space-y-3">
