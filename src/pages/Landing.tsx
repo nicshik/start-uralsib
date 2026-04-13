@@ -72,7 +72,7 @@ export default function Landing() {
           </div>
           <button
             onClick={() => { trackEvent("header_cta_click"); navigate("/sms-auth"); }}
-            className={`text-sm font-semibold px-5 py-2 rounded-full transition-all ${scrolled ? 'bg-[#6440BF] text-white hover:bg-[#5535a5]' : 'bg-white text-[#6440BF] hover:shadow-lg hover:shadow-white/20'}`}
+            className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] ${scrolled ? 'text-[#6440BF] border-[#6440BF] hover:bg-[#6440BF]/5' : 'text-white border-white hover:bg-white/10'}`}
           >
             Оставить заявку
           </button>
@@ -104,12 +104,6 @@ export default function Landing() {
                   <Clock className="h-3.5 w-3.5" /> ~10 минут
                 </span>
               </div>
-              <button
-                onClick={() => { trackEvent("hero_cta_click"); navigate("/sms-auth"); }}
-                className="bg-white text-[#6440BF] font-semibold px-8 py-3 rounded-full text-sm hover:shadow-lg hover:shadow-white/20 transition-all md:self-start self-center"
-              >
-                Оставить заявку
-              </button>
             </div>
             {/* 3D Illustration */}
             <div className="shrink-0 hidden md:block">
