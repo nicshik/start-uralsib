@@ -178,7 +178,7 @@ export default function Step1Business() {
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-xl font-bold tracking-tight">Выберите вид деятельности</h2>
-                <p className="text-sm text-muted-foreground mt-1">Найдите свою сферу через поиск или выберите из списка</p>
+                <p className="text-sm text-muted-foreground mt-1">Найдите свою сферу через поиск, выберите из списка или опишите словами</p>
               </div>
               <button className="text-xs text-primary flex items-center gap-1 hover:underline mt-1 shrink-0" onClick={() => openChat()}>
                 <HelpCircle className="h-3 w-3" /> Помочь выбрать
