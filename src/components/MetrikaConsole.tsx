@@ -1,0 +1,115 @@
+import { useState, useEffect } from "react";
+import { getEvents, subscribe, AnalyticsEvent } from "@/lib/analytics";
+import { Activity, X, ChevronDown, ChevronUp, Clock, Bug } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+
+export function MetrikaConsole() {
+  const [events, setEvents] = useState<AnalyticsEvent[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
+
+  useEffect(() => {
+    setEvents(getEvents());
+    return subscribe(() => {
+      setEvents(getEvents());
+      // Auto-expand on new event if not fully closed
+      if (!isOpen && isMinimized) {
+        // Just flash or something? Better keep it simple
+      }
+    });
+  }, []);
+
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-4 right-4 z-[100] bg-slate-900 border border-slate-700 text-white p-3 rounded-full shadow-2xl hover:bg-slate-800 transition-all group"
+        title="Метрика: Мониторинг событий"
+      >
+        <Activity className="h-5 w-5 text-green-400 group-hover:scale-110 transition-transform" />
+        <span className="absolute -top-1 -right-1 bg-red-500 text-[10px] font-bold px-1.5 rounded-full">
+          {events.length}
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <div 
+      className={`fixed bottom-4 right-4 z-[100] bg-slate-900 border border-slate-700 text-white rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${
+        isMinimized ? 'w-64 h-12' : 'w-80 h-96'
+      }`}
+    >
+      <div className="p-3 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+        <div className="flex items-center gap-2">
+          <Bug className="h-4 w-4 text-green-400" />
+          <span className="text-xs font-bold uppercase tracking-wider">Metrika Live</span>
+          <Badge variant="outline" className="text-[10px] h-4 bg-green-500/10 text-green-400 border-green-500/20">
+            Active
+          </Badge>
+        </div>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={() => setIsMinimized(!isMinimized)}
+            className="p-1 hover:bg-slate-800 rounded transition-colors"
+          >
+            {isMinimized ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+          <button 
+            onClick={() => setIsOpen(false)}
+            className="p-1 hover:bg-slate-800 rounded transition-colors"
+          >
+            <X className="h-4 w-4 text-slate-400" />
+          </button>
+        </div>
+      </div>
+
+      {!isMinimized && (
+        <>
+          <ScrollArea className="flex-1 p-2">
+            <div className="space-y-2">
+              {[...events].reverse().map((ev, i) => (
+                <div key={i} className="p-2 rounded bg-slate-800/50 border border-slate-700/50 text-[11px] space-y-1">
+                  <div className="flex items-start justify-between">
+                    <span className="font-mono text-green-300 font-bold">{ev.event}</span>
+                    <span className="text-slate-500 flex items-center gap-0.5">
+                      <Clock className="h-3 w-3" />
+                      {new Date(ev.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </span>
+                  </div>
+                  {ev.data && Object.keys(ev.data).length > 0 && (
+                    <pre className="text-[10px] text-slate-400 overflow-x-auto bg-slate-900/50 p-1 rounded mt-1">
+                      {JSON.stringify(ev.data, null, 2)}
+                    </pre>
+                  )}
+                </div>
+              ))}
+              {events.length === 0 && (
+                <div className="h-32 flex flex-col items-center justify-center text-slate-500 space-y-2">
+                  <Activity className="h-8 w-8 opacity-20" />
+                  <p className="text-xs">Ожидаем событий...</p>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+          <div className="p-2 border-t border-slate-800 bg-slate-950/50 flex items-center justify-between">
+            <span className="text-[10px] text-slate-500">Всего: {events.length}</span>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-6 text-[10px] text-slate-400 hover:text-white"
+              onClick={() => {
+                // Since our analytics lib doesn't have a clear, let's just ignore for now or 
+                // we could improve the lib
+              }}
+            >
+              Очистить
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

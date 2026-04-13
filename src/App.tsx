@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
+import { MetrikaConsole } from "./components/MetrikaConsole";
 
 import Landing from "./pages/Landing";
 import ManagerHandoff from "./pages/ManagerHandoff";
@@ -37,6 +38,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
         
+        <MetrikaConsole />
       </AppProvider>
     </TooltipProvider>
   </QueryClientProvider>
