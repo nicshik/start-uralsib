@@ -93,9 +93,7 @@ export default function Landing() {
                 <span className="text-white/90"> за ~10 минут онлайн</span>
               </h1>
               <p className="text-white/60 text-sm md:text-base max-w-lg">
-                Заполните заявку онлайн — бесплатно и без госпошлины.
-                <br className="hidden sm:block" />
-                Менеджер поможет завершить оформление.
+                Заполните заявку онлайн. Менеджер поможет завершить процесс.
               </p>
               <div className="flex justify-center md:justify-start gap-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 text-white px-4 py-1.5 text-sm font-medium">
@@ -184,7 +182,7 @@ export default function Landing() {
               <p className="font-semibold text-sm">Что понадобится</p>
               {[
                 "Паспорт гражданина РФ",
-                "ИНН (или мы поможем узнать)",
+                "ИНН",
                 "СНИЛС",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm">
