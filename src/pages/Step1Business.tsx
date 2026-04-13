@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
-import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
+import { OKVED_CODES, TAX_REGIMES, OKVED_SECTIONS } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
-import { Search, X, Check, HelpCircle, UserCheck, ChevronDown, Receipt, Briefcase } from "lucide-react";
+import { Search, X, Check, HelpCircle, UserCheck, ChevronDown, Receipt, Briefcase, Filter } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { openChat } from "@/components/ChatWidget";
 
@@ -24,6 +24,7 @@ export default function Step1Business() {
   const [search, setSearch] = useState("");
   const [showComplete, setShowComplete] = useState(false);
   const [showAllCodes, setShowAllCodes] = useState(false);
+  const [sectionFilter, setSectionFilter] = useState<string | null>(null);
   const isOoo = state.productType === "ooo";
 
   // Determine which sub-step to show
@@ -42,12 +43,19 @@ export default function Step1Business() {
   const showManagerPrompt = isOoo && state.business.directorIsFounder === false;
 
   const filteredCodes = useMemo(() => {
-    if (!search) return showAllCodes ? OKVED_CODES : OKVED_CODES.slice(0, 6);
-    const q = search.toLowerCase();
-    return OKVED_CODES.filter(
-      (c) => c.code.includes(q) || c.name.toLowerCase().includes(q)
-    );
-  }, [search, showAllCodes]);
+    let codes = OKVED_CODES;
+    if (sectionFilter) {
+      codes = codes.filter((c) => c.section === sectionFilter);
+    }
+    if (search) {
+      const q = search.toLowerCase();
+      codes = codes.filter(
+        (c) => c.code.includes(q) || c.name.toLowerCase().includes(q) || (c.section && c.section.toLowerCase().includes(q))
+      );
+    }
+    if (!search && !sectionFilter && !showAllCodes) return codes.slice(0, 8);
+    return codes;
+  }, [search, showAllCodes, sectionFilter]);
 
   const toggleOkved = (code: string) => {
     const current = state.business.okvedCodes;
@@ -191,6 +199,25 @@ export default function Step1Business() {
               )}
             </div>
 
+            {/* Section filter */}
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                onClick={() => { setSectionFilter(null); setShowAllCodes(false); }}
+                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${!sectionFilter ? "bg-primary text-white" : "bg-muted text-muted-foreground hover:bg-accent"}`}
+              >
+                Все сферы
+              </button>
+              {OKVED_SECTIONS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => { setSectionFilter(sectionFilter === s ? null : s); setShowAllCodes(true); }}
+                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${sectionFilter === s ? "bg-primary text-white" : "bg-muted text-muted-foreground hover:bg-accent"}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+
             {/* Selected tags */}
             {state.business.okvedCodes.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
@@ -220,7 +247,7 @@ export default function Step1Business() {
             {/* Code list */}
             <Card>
               <CardContent className="p-0">
-                <div className="divide-y">
+                <div className="divide-y max-h-80 overflow-y-auto">
                   {filteredCodes.map((c) => {
                     const selected = state.business.okvedCodes.includes(c.code);
                     return (
@@ -245,16 +272,21 @@ export default function Step1Business() {
                     );
                   })}
                   {filteredCodes.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-6">Ничего не найдено</p>
+                    <p className="text-sm text-muted-foreground text-center py-6">Ничего не найдено. Попробуйте другой запрос или выберите раздел выше.</p>
                   )}
                 </div>
-                {!search && !showAllCodes && OKVED_CODES.length > 6 && (
+                {!search && !sectionFilter && !showAllCodes && (
                   <button
                     onClick={() => setShowAllCodes(true)}
                     className="w-full py-3 text-sm text-primary font-medium flex items-center justify-center gap-1 border-t hover:bg-muted/50 transition-colors"
                   >
                     Показать все ({OKVED_CODES.length}) <ChevronDown className="h-4 w-4" />
                   </button>
+                )}
+                {(search || sectionFilter) && filteredCodes.length > 0 && (
+                  <div className="py-2 text-center text-xs text-muted-foreground border-t">
+                    Найдено: {filteredCodes.length}
+                  </div>
                 )}
               </CardContent>
             </Card>
