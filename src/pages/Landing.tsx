@@ -193,6 +193,34 @@ export default function Landing() {
           </button>
         </div>
 
+        {/* Benefits */}
+        <div className="max-w-2xl mx-auto space-y-4">
+          <h2 className="text-lg font-bold tracking-tight text-center">Удобный и понятный сервис</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="rounded-xl border border-[#E5E0EB] bg-white p-4 space-y-2">
+              <div className="w-8 h-8 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+                <Clock className="h-4 w-4 text-[#6440BF]" />
+              </div>
+              <p className="text-sm font-medium">10 минут на заявку</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Справочники ФНС, автозаполнение и подсказки — готовый пакет документов для регистрации ИП и ООО</p>
+            </div>
+            <div className="rounded-xl border border-[#E5E0EB] bg-white p-4 space-y-2">
+              <div className="w-8 h-8 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+                <UserCheck className="h-4 w-4 text-[#6440BF]" />
+              </div>
+              <p className="text-sm font-medium">Без дублирования</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Данные вводятся один раз. По завершению вы получите готовые документы для отправки в налоговую</p>
+            </div>
+            <div className="rounded-xl border border-[#E5E0EB] bg-white p-4 space-y-2">
+              <div className="w-8 h-8 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+                <Shield className="h-4 w-4 text-[#6440BF]" />
+              </div>
+              <p className="text-sm font-medium">Актуальные формы</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Документы по формам Р11001, Р21001 и др. Налоговая примет с первого раза без возврата на доработку</p>
+            </div>
+          </div>
+        </div>
+
         {/* FAQ */}
         <div className="max-w-2xl mx-auto rounded-xl border border-[#E5E0EB] bg-white overflow-hidden">
           <Accordion type="single" collapsible>
