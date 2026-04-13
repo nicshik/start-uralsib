@@ -286,7 +286,7 @@ export default function Landing() {
 
           {/* Copyright */}
           <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} ПАО «БАНК УРАЛСИБ». Все права защищены.
+            Этот сайт выполнен в рамках учебного проекта, вся представленная информация представлена в демонстрационных целях, введенные персональные данные не сохраняются и не обрабатываются.
           </p>
         </div>
       </footer>
