@@ -168,24 +168,24 @@ export default function Landing() {
             <button
               key={item.type}
               onClick={item.onClick}
-              className="text-left rounded-xl border border-[#E5E0EB] bg-white p-4 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group space-y-2"
+              className="text-left rounded-xl border border-[#E5E0EB] bg-white p-4 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex flex-col"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center mb-3">
                 <item.icon className="h-4 w-4 text-[#6440BF]" />
               </div>
               <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed mt-1">{item.desc}</p>
             </button>
           ))}
           <button
             onClick={openQuiz}
-            className="text-left rounded-xl border border-[#E5E0EB] bg-white p-4 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group space-y-2"
+            className="text-left rounded-xl border border-[#E5E0EB] bg-white p-4 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex flex-col"
           >
-            <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center mb-3">
               <UserCheck className="h-4 w-4 text-[#6440BF]" />
             </div>
             <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">Помочь выбрать</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">Ответьте на 3 вопроса</p>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-1">Ответьте на 3 вопроса</p>
           </button>
         </div>
 
