@@ -139,7 +139,7 @@ export default function Landing() {
             <button
               key={item.type}
               onClick={item.onClick}
-              className="text-left rounded-2xl border bg-card p-5 hover:border-primary hover:shadow-md transition-all flex flex-col gap-3 group"
+              className="text-left rounded-[20px] border border-[#E5E0EB] bg-white p-5 hover:border-primary hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col gap-3 group"
             >
               <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
                 <item.icon className="h-5 w-5 text-accent-foreground" />
