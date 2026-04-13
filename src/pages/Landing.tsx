@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
-import { useState, useEffect } from "react";
+
 
 export default function Landing() {
   const navigate = useNavigate();
