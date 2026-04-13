@@ -75,17 +75,15 @@ export default function Step2Passport() {
               <MicroReinforcement message="Заполнили 8 полей автоматически. Проверьте данные" />
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <PassportFields
-                passport={state.passport}
-                ocrDone={ocrPhase === "done"}
-                onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
-              />
-              <AdditionalFields
-                passport={state.passport}
-                onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
-              />
-            </div>
+            <PassportFields
+              passport={state.passport}
+              ocrDone={ocrPhase === "done"}
+              onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
+            />
+            <AdditionalFields
+              passport={state.passport}
+              onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
+            />
 
             <SupportBlock compact />
           </>
