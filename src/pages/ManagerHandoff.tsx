@@ -4,7 +4,6 @@ import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
 import { Phone, MessageCircle, MapPin, UserCheck } from "lucide-react";
 import { openChat } from "@/components/ChatWidget";
@@ -59,8 +58,6 @@ export default function ManagerHandoff() {
         <Button variant="outline" className="w-full h-12" onClick={() => navigate("/")}>
           Вернуться на главную
         </Button>
-
-        <SupportBlock />
       </main>
     </div>
   );
