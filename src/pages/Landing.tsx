@@ -227,7 +227,8 @@ export default function Landing() {
             <AccordionItem value="1" className="border-b border-[#E5E0EB] last:border-0">
               <AccordionTrigger className="text-sm px-4 py-3">Это полностью онлайн?</AccordionTrigger>
               <AccordionContent className="text-sm text-muted-foreground px-4 pb-3">
-                Онлайн-часть — заполнение заявки (~10 минут). После менеджер свяжется и назначит встречу в офисе.
+                Онлайн-часть — заполнение заявки (~10 минут).<br />
+                После менеджер свяжется и назначит встречу в удобном для Вас отделении банка.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="2" className="border-b border-[#E5E0EB] last:border-0">
