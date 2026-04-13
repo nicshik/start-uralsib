@@ -12,7 +12,8 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
-import { ArrowLeft, Search, X, Check, HelpCircle, UserCheck } from "lucide-react";
+import { Search, X, Check, HelpCircle, UserCheck } from "lucide-react";
+import { AppHeader } from "@/components/AppHeader";
 
 export default function Step1Business() {
   const navigate = useNavigate();
@@ -67,18 +68,14 @@ export default function Step1Business() {
 
   return (
     <div className="min-h-screen pb-24 bg-background">
-      <header className="border-b bg-card sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
-          <div className="ml-auto"><AutosaveIndicator /></div>
-        </div>
-        <div className="max-w-2xl mx-auto px-4 pb-4">
+      <AppHeader showBack>
+        <AutosaveIndicator />
+      </AppHeader>
+      <div className="border-b bg-card">
+        <div className="max-w-2xl mx-auto px-4 py-3">
           <ProgressHeader step={1} totalSteps={3} timeEstimate="3 минуты" />
         </div>
-      </header>
+      </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {showComplete && (
