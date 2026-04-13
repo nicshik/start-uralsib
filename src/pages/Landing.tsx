@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SupportBlock } from "@/components/SupportBlock";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2 } from "lucide-react";
+import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
 
@@ -216,6 +216,58 @@ export default function Landing() {
           <SupportBlock />
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-[#F4F3F7] border-t border-[#E5E0EB]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+          {/* Contact card */}
+          <div className="rounded-[20px] bg-[#6440BF] text-white p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="space-y-2">
+              <p className="font-bold text-lg">Свяжитесь с нами</p>
+              <div className="flex items-center gap-2 text-white/90 text-sm">
+                <Phone className="h-4 w-4" />
+                <span>8 800 250-57-57 (бесплатно по РФ)</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/90 text-sm">
+                <Phone className="h-4 w-4" />
+                <span>+7 (495) 723-77-21 (Москва)</span>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              {["VK", "TG", "OK"].map((soc) => (
+                <div key={soc} className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 transition-colors flex items-center justify-center text-white text-xs font-bold cursor-pointer">
+                  {soc}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Legal accordion */}
+          <Accordion type="single" collapsible>
+            <AccordionItem value="legal" className="border-[#E5E0EB]">
+              <AccordionTrigger className="text-sm text-muted-foreground hover:text-foreground">Юридическая информация</AccordionTrigger>
+              <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
+                ПАО «БАНК УРАЛСИБ». Генеральная лицензия Банка России №30 от 10.09.2015. 119048, г. Москва, ул. Ефремова, д. 8. Реклама. Подробности на сайте uralsib.ru. Не является публичной офертой.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
+          {/* Copyright */}
+          <p className="text-xs text-muted-foreground text-center">
+            © {new Date().getFullYear()} ПАО «БАНК УРАЛСИБ». Все права защищены.
+          </p>
+        </div>
+      </footer>
+
+      {/* FAB */}
+      <button
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#2D1B69] text-white flex items-center justify-center hover:scale-105 transition-transform"
+        style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
+        onClick={() => alert('Чат поддержки (демо)')}
+        aria-label="Открыть чат"
+      >
+        <MessageCircle className="h-6 w-6" />
+      </button>
     </div>
   );
 }
