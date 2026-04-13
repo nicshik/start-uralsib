@@ -65,13 +65,16 @@ export default function Landing() {
 
   const handleQuizChoice = (choice: "ip" | "ooo" | "help") => {
     setIsQuizOpen(false);
-    if (choice === "help") {
-      dispatch({ type: "SET_PRODUCT", payload: "help" });
-      trackEvent("product_selected", { product: "help" });
-      navigate("/manager");
-    } else {
-      handleChoice(choice);
-    }
+    // Delay navigation slightly so the dialog unmounts first
+    setTimeout(() => {
+      if (choice === "help") {
+        dispatch({ type: "SET_PRODUCT", payload: "help" });
+        trackEvent("product_selected", { product: "help" });
+        navigate("/manager");
+      } else {
+        handleChoice(choice);
+      }
+    }, 150);
   };
 
   return (
