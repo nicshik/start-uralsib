@@ -284,7 +284,7 @@ export default function Landing() {
           </div>
 
           {/* Copyright */}
-          <p className="text-xs text-muted-foreground text-center max-w-md mx-auto">
+          <p className="text-xs text-muted-foreground text-center max-w-2xl mx-auto">
             Этот сайт выполнен в рамках учебного проекта, вся представленная информация представлена в демонстрационных целях.<br />
             Введенные персональные данные не сохраняются на сервере и не передаются третьим лицам.
           </p>
