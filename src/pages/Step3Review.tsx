@@ -4,12 +4,10 @@ import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
-import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
-import { Building2, User, Receipt, Calendar, Edit } from "lucide-react";
+import { Pencil, CheckCircle2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 
 export default function Step3Review() {
@@ -23,6 +21,8 @@ export default function Step3Review() {
 
   const tax = TAX_REGIMES.find((t) => t.id === state.business.taxRegime);
   const selectedOkveds = OKVED_CODES.filter((c) => state.business.okvedCodes.includes(c.code));
+  const isOoo = state.productType === "ooo";
+  const fullName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
 
   const handleSubmit = () => {
     setSubmitting(true);
@@ -44,114 +44,98 @@ export default function Step3Review() {
         </div>
       </div>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-6 space-y-5">
         <MicroReinforcement message="Онлайн-часть готова. Остальные детали уточним на встрече" />
 
-        <h2 className="text-xl font-bold tracking-tight">Проверьте данные заявки</h2>
+        <h2 className="text-lg font-bold tracking-tight">Проверьте данные</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardContent className="p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
-                    <Building2 className="h-3.5 w-3.5 text-accent-foreground" />
-                  </div>
-                  <span className="font-semibold text-sm">Бизнес</span>
-                </div>
-                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1 hover:underline">
-                  <Edit className="h-3 w-3" /> Изменить
-                </button>
-              </div>
-              <div className="space-y-1.5 text-sm">
-                <p><span className="text-muted-foreground">Форма:</span> {state.productType === "ooo" ? "ООО" : "ИП"}</p>
-                {state.business.companyName && (
-                  <p><span className="text-muted-foreground">Название:</span> {state.business.companyName}</p>
-                )}
-                {state.business.charterCapital && (
-                  <p><span className="text-muted-foreground">Уставной капитал:</span> {Number(state.business.charterCapital).toLocaleString("ru-RU")} ₽</p>
-                )}
-                {state.business.legalAddress && (
-                  <p><span className="text-muted-foreground">Юр. адрес:</span> {state.business.legalAddress}</p>
-                )}
-                {selectedOkveds.length > 0 && (
-                  <>
-                    <p className="text-muted-foreground">ОКВЭД:</p>
-                    <ul className="ml-4 space-y-0.5">
-                      {selectedOkveds.map((c) => (
-                        <li key={c.code} className="text-xs text-muted-foreground">{c.code} — {c.name}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
-                    <Receipt className="h-3.5 w-3.5 text-accent-foreground" />
-                  </div>
-                  <span className="font-semibold text-sm">Налоги</span>
-                </div>
-                <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1 hover:underline">
-                  <Edit className="h-3 w-3" /> Изменить
-                </button>
-              </div>
-              {tax ? (
-                <div className="text-sm">
-                  <p className="font-medium">{tax.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{tax.description}</p>
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">Не выбрано</p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
-          <CardContent className="p-5 space-y-3">
+        {/* Summary card */}
+        <div className="rounded-2xl border border-[#E5E0EB] bg-white divide-y divide-[#E5E0EB]">
+          {/* Business section */}
+          <div className="p-4 space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
-                  <User className="h-3.5 w-3.5 text-accent-foreground" />
-                </div>
-                <span className="font-semibold text-sm">Паспортные данные</span>
-              </div>
-              <button onClick={() => navigate("/step/2")} className="text-xs text-primary flex items-center gap-1 hover:underline">
-                <Edit className="h-3 w-3" /> Изменить
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Бизнес</p>
+              <button onClick={() => navigate("/step/1")} className="text-xs text-primary flex items-center gap-1 hover:underline">
+                <Pencil className="h-3 w-3" /> Изменить
               </button>
             </div>
-            <div className="text-sm space-y-1">
-              <p className="font-medium">{state.passport.lastName} {state.passport.firstName} {state.passport.middleName}</p>
-              <p className="text-muted-foreground">Паспорт: {state.passport.passportSeries} {state.passport.passportNumber}</p>
-              {state.passport.inn && <p className="text-muted-foreground">ИНН: {state.passport.inn}</p>}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white border border-gray-200 rounded-2xl">
-          <CardContent className="p-5 space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Calendar className="h-3.5 w-3.5 text-primary" />
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+              <div>
+                <span className="text-muted-foreground">Форма: </span>
+                <span className="font-medium">{isOoo ? "ООО" : "ИП"}</span>
               </div>
-              <span className="font-semibold text-sm">Что уточнит сотрудник на встрече</span>
+              {tax && (
+                <div>
+                  <span className="text-muted-foreground">Налоги: </span>
+                  <span className="font-medium">{tax.name}</span>
+                </div>
+              )}
+              {state.business.companyName && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Название: </span>
+                  <span className="font-medium">{state.business.companyName}</span>
+                </div>
+              )}
+              {state.business.charterCapital && (
+                <div>
+                  <span className="text-muted-foreground">Уст. капитал: </span>
+                  <span className="font-medium">{Number(state.business.charterCapital).toLocaleString("ru-RU")} ₽</span>
+                </div>
+              )}
+              {state.business.legalAddress && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Юр. адрес: </span>
+                  <span className="font-medium">{state.business.legalAddress}</span>
+                </div>
+              )}
             </div>
-            <ul className="text-sm text-muted-foreground space-y-1.5 ml-9 list-disc">
-              <li>Проверка оригиналов документов</li>
-              <li>Подписание заявления на регистрацию</li>
-              <li>Открытие расчётного счёта</li>
-              <li>Подключение интернет-банка</li>
-            </ul>
-          </CardContent>
-        </Card>
+            {selectedOkveds.length > 0 && (
+              <div className="text-xs text-muted-foreground pt-1">
+                ОКВЭД: {selectedOkveds.map((c) => c.code).join(", ")}
+                {selectedOkveds.length > 3 && ` и ещё ${selectedOkveds.length - 3}`}
+              </div>
+            )}
+          </div>
 
-        <SupportBlock compact />
+          {/* Personal section */}
+          <div className="p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Личные данные</p>
+              <button onClick={() => navigate("/step/2")} className="text-xs text-primary flex items-center gap-1 hover:underline">
+                <Pencil className="h-3 w-3" /> Изменить
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+              <div className="col-span-2">
+                <span className="font-medium">{fullName}</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Паспорт: </span>
+                <span className="font-medium">{state.passport.passportSeries} {state.passport.passportNumber}</span>
+              </div>
+              {state.passport.inn && (
+                <div>
+                  <span className="text-muted-foreground">ИНН: </span>
+                  <span className="font-medium">{state.passport.inn}</span>
+                </div>
+              )}
+              {state.passport.snils && (
+                <div>
+                  <span className="text-muted-foreground">СНИЛС: </span>
+                  <span className="font-medium">{state.passport.snils}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Meeting note */}
+        <div className="flex items-start gap-2.5 text-xs text-muted-foreground">
+          <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+          <p className="leading-relaxed">
+            После отправки менеджер свяжется для уточнения деталей и назначит встречу в офисе — проверка документов, подписание заявления, открытие счёта.
+          </p>
+        </div>
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 border-t bg-card/95 backdrop-blur-sm p-4">
