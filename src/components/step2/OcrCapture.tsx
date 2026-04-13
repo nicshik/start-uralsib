@@ -16,7 +16,7 @@ export default function OcrCapture({ onStartOcr, onManualMode }: OcrCaptureProps
       </div>
       <button
         onClick={onStartOcr}
-        className="w-full aspect-[4/3] max-w-md mx-auto rounded-2xl border-2 border-dashed border-primary/30 bg-accent/50 flex flex-col items-center justify-center gap-3 hover:bg-accent hover:border-primary/50 transition-all"
+        className="w-full aspect-[4/3] max-w-md mx-auto rounded-[16px] border-2 border-dashed border-primary/30 bg-white flex flex-col items-center justify-center gap-3 hover:bg-accent hover:border-primary/50 transition-all"
       >
         <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
           <Camera className="h-7 w-7 text-primary" />
