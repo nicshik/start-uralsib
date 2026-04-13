@@ -55,9 +55,9 @@ export default function SmsAuth() {
   }, [otp, verifySms]);
 
   const roadmap = [
-    { icon: FileText, label: "Бизнес", desc: "~3 мин · выберите вид деятельности и налоговый режим", color: "bg-accent" },
-    { icon: ScanLine, label: "Паспорт", desc: "~2 мин · автоматически по фото", color: "bg-accent" },
-    { icon: CheckCircle2, label: "Готово", desc: "Проверьте данные — мы всё подготовим", color: "bg-success/10" },
+    { icon: FileText, label: "Бизнес", desc: "~3 мин · выберите вид деятельности и налоговый режим" },
+    { icon: ScanLine, label: "Паспорт", desc: "~2 мин · автоматически по фото" },
+    { icon: CheckCircle2, label: "Готово", desc: "Проверьте данные — мы всё подготовим" },
   ];
 
   return (
@@ -111,17 +111,17 @@ export default function SmsAuth() {
         )}
 
         {/* Mini roadmap */}
-        <div className="rounded-2xl bg-card border p-5 space-y-4">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Что вас ждёт</p>
+        <div className="rounded-[16px] bg-white border border-[#E5E0EB] shadow-none p-5 space-y-4">
+          <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider">Что вас ждёт</p>
           <div className="space-y-3">
             {roadmap.map((item, i) => (
               <div key={i} className="flex items-start gap-3">
-                <div className={`w-9 h-9 rounded-xl ${item.color} flex items-center justify-center shrink-0 mt-0.5`}>
-                  <item.icon className="h-4 w-4 text-accent-foreground" />
+                <div className="w-9 h-9 rounded-xl bg-[#F0ECFA] flex items-center justify-center shrink-0 mt-0.5">
+                  <item.icon className="h-4 w-4 text-[#6440BF]" />
                 </div>
                 <div>
                   <p className="text-sm font-medium">{item.label}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                  <p className="text-xs text-[#6B6B6B] leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
