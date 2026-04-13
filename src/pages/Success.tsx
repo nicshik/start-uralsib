@@ -60,16 +60,25 @@ export default function Success() {
           </CardContent>
         </Card>
 
-        <Button
-          variant="outline"
-          className="w-full h-12"
-          onClick={() => {
-            clearDraft();
-            navigate("/");
-          }}
-        >
-          На главную
-        </Button>
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            variant="outline"
+            className="w-full h-12"
+            onClick={() => {
+              clearDraft();
+              navigate("/");
+            }}
+          >
+            На главную
+          </Button>
+
+          <button 
+            onClick={() => navigate('/office-agent')}
+            className="text-[10px] text-gray-300 hover:text-gray-500 transition-colors"
+          >
+            [DEMO: Открыть интерфейс сотрудника в офисе]
+          </button>
+        </div>
 
         <SupportBlock />
       </main>
