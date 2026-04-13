@@ -12,7 +12,7 @@ import { AppHeader } from "@/components/AppHeader";
 export default function SmsAuth() {
   const navigate = useNavigate();
   const { state, dispatch } = useApp();
-  const [phone, setPhone] = useState(state.phone || "");
+  const [phone, setPhone] = useState(state.phone || "+7 985 999 99 99");
   const [smsSent, setSmsSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(60);
@@ -80,7 +80,7 @@ export default function SmsAuth() {
                 placeholder="+7 (___) ___-__-__"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="text-center text-lg"
+                className="text-center text-lg bg-white border-[#E5E0EB] rounded-xl h-14 px-4"
               />
               {error && <p className="text-sm text-destructive text-center">{error}</p>}
             </div>
