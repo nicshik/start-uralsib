@@ -160,9 +160,9 @@ export default function Landing() {
         )}
 
         {/* CTA Cards */}
-        <div id="cta-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto scroll-mt-24">
+        <div id="cta-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl mx-auto scroll-mt-24">
           {[
-            { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Индивидуальный предприниматель", onClick: () => handleChoice("ip") },
+            { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Индивидуальный\nпредприниматель", onClick: () => handleChoice("ip") },
             { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Общество с ограниченной ответственностью", onClick: () => handleChoice("ooo") },
           ].map((item) => (
             <button
@@ -174,7 +174,7 @@ export default function Landing() {
                 <item.icon className="h-4 w-4 text-[#6440BF]" />
               </div>
               <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed mt-1">{item.desc}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed mt-1 whitespace-pre-line">{item.desc}</p>
             </button>
           ))}
           <button
