@@ -104,12 +104,6 @@ export default function Landing() {
                   <Clock className="h-3.5 w-3.5" /> ~10 минут
                 </span>
               </div>
-              <button
-                onClick={() => { trackEvent("hero_cta_click"); navigate("/sms-auth"); }}
-                className="bg-white text-[#6440BF] font-semibold px-8 py-3 rounded-full text-sm hover:shadow-lg hover:shadow-white/20 transition-all md:self-start self-center"
-              >
-                Оставить заявку
-              </button>
             </div>
             {/* 3D Illustration */}
             <div className="shrink-0 hidden md:block">
