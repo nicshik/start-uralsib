@@ -97,7 +97,7 @@ export default function Step1Business() {
                 placeholder="Поиск по названию или коду"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 bg-white border-[#E5E0EB]"
+                className="pl-9 bg-white border border-gray-200"
               />
               {search && (
                 <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">

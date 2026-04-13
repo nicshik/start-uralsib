@@ -128,7 +128,7 @@ export default function Step3Review() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border border-[#E5E0EB] rounded-[16px]">
+        <Card className="bg-white border border-gray-200 rounded-2xl">
           <CardContent className="p-5 space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
