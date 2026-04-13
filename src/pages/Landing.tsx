@@ -160,7 +160,7 @@ export default function Landing() {
         )}
 
         {/* CTA Cards */}
-        <div id="cta-cards" className="max-w-lg mx-auto space-y-3 scroll-mt-24">
+        <div id="cta-cards" className="max-w-2xl mx-auto space-y-3 scroll-mt-24">
           <div className="grid grid-cols-2 gap-3">
             {[
               { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Индивидуальный предприниматель", onClick: () => handleChoice("ip") },
