@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn } from "lucide-react";
+import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
 import uralsibLogo from "@/assets/uralsib-logo-clean.png";
@@ -159,8 +159,8 @@ export default function Landing() {
           </Card>
         )}
 
-        {/* CTA Cards — compact 3-col */}
-        <div id="cta-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto scroll-mt-24">
+        {/* CTA Cards */}
+        <div id="cta-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto scroll-mt-24">
           {[
             { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Индивидуальный предприниматель", onClick: () => handleChoice("ip") },
             { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Общество с ограниченной ответственностью", onClick: () => handleChoice("ooo") },
@@ -168,30 +168,24 @@ export default function Landing() {
             <button
               key={item.type}
               onClick={item.onClick}
-              className="text-left rounded-xl border border-[#E5E0EB] bg-white px-4 py-3.5 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex items-center gap-3"
+              className="text-left rounded-xl border border-[#E5E0EB] bg-white p-4 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group space-y-2"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
                 <item.icon className="h-4 w-4 text-[#6440BF]" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
-                <p className="text-xs text-muted-foreground">{item.desc}</p>
-              </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-[#6440BF] transition-colors shrink-0" />
+              <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
             </button>
           ))}
           <button
             onClick={openQuiz}
-            className="text-left rounded-xl border border-[#E5E0EB] bg-white px-4 py-3.5 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex items-center gap-3"
+            className="text-left rounded-xl border border-[#E5E0EB] bg-white p-4 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group space-y-2"
           >
-            <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
               <UserCheck className="h-4 w-4 text-[#6440BF]" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">Помочь выбрать</p>
-              <p className="text-xs text-muted-foreground">Ответьте на 3 вопроса</p>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-[#6440BF] transition-colors shrink-0" />
+            <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">Помочь выбрать</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">Ответьте на 3 вопроса</p>
           </button>
         </div>
 
