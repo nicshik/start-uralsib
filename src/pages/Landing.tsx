@@ -9,6 +9,7 @@ import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcas
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
 import uralsibLogo from "@/assets/uralsib-logo-clean.png";
+import uralsibLogoDark from "@/assets/uralsib-logo-dark.png";
 
 
 export default function Landing() {
@@ -64,13 +65,13 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#2D1B69] shadow-md' : 'bg-transparent'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={uralsibLogo} alt="Уралсиб" className="h-8 object-contain" />
+            <img src={scrolled ? uralsibLogoDark : uralsibLogo} alt="Уралсиб" className="h-8 object-contain transition-opacity duration-300" />
           </div>
           <button
-            className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors ${scrolled ? 'text-white border-[1.5px] border-white/60 hover:bg-white/10' : 'text-white border-[1.5px] border-white hover:bg-white/10'}`}
+            className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] ${scrolled ? 'text-[#6440BF] border-[#6440BF] hover:bg-[#6440BF]/5' : 'text-white border-white hover:bg-white/10'}`}
           >
             Войти
           </button>
@@ -104,6 +105,12 @@ export default function Landing() {
                   <Clock className="h-3.5 w-3.5" /> ~10 минут
                 </span>
               </div>
+              <button
+                onClick={() => { trackEvent("hero_cta_click"); navigate("/sms-auth"); }}
+                className="bg-white text-[#6440BF] font-semibold px-8 py-3 rounded-full text-sm hover:shadow-lg hover:shadow-white/20 transition-all md:self-start self-center"
+              >
+                Оставить заявку
+              </button>
             </div>
             {/* 3D Illustration */}
             <div className="shrink-0 hidden md:block">
@@ -246,14 +253,16 @@ export default function Landing() {
           </div>
 
           {/* Legal accordion */}
-          <Accordion type="single" collapsible>
-            <AccordionItem value="legal" className="border-[#E5E0EB]">
-              <AccordionTrigger className="text-sm text-muted-foreground hover:text-foreground">Юридическая информация</AccordionTrigger>
-              <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
-                ПАО «БАНК УРАЛСИБ». Генеральная лицензия Банка России №30 от 10.09.2015. 119048, г. Москва, ул. Ефремова, д. 8. Реклама. Подробности на сайте uralsib.ru. Не является публичной офертой.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="rounded-[16px] border border-[#E5E0EB] bg-white p-1">
+            <Accordion type="single" collapsible>
+              <AccordionItem value="legal" className="border-none">
+                <AccordionTrigger className="text-sm text-muted-foreground hover:text-foreground px-4">Юридическая информация</AccordionTrigger>
+                <AccordionContent className="text-xs text-muted-foreground leading-relaxed px-4">
+                  ПАО «БАНК УРАЛСИБ». Генеральная лицензия Банка России №30 от 10.09.2015. 119048, г. Москва, ул. Ефремова, д. 8. Реклама. Подробности на сайте uralsib.ru. Не является публичной офертой.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
 
           {/* Copyright */}
           <p className="text-xs text-muted-foreground text-center">
