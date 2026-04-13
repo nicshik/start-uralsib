@@ -52,7 +52,7 @@ export default function Success() {
           </CardContent>
         </Card>
 
-        <Card className="bg-muted/50 border-dashed">
+        <Card className="bg-white border border-[#E5E0EB] rounded-[16px]">
           <CardContent className="p-5">
             <p className="text-sm text-muted-foreground leading-relaxed">
               <strong className="text-foreground">Важно:</strong> для завершения регистрации потребуется личный визит в отделение банка с оригиналами документов. Менеджер поможет выбрать удобное отделение и время.
