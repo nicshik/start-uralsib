@@ -77,7 +77,7 @@ export default function Step1Business() {
   const canProceed =
     state.business.okvedCodes.length > 0 &&
     state.business.taxRegime &&
-    (!isOoo || state.business.companyName) &&
+    (!isOoo || subStep !== "ooo" || state.business.companyName) &&
     !showManagerPrompt;
 
   const handleNext = () => {
