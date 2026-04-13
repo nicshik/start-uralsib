@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SupportBlock } from "@/components/SupportBlock";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone } from "lucide-react";
+import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
 import uralsibLogo from "@/assets/uralsib-logo-clean.png";
@@ -86,10 +86,11 @@ export default function Landing() {
             <img src={scrolled ? uralsibLogoDark : uralsibLogo} alt="Уралсиб" className="h-8 object-contain transition-opacity duration-300" />
           </div>
           <button
-            onClick={() => { trackEvent("header_cta_click"); navigate("/sms-auth"); }}
-            className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] ${scrolled ? 'text-[#6440BF] border-[#6440BF] hover:bg-[#6440BF]/5' : 'text-white border-white hover:bg-white/10'}`}
+            onClick={() => { trackEvent("header_login_click"); navigate("/sms-auth"); }}
+            className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] flex items-center gap-1.5 ${scrolled ? 'text-[#6440BF] border-[#6440BF] hover:bg-[#6440BF]/5' : 'text-white border-white hover:bg-white/10'}`}
           >
-            Оставить заявку
+            <LogIn className="h-4 w-4" />
+            Войти
           </button>
         </div>
       </header>
@@ -112,13 +113,21 @@ export default function Landing() {
                 Заполните заявку онлайн.<br />
                 Менеджер поможет завершить процесс.
               </p>
-              <div className="flex justify-center md:justify-start gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 text-white px-4 py-1.5 text-sm font-medium">
-                  <Shield className="h-3.5 w-3.5" /> Бесплатно
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 text-white px-4 py-1.5 text-sm font-medium">
-                  <Clock className="h-3.5 w-3.5" /> ~10 минут
-                </span>
+              <div className="flex flex-col items-center md:items-start gap-4">
+                <button
+                  onClick={() => {
+                    trackEvent("hero_cta_click");
+                    const el = document.getElementById("cta-cards");
+                    el?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="px-8 py-3 rounded-xl bg-white text-[#2D1B69] font-semibold text-base hover:bg-white/90 transition-colors shadow-lg shadow-black/20"
+                >
+                  Оставить заявку
+                </button>
+                <div className="flex items-center gap-4 text-white/50 text-xs">
+                  <span className="inline-flex items-center gap-1"><Shield className="h-3 w-3" /> Бесплатно</span>
+                  <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> ~10 минут</span>
+                </div>
               </div>
             </div>
             {/* 3D Illustration */}
@@ -150,7 +159,7 @@ export default function Landing() {
         )}
 
         {/* CTA Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+        <div id="cta-cards" className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto scroll-mt-24">
           {[
             { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Индивидуальный предприниматель", onClick: () => handleChoice("ip") },
             { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Общество с ограниченной ответственностью", onClick: () => handleChoice("ooo") },
