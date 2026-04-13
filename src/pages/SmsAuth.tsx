@@ -64,7 +64,7 @@ export default function SmsAuth() {
     <div className="min-h-screen bg-background">
       <AppHeader showBack />
 
-      <main className="max-w-md mx-auto px-4 py-10 space-y-8">
+      <main className="max-w-[480px] mx-auto px-4 py-10 space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Подтвердите номер телефона</h1>
           <p className="text-sm text-muted-foreground">
