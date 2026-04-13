@@ -5,7 +5,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { Shield, FileText, ScanLine, CheckCircle2, Sparkles, Headset } from "lucide-react";
+import { Sparkles, Headset } from "lucide-react";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
 
@@ -53,12 +53,6 @@ export default function SmsAuth() {
   useEffect(() => {
     if (otp.length === 4) verifySms();
   }, [otp, verifySms]);
-
-  const roadmap = [
-    { icon: FileText, label: "Опишите бизнес", desc: "~3 мин · вид деятельности и налоги" },
-    { icon: ScanLine, label: "Подтвердите личность", desc: "~2 мин · по фото паспорта" },
-    { icon: CheckCircle2, label: "Проверьте и отправьте", desc: "Мы подготовим документы" },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -109,29 +103,6 @@ export default function SmsAuth() {
             </p>
           </div>
         )}
-
-        {/* Mini roadmap */}
-        <div className="rounded-[16px] bg-white border border-[#E5E0EB] shadow-none p-5 space-y-4">
-          <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider">Как это работает</p>
-          <div className="space-y-3">
-            {roadmap.map((item, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#F0ECFA] flex items-center justify-center shrink-0 mt-0.5">
-                  <item.icon className="h-4 w-4 text-[#6440BF]" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{item.label}</p>
-                  <p className="text-xs text-[#6B6B6B] leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
-          <Shield className="h-3.5 w-3.5" />
-          Ваш прогресс сохранится автоматически
-        </p>
 
         {/* Tips */}
         <div className="space-y-2.5">
