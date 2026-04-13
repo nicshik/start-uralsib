@@ -5,7 +5,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { Shield, FileText, ScanLine, CheckCircle2 } from "lucide-react";
+import { Shield, FileText, ScanLine, CheckCircle2, Sparkles, Headset } from "lucide-react";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
 
@@ -132,6 +132,24 @@ export default function SmsAuth() {
           <Shield className="h-3.5 w-3.5" />
           Ваш прогресс сохранится автоматически
         </p>
+
+        {/* Tips */}
+        <div className="space-y-2.5">
+          <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
+            <Sparkles className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <span className="font-medium text-foreground">Не знаете, какой ОКВЭД выбрать?</span>{" "}
+              На следующем шаге ИИ подберёт коды по описанию вашего бизнеса.
+            </p>
+          </div>
+          <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
+            <Headset className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <span className="font-medium text-foreground">Наши менеджеры готовы помочь</span>{" "}
+              на любом этапе — от выбора формы до подачи документов.
+            </p>
+          </div>
+        </div>
 
         <SupportBlock compact />
       </main>
