@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
-import { MicroReinforcement } from "@/components/MicroReinforcement";
 import { AppHeader } from "@/components/AppHeader";
 
 import OcrCapture from "@/components/step2/OcrCapture";
@@ -71,10 +70,6 @@ export default function Step2Passport() {
 
         {(ocrPhase === "done" || manualMode) && (
           <>
-            {ocrPhase === "done" && (
-              <MicroReinforcement message="Заполнили данные автоматически. Проверьте перед отправкой" />
-            )}
-
             <PassportFields
               passport={state.passport}
               ocrDone={ocrPhase === "done"}
@@ -84,6 +79,12 @@ export default function Step2Passport() {
               passport={state.passport}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
             />
+
+            {ocrPhase === "done" && (
+              <p className="text-xs text-muted-foreground text-center">
+                Данные заполнены автоматически — проверьте перед отправкой
+              </p>
+            )}
 
             <SupportBlock compact />
           </>
