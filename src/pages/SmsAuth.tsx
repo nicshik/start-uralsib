@@ -55,9 +55,9 @@ export default function SmsAuth() {
   }, [otp, verifySms]);
 
   const roadmap = [
-    { icon: FileText, label: "Бизнес", desc: "~3 мин · выберите вид деятельности и налоговый режим" },
-    { icon: ScanLine, label: "Паспорт", desc: "~2 мин · автоматически по фото" },
-    { icon: CheckCircle2, label: "Готово", desc: "Проверьте данные — мы всё подготовим" },
+    { icon: FileText, label: "Опишите бизнес", desc: "~3 мин · вид деятельности и налоги" },
+    { icon: ScanLine, label: "Подтвердите личность", desc: "~2 мин · по фото паспорта" },
+    { icon: CheckCircle2, label: "Проверьте и отправьте", desc: "Мы подготовим документы" },
   ];
 
   return (
@@ -112,7 +112,7 @@ export default function SmsAuth() {
 
         {/* Mini roadmap */}
         <div className="rounded-[16px] bg-white border border-[#E5E0EB] shadow-none p-5 space-y-4">
-          <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider">Что вас ждёт</p>
+          <p className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider">Как это работает</p>
           <div className="space-y-3">
             {roadmap.map((item, i) => (
               <div key={i} className="flex items-start gap-3">
