@@ -162,8 +162,8 @@ export default function Landing() {
         {/* CTA Cards — compact 3-col */}
         <div id="cta-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto scroll-mt-24">
           {[
-            { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Работа на себя", onClick: () => handleChoice("ip") },
-            { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Бизнес с партнёрами", onClick: () => handleChoice("ooo") },
+            { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Индивидуальный предприниматель", onClick: () => handleChoice("ip") },
+            { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Общество с ограниченной ответственностью", onClick: () => handleChoice("ooo") },
           ].map((item) => (
             <button
               key={item.type}
