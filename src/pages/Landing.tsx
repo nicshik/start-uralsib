@@ -94,7 +94,8 @@ export default function Landing() {
                 <span className="text-white/90"></span>
               </h1>
               <p className="text-white/60 text-sm md:text-base max-w-lg font-sans">
-                Заполните заявку онлайн. Менеджер поможет завершить процесс.
+                Заполните заявку онлайн.<br />
+                Менеджер поможет завершить процесс.
               </p>
               <div className="flex justify-center md:justify-start gap-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 text-white px-4 py-1.5 text-sm font-medium">
