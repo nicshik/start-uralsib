@@ -91,9 +91,9 @@ export default function Landing() {
               <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight tracking-tight text-white">
                 <span>Зарегистрируйте ИП или ООО</span>
                 <span className="hidden sm:block" />
-                <span className="text-white/90"> за ~10 минут онлайн</span>
+                <span className="text-white/90"></span>
               </h1>
-              <p className="text-white/60 text-sm md:text-base max-w-lg">
+              <p className="text-white/60 text-sm md:text-base max-w-lg font-sans">
                 Заполните заявку онлайн. Менеджер поможет завершить процесс.
               </p>
               <div className="flex justify-center md:justify-start gap-3">
