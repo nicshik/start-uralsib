@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Sparkles, Headset } from "lucide-react";
-import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
 
 export default function SmsAuth() {
@@ -122,7 +121,6 @@ export default function SmsAuth() {
           </div>
         </div>
 
-        <SupportBlock compact />
       </main>
     </div>
   );
