@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
-import { AnalyticsPanel } from "@/components/AnalyticsPanel";
+
 import Landing from "./pages/Landing";
 import ManagerHandoff from "./pages/ManagerHandoff";
 import SmsAuth from "./pages/SmsAuth";
@@ -34,7 +34,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-        <AnalyticsPanel />
+        
       </AppProvider>
     </TooltipProvider>
   </QueryClientProvider>
