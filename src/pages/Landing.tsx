@@ -54,16 +54,27 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card">
+      <header className="sticky top-0 z-50 bg-transparent">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-primary tracking-tight">УРАЛСИБ</span>
-          <SupportBlock compact />
+          <div className="flex items-center gap-2">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+              <path d="M4 6C4 4.89543 4.89543 4 6 4H10C10 4 10 4 10 6V22C10 22 10 22 8 22H6C4.89543 22 4 21.1046 4 20V6Z" fill="white" fillOpacity="0.9"/>
+              <path d="M10 18C10 18 10 22 14 22H22C23.1046 22 24 21.1046 24 20V18H10Z" fill="white" fillOpacity="0.9"/>
+              <path d="M18 4H22C23.1046 4 24 4.89543 24 6V14C24 14 24 18 20 18H18V4Z" fill="white" fillOpacity="0.6"/>
+            </svg>
+            <span className="text-xl font-bold text-white tracking-tight">УРАЛСИБ</span>
+          </div>
+          <button
+            className="text-white text-sm font-medium px-5 py-2 bg-transparent border-[1.5px] border-white rounded-[8px] hover:bg-white/10 transition-colors"
+          >
+            Войти
+          </button>
         </div>
       </header>
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[hsl(262,55%,28%)] via-[hsl(262,60%,22%)] to-[hsl(262,70%,14%)] text-primary-foreground">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-14 md:py-20 text-center space-y-5">
+      <div className="-mt-[60px] bg-gradient-to-br from-[hsl(262,55%,28%)] via-[hsl(262,60%,22%)] to-[hsl(262,70%,14%)] text-primary-foreground">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-[80px] pb-14 md:pt-[100px] md:pb-20 text-center space-y-5">
           <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight tracking-tight">
             Зарегистрируйте ИП или ООО
             <br className="hidden sm:block" />
