@@ -88,8 +88,8 @@ export default function Landing() {
             {/* Text */}
             <div className="flex-1 text-center md:text-left space-y-5">
               <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight tracking-tight text-white">
-                Зарегистрируйте ИП или ООО
-                <br className="hidden sm:block" />
+                <span>Зарегистрируйте ИП или ООО</span>
+                <span className="hidden sm:block" />
                 <span className="text-white/90"> за ~10 минут онлайн</span>
               </h1>
               <p className="text-white/60 text-sm md:text-base max-w-lg">
