@@ -64,7 +64,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#2D1B69] shadow-md' : 'bg-transparent'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#2D1B69] shadow-md' : 'bg-transparent'}`}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={uralsibLogo} alt="Уралсиб" className="h-8 object-contain" />
@@ -78,7 +78,7 @@ export default function Landing() {
       </header>
 
       {/* Hero */}
-      <div className="-mt-[60px] relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #2D1B69 0%, #1A0E45 100%)' }}>
+      <div className="relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #2D1B69 0%, #1A0E45 100%)' }}>
         {/* Radial glow */}
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(100, 64, 191, 0.4) 0%, transparent 70%)' }} />
 
