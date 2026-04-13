@@ -19,8 +19,8 @@ export function SupportBlock({ compact = false }: { compact?: boolean }) {
         <Button variant="outline" size="sm" className="gap-2 rounded-[8px]" onClick={() => openChat()}>
           <MessageCircle className="h-4 w-4" /> Написать в чат
         </Button>
-        <Button variant="outline" size="sm" className="gap-2 rounded-[8px]" onClick={() => openChat()}>
-          <Phone className="h-4 w-4" /> 8 800 250-57-57
+        <Button variant="outline" size="sm" className="gap-2 rounded-[8px]" asChild>
+          <a href="tel:88002505757"><Phone className="h-4 w-4" /> 8 800 250-57-57</a>
         </Button>
       </div>
     </div>
