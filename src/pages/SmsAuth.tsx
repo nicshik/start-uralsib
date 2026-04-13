@@ -5,10 +5,15 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Sparkles, Headset } from "lucide-react";
-import { AppHeader } from "@/components/AppHeader";
 
-export default function SmsAuth() {
+interface SmsAuthProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
   const navigate = useNavigate();
   const { state, dispatch } = useApp();
   const [phone, setPhone] = useState(state.phone || "+7 985 999 99 99");
@@ -18,8 +23,13 @@ export default function SmsAuth() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    trackEvent("page_view", { page: "sms_auth" });
-  }, []);
+    if (open) {
+      setSmsSent(false);
+      setOtp("");
+      setError("");
+      trackEvent("page_view", { page: "sms_auth" });
+    }
+  }, [open]);
 
   useEffect(() => {
     if (smsSent && timer > 0) {
@@ -45,84 +55,91 @@ export default function SmsAuth() {
       dispatch({ type: "SET_SMS_VERIFIED" });
       dispatch({ type: "SET_STEP", payload: 1 });
       trackEvent("sms_verified");
-      navigate("/step/1");
+      onOpenChange(false);
+      setTimeout(() => navigate("/step/1"), 150);
     }
-  }, [otp, dispatch, navigate]);
+  }, [otp, dispatch, navigate, onOpenChange]);
 
   useEffect(() => {
     if (otp.length === 4) verifySms();
   }, [otp, verifySms]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader showBack />
-
-      <main className="max-w-[480px] mx-auto px-4 py-10 space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">Подтвердите номер телефона</h1>
-          <p className="text-sm text-muted-foreground">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-xl text-center">Подтвердите номер телефона</DialogTitle>
+          <DialogDescription className="text-center">
             {smsSent ? `Код отправлен на ${phone}` : "Для сохранения прогресса"}
-          </p>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="py-2 space-y-6">
+          {!smsSent ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  type="tel"
+                  placeholder="+7 (___) ___-__-__"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="text-center text-lg bg-white border-[#E5E0EB] rounded-xl h-14 px-4"
+                />
+                {error && <p className="text-sm text-destructive text-center">{error}</p>}
+              </div>
+              <Button className="w-full h-12 rounded-[8px] bg-[#6440BF] hover:bg-[#5535a6] text-white font-medium" onClick={sendSms}>Получить код</Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex justify-center">
+                <InputOTP maxLength={4} value={otp} onChange={setOtp}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+              <p className="text-center text-sm text-muted-foreground">
+                {timer > 0 ? (
+                  `Повторная отправка через ${timer} сек.`
+                ) : (
+                  <button className="text-primary underline" onClick={() => { setTimer(60); trackEvent("sms_resent"); }}>
+                    Отправить код повторно
+                  </button>
+                )}
+              </p>
+            </div>
+          )}
+
+          {/* Tip */}
+          {smsSent ? (
+            <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
+              <Sparkles className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <span className="font-medium text-foreground">Не знаете, какой ОКВЭД выбрать?</span>{" "}
+                На следующем шаге ИИ подберёт коды по описанию вашего бизнеса.
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
+              <Headset className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <span className="font-medium text-foreground">Наши менеджеры готовы помочь</span>{" "}
+                на любом этапе — от выбора формы до подачи документов.
+              </p>
+            </div>
+          )}
         </div>
-
-        {!smsSent ? (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="tel"
-                placeholder="+7 (___) ___-__-__"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="text-center text-lg bg-white border-[#E5E0EB] rounded-xl h-14 px-4"
-              />
-              {error && <p className="text-sm text-destructive text-center">{error}</p>}
-            </div>
-            <Button className="w-full h-12 rounded-[8px] bg-[#6440BF] hover:bg-[#5535a6] text-white font-medium" onClick={sendSms}>Получить код</Button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex justify-center">
-              <InputOTP maxLength={4} value={otp} onChange={setOtp}>
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                  <InputOTPSlot index={3} />
-                </InputOTPGroup>
-              </InputOTP>
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              {timer > 0 ? (
-                `Повторная отправка через ${timer} сек.`
-              ) : (
-                <button className="text-primary underline" onClick={() => { setTimer(60); trackEvent("sms_resent"); }}>
-                  Отправить код повторно
-                </button>
-              )}
-            </p>
-          </div>
-        )}
-
-        {/* Tip */}
-        {smsSent ? (
-          <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
-            <Sparkles className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              <span className="font-medium text-foreground">Не знаете, какой ОКВЭД выбрать?</span>{" "}
-              На следующем шаге ИИ подберёт коды по описанию вашего бизнеса.
-            </p>
-          </div>
-        ) : (
-          <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
-            <Headset className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              <span className="font-medium text-foreground">Наши менеджеры готовы помочь</span>{" "}
-              на любом этапе — от выбора формы до подачи документов.
-            </p>
-          </div>
-        )}
-
-      </main>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
+}
+
+// Keep default export as redirect for direct /sms-auth URL access
+export default function SmsAuth() {
+  const navigate = useNavigate();
+  useEffect(() => { navigate("/", { replace: true }); }, [navigate]);
+  return null;
 }

@@ -11,6 +11,7 @@ import heroCard3d from "@/assets/hero-card-3d.png";
 import uralsibLogo from "@/assets/uralsib-logo-clean.png";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.png";
 import { ProductQuiz } from "@/components/ProductQuiz";
+import { SmsAuthDialog } from "@/pages/SmsAuth";
 import { openChat } from "@/components/ChatWidget";
 
 
@@ -21,6 +22,7 @@ export default function Landing() {
   const [pendingProduct, setPendingProduct] = useState<"ip" | "ooo" | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isSmsOpen, setIsSmsOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -44,13 +46,13 @@ export default function Landing() {
   const proceed = (type: "ip" | "ooo") => {
     dispatch({ type: "SET_PRODUCT", payload: type });
     trackEvent("product_selected", { product: type });
-    navigate("/sms-auth");
+    setIsSmsOpen(true);
   };
 
   const resumeDraft = () => {
     loadDraft();
     trackEvent("draft_resumed");
-    navigate("/sms-auth");
+    setIsSmsOpen(true);
   };
 
   const startFresh = () => {
@@ -86,7 +88,7 @@ export default function Landing() {
             <img src={scrolled ? uralsibLogoDark : uralsibLogo} alt="Уралсиб" className="h-8 object-contain transition-opacity duration-300" />
           </div>
           <button
-            onClick={() => { trackEvent("header_login_click"); navigate("/sms-auth"); }}
+            onClick={() => { trackEvent("header_login_click"); setIsSmsOpen(true); }}
             className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] flex items-center gap-1.5 ${scrolled ? 'text-[#6440BF] border-[#6440BF] hover:bg-[#6440BF]/5' : 'text-white border-white hover:bg-white/10'}`}
           >
             <LogIn className="h-4 w-4" />
@@ -300,6 +302,7 @@ export default function Landing() {
       </button>
 
       <ProductQuiz open={isQuizOpen} onOpenChange={setIsQuizOpen} onResultChoice={handleQuizChoice} />
+      <SmsAuthDialog open={isSmsOpen} onOpenChange={setIsSmsOpen} />
     </div>
   );
 }
