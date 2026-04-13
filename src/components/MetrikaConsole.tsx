@@ -9,17 +9,22 @@ export function MetrikaConsole() {
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Hidden by default, enable with ?debug=true
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('debug') === 'true') {
+      setIsVisible(true);
+    }
+
     setEvents(getEvents());
     return subscribe(() => {
       setEvents(getEvents());
-      // Auto-expand on new event if not fully closed
-      if (!isOpen && isMinimized) {
-        // Just flash or something? Better keep it simple
-      }
     });
   }, []);
+
+  if (!isVisible) return null;
 
   if (!isOpen) {
     return (
