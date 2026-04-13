@@ -72,7 +72,7 @@ export default function Step2Passport() {
         {(ocrPhase === "done" || manualMode) && (
           <>
             {ocrPhase === "done" && (
-              <MicroReinforcement message="Заполнили 8 полей автоматически. Проверьте данные" />
+              <MicroReinforcement message="Заполнили данные автоматически. Проверьте перед отправкой" />
             )}
 
             <PassportFields
