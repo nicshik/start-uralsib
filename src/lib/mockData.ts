@@ -16,9 +16,10 @@ export const MOCK_PASSPORT_DATA = {
 };
 
 export const TAX_REGIMES = [
-  { id: "usn6", name: "УСН 6%", description: "Упрощённая система, 6% от дохода. Подходит для услуг и IT." },
-  { id: "usn15", name: "УСН 15%", description: "Упрощённая система, 15% от прибыли. Подходит при больших расходах." },
-  { id: "osn", name: "ОСН", description: "Общая система. Нужна для работы с НДС и крупными компаниями." },
+  { id: "usn6", name: "УСН 6%", description: "Упрощённая система, 6% от дохода. Подходит для услуг и IT.", availableFor: ["ip", "ooo"] as string[] },
+  { id: "usn15", name: "УСН 15%", description: "Упрощённая система, 15% от прибыли. Подходит при больших расходах.", availableFor: ["ip", "ooo"] as string[] },
+  { id: "patent", name: "Патент", description: "Фиксированный платёж за год. Только для ИП, не для всех видов деятельности.", availableFor: ["ip"] as string[] },
+  { id: "osn", name: "ОСН", description: "Общая система. Нужна для работы с НДС и крупными компаниями.", availableFor: ["ip", "ooo"] as string[] },
 ];
 
 export const CITIES = [

@@ -12,7 +12,7 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
-import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles } from "lucide-react";
+import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles, Building2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
 
@@ -94,6 +94,8 @@ export default function Step1Business() {
     setTimeout(() => navigate("/step/2"), 1500);
   };
 
+  const productLabel = isOoo ? "ООО" : "ИП";
+  const availableRegimes = TAX_REGIMES.filter((t) => !state.productType || t.availableFor.includes(state.productType));
   const selectedTax = TAX_REGIMES.find((t) => t.id === state.business.taxRegime);
 
   return (
@@ -103,7 +105,7 @@ export default function Step1Business() {
       </AppHeader>
       <div className="border-b bg-card">
         <div className="max-w-2xl mx-auto px-4 py-3">
-          <ProgressHeader step={1} totalSteps={3} timeEstimate="3 минуты" />
+          <ProgressHeader step={1} totalSteps={3} timeEstimate={isOoo ? "5 минут" : "3 минуты"} />
         </div>
       </div>
 
@@ -146,11 +148,13 @@ export default function Step1Business() {
         {subStep === "tax" && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div>
-              <h2 className="text-xl font-bold tracking-tight">Выберите систему налогообложения</h2>
-              <p className="text-sm text-muted-foreground mt-1">Можно изменить позже. Менеджер поможет определиться на встрече.</p>
+              <h2 className="text-xl font-bold tracking-tight">Налоги для {productLabel}</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {isOoo ? "Выберите систему налогообложения для вашей компании" : "Выберите подходящий режим. Менеджер поможет определиться на встрече."}
+              </p>
             </div>
             <div className="space-y-3">
-              {TAX_REGIMES.map((t) => (
+              {availableRegimes.map((t) => (
                 <Card
                   key={t.id}
                   className={`cursor-pointer transition-all ${state.business.taxRegime === t.id ? "border-primary ring-2 ring-primary/20 bg-accent/30" : "hover:border-primary/40 hover:shadow-sm"}`}
@@ -176,8 +180,8 @@ export default function Step1Business() {
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-xl font-bold tracking-tight">Выберите вид деятельности</h2>
-                <p className="text-sm text-muted-foreground mt-1">Найдите свою сферу через поиск или выберите из списка</p>
+                <h2 className="text-xl font-bold tracking-tight">Чем будет заниматься {isOoo ? "компания" : "ваш бизнес"}?</h2>
+                <p className="text-sm text-muted-foreground mt-1">{isOoo ? "Выберите ОКВЭД-коды для устава ООО" : "Найдите свою сферу через поиск или выберите из списка"}</p>
               </div>
               <button
                 className="text-xs text-primary flex items-center gap-1 hover:underline mt-1 shrink-0"
@@ -309,29 +313,54 @@ export default function Step1Business() {
         {subStep === "ooo" && isOoo && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div>
-              <h2 className="text-xl font-bold tracking-tight">Параметры компании</h2>
-              <p className="text-sm text-muted-foreground mt-1">Основные данные об ООО</p>
+              <h2 className="text-xl font-bold tracking-tight">Данные компании</h2>
+              <p className="text-sm text-muted-foreground mt-1">Заполните основные реквизиты ООО</p>
             </div>
             <Card>
-              <CardContent className="p-5 space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-base font-semibold">Название компании</Label>
-                  <Input
-                    placeholder='ООО "Название"'
-                    value={state.business.companyName || ""}
-                    onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { companyName: e.target.value } })}
-                    className="h-12 text-base"
-                  />
-                </div>
-                <div className="space-y-3 pt-2 border-t">
-                  <p className="text-sm font-medium text-muted-foreground">Упрощённые параметры</p>
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm">Директор = учредитель</Label>
-                    <Switch
-                      checked={state.business.directorIsFounder ?? true}
-                      onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { directorIsFounder: v } })}
+              <CardContent className="p-5 space-y-5">
+                {/* Company names */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                    <p className="text-sm font-semibold">Наименование</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Краткое наименование</Label>
+                    <Input
+                      placeholder='ООО "Ромашка"'
+                      value={state.business.companyName || ""}
+                      onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { companyName: e.target.value } })}
+                      className="h-11 text-base"
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Полное наименование</Label>
+                    <Input
+                      placeholder='Общество с ограниченной ответственностью "Ромашка"'
+                      value={state.business.companyNameFull || ""}
+                      onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { companyNameFull: e.target.value } })}
+                      className="h-11 text-sm"
+                    />
+                    <p className="text-xs text-muted-foreground">Автоматически сформируется из краткого, если оставить пустым</p>
+                  </div>
+                </div>
+
+                {/* Charter capital */}
+                <div className="space-y-2 pt-2 border-t">
+                  <Label className="text-sm">Уставной капитал, ₽</Label>
+                  <Input
+                    type="number"
+                    placeholder="10 000"
+                    min={10000}
+                    value={state.business.charterCapital || ""}
+                    onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { charterCapital: e.target.value } })}
+                    className="h-11 text-base"
+                  />
+                  <p className="text-xs text-muted-foreground">Минимум 10 000 ₽. Вносится в течение 4 месяцев после регистрации.</p>
+                </div>
+
+                {/* Legal address */}
+                <div className="space-y-3 pt-2 border-t">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm">Юр. адрес = адрес учредителя</Label>
                     <Switch
@@ -339,16 +368,39 @@ export default function Step1Business() {
                       onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { addressIsFounder: v } })}
                     />
                   </div>
+                  {!state.business.addressIsFounder && (
+                    <div className="space-y-2 animate-in fade-in duration-200">
+                      <Label className="text-sm">Юридический адрес</Label>
+                      <Input
+                        placeholder="г. Москва, ул. Примерная, д. 1, оф. 101"
+                        value={state.business.legalAddress || ""}
+                        onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { legalAddress: e.target.value } })}
+                        className="h-11 text-sm"
+                      />
+                      <p className="text-xs text-muted-foreground">Адрес, по которому будет зарегистрировано ООО</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Director = founder */}
+                <div className="space-y-3 pt-2 border-t">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Директор = единственный учредитель</Label>
+                    <Switch
+                      checked={state.business.directorIsFounder ?? true}
+                      onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { directorIsFounder: v } })}
+                    />
+                  </div>
                 </div>
 
                 {showManagerPrompt && (
-                  <div className="rounded-xl border border-primary bg-accent/50 p-4 space-y-3 mt-2">
+                  <div className="rounded-xl border border-primary bg-accent/50 p-4 space-y-3">
                     <div className="flex items-start gap-2">
                       <UserCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <div>
-                        <p className="font-medium text-sm">Для такой структуры удобнее оформить с менеджером</p>
+                        <p className="font-medium text-sm">Несколько учредителей?</p>
                         <p className="text-sm text-muted-foreground">
-                          Когда директор и учредитель — разные лица, менеджер поможет подготовить все документы.
+                          Если директор и учредитель — разные лица или учредителей несколько, менеджер поможет подготовить документы.
                         </p>
                       </div>
                     </div>

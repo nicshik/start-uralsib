@@ -7,6 +7,9 @@ export interface BusinessData {
   okvedCodes: string[];
   taxRegime?: string;
   companyName?: string;
+  companyNameFull?: string;
+  charterCapital?: string;
+  legalAddress?: string;
   directorIsFounder?: boolean;
   addressIsFounder?: boolean;
 }

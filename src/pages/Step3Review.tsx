@@ -68,6 +68,12 @@ export default function Step3Review() {
                 {state.business.companyName && (
                   <p><span className="text-muted-foreground">Название:</span> {state.business.companyName}</p>
                 )}
+                {state.business.charterCapital && (
+                  <p><span className="text-muted-foreground">Уставной капитал:</span> {Number(state.business.charterCapital).toLocaleString("ru-RU")} ₽</p>
+                )}
+                {state.business.legalAddress && (
+                  <p><span className="text-muted-foreground">Юр. адрес:</span> {state.business.legalAddress}</p>
+                )}
                 {selectedOkveds.length > 0 && (
                   <>
                     <p className="text-muted-foreground">ОКВЭД:</p>
