@@ -66,7 +66,7 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-xl text-center">Подтвердите номер телефона</DialogTitle>
           <DialogDescription className="text-center">
