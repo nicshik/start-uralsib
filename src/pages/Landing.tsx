@@ -139,7 +139,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
         {/* Draft Warning */}
         {showDraftWarning && (
           <Card className="border-primary max-w-2xl mx-auto">
@@ -160,8 +160,8 @@ export default function Landing() {
         )}
 
         {/* CTA Cards */}
-        <div id="cta-cards" className="max-w-2xl mx-auto space-y-3 scroll-mt-24">
-          <div className="grid grid-cols-2 gap-3">
+        <div id="cta-cards" className="max-w-4xl mx-auto space-y-4 scroll-mt-24">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
               { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Индивидуальный предприниматель", onClick: () => handleChoice("ip") },
               { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Общество с ограниченной ответственностью", onClick: () => handleChoice("ooo") },
@@ -169,91 +169,91 @@ export default function Landing() {
               <button
                 key={item.type}
                 onClick={item.onClick}
-                className="text-left rounded-xl border border-[#E5E0EB] bg-white p-4 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex flex-col"
+                className="text-left rounded-xl border border-[#E5E0EB] bg-white p-6 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex flex-col"
               >
-                <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center mb-3">
-                  <item.icon className="h-4 w-4 text-[#6440BF]" />
+                <div className="w-12 h-12 rounded-lg bg-[#F0ECFA] flex items-center justify-center mb-5">
+                  <item.icon className="h-5 w-5 text-[#6440BF]" />
                 </div>
-                <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-1">{item.desc}</p>
+                <p className="font-semibold text-base text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mt-2">{item.desc}</p>
               </button>
             ))}
           </div>
           <button
             onClick={openQuiz}
-            className="w-full text-left rounded-xl border border-[#E5E0EB] bg-white px-4 py-3 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex items-center gap-3"
+            className="w-full text-left rounded-xl border border-[#E5E0EB] bg-white p-5 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex items-center gap-5"
           >
-            <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center shrink-0">
-              <UserCheck className="h-4 w-4 text-[#6440BF]" />
+            <div className="w-12 h-12 rounded-lg bg-[#F0ECFA] flex items-center justify-center shrink-0">
+              <UserCheck className="h-5 w-5 text-[#6440BF]" />
             </div>
             <div>
-              <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">Помочь выбрать</p>
-              <p className="text-xs text-muted-foreground">Ответьте на 4 вопроса — подскажем подходящую форму</p>
+              <p className="font-semibold text-base text-foreground group-hover:text-[#6440BF] transition-colors">Помочь выбрать</p>
+              <p className="text-sm text-muted-foreground mt-1">Ответьте на 4 вопроса — подскажем подходящую форму</p>
             </div>
           </button>
         </div>
 
         {/* Benefits */}
-        <div className="max-w-2xl mx-auto space-y-4">
-          <h2 className="text-lg font-bold tracking-tight text-center">Удобный и понятный сервис</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="rounded-xl border border-[#E5E0EB] bg-white p-4 space-y-2">
-              <div className="w-8 h-8 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
-                <Clock className="h-4 w-4 text-[#6440BF]" />
+        <div className="max-w-4xl mx-auto space-y-6">
+          <h2 className="text-xl font-bold tracking-tight text-center">Удобный и понятный сервис</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="rounded-xl border border-[#E5E0EB] bg-white p-6 space-y-4">
+              <div className="w-11 h-11 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+                <Clock className="h-5 w-5 text-[#6440BF]" />
               </div>
-              <p className="text-sm font-medium">10 минут на заявку</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">Справочники ФНС, автозаполнение и подсказки — готовый пакет документов для регистрации ИП и ООО</p>
+              <p className="text-base font-medium">10 минут на заявку</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Справочники ФНС, автозаполнение и подсказки — готовый пакет документов для регистрации ИП и ООО</p>
             </div>
-            <div className="rounded-xl border border-[#E5E0EB] bg-white p-4 space-y-2">
-              <div className="w-8 h-8 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
-                <UserCheck className="h-4 w-4 text-[#6440BF]" />
+            <div className="rounded-xl border border-[#E5E0EB] bg-white p-6 space-y-4">
+              <div className="w-11 h-11 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+                <UserCheck className="h-5 w-5 text-[#6440BF]" />
               </div>
-              <p className="text-sm font-medium">Без дублирования</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">Данные вводятся один раз. По завершению вы получите готовые документы для отправки в налоговую</p>
+              <p className="text-base font-medium">Без дублирования</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Данные вводятся один раз. По завершению вы получите готовые документы для отправки в налоговую</p>
             </div>
-            <div className="rounded-xl border border-[#E5E0EB] bg-white p-4 space-y-2">
-              <div className="w-8 h-8 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
-                <Shield className="h-4 w-4 text-[#6440BF]" />
+            <div className="rounded-xl border border-[#E5E0EB] bg-white p-6 space-y-4">
+              <div className="w-11 h-11 rounded-lg bg-[#F0ECFA] flex items-center justify-center">
+                <Shield className="h-5 w-5 text-[#6440BF]" />
               </div>
-              <p className="text-sm font-medium">Актуальные формы</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">Документы по формам Р11001, Р21001 и др. Налоговая примет с первого раза без возврата на доработку</p>
+              <p className="text-base font-medium">Актуальные формы</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Документы по формам Р11001, Р21001 и др. Налоговая примет с первого раза без возврата на доработку</p>
             </div>
           </div>
         </div>
 
         {/* FAQ */}
-        <div className="max-w-2xl mx-auto rounded-xl border border-[#E5E0EB] bg-white overflow-hidden">
+        <div className="max-w-4xl mx-auto rounded-xl border border-[#E5E0EB] bg-white overflow-hidden">
           <Accordion type="single" collapsible>
             <AccordionItem value="1" className="border-b border-[#E5E0EB] last:border-0">
-              <AccordionTrigger className="text-sm px-4 py-3">Это полностью онлайн?</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground px-4 pb-3">
+              <AccordionTrigger className="text-base px-6 py-4">Это полностью онлайн?</AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground px-6 pb-4">
                 Онлайн-часть — заполнение заявки (~10 минут).<br />
-                После менеджер свяжется и назначит встречу в удобном для Вас отделении банка.
+                После менеджер свяжется и назначит встречу в удобном для вас отделении банка.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="2" className="border-b border-[#E5E0EB] last:border-0">
-              <AccordionTrigger className="text-sm px-4 py-3">Сколько стоит регистрация?</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground px-4 pb-3">
+              <AccordionTrigger className="text-base px-6 py-4">Сколько стоит регистрация?</AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground px-6 pb-4">
                 Подача заявки бесплатна. Госпошлина при электронной подаче не взимается.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="3" className="border-b border-[#E5E0EB] last:border-0">
-              <AccordionTrigger className="text-sm px-4 py-3">Какие документы будут подготовлены?</AccordionTrigger>
-              <AccordionContent className="px-4 pb-4">
+              <AccordionTrigger className="text-base px-6 py-4">Какие документы будут подготовлены?</AccordionTrigger>
+              <AccordionContent className="px-6 pb-5">
                 <div className="space-y-3 text-sm text-muted-foreground">
                   <p>Подготовим пакет под выбранную форму бизнеса.</p>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-lg bg-[#F4F3F7] p-3 space-y-2">
+                    <div className="rounded-lg bg-[#F4F3F7] p-4 space-y-2">
                       <p className="text-xs font-semibold uppercase tracking-wide text-foreground">ИП</p>
-                      <ul className="space-y-1.5 text-xs leading-relaxed">
+                      <ul className="space-y-1.5 text-sm leading-relaxed">
                         <li>Заявление на регистрацию ИП</li>
                         <li>Заявление на УСН</li>
                         <li>Инструкция по регистрации ИП</li>
                       </ul>
                     </div>
-                    <div className="rounded-lg bg-[#F4F3F7] p-3 space-y-2">
+                    <div className="rounded-lg bg-[#F4F3F7] p-4 space-y-2">
                       <p className="text-xs font-semibold uppercase tracking-wide text-foreground">ООО</p>
-                      <ul className="space-y-1.5 text-xs leading-relaxed">
+                      <ul className="space-y-1.5 text-sm leading-relaxed">
                         <li>Заявление на регистрацию ООО</li>
                         <li>Заявление на УСН</li>
                         <li>Устав ООО</li>
@@ -266,8 +266,8 @@ export default function Landing() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="4" className="border-b border-[#E5E0EB] last:border-0">
-              <AccordionTrigger className="text-sm px-4 py-3">Нужно ли приходить в офис?</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground px-4 pb-3">
+              <AccordionTrigger className="text-base px-6 py-4">Нужно ли приходить в офис?</AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground px-6 pb-4">
                 Да, один визит для подписания документов. Менеджер согласует удобное время.
               </AccordionContent>
             </AccordionItem>
