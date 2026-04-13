@@ -27,9 +27,8 @@ export function ProgressHeader({ step, totalSteps, timeEstimate }: Props) {
               className={cn(
                 "h-2 transition-all duration-300",
                 isActive ? "w-6 rounded-[4px] bg-primary" : "w-2 rounded-full",
-                isPast && !isActive ? "bg-primary/50" : "", // optional: style past steps differently, or simply bg-primary
-                !isActive && !isPast ? "bg-[#E5E0EB]" : "",
-                isPast && !isActive && "bg-primary" // strictly primary text-wise for past dots? Let's assume filled primary.
+                isPast ? "bg-primary" : "",
+                !isActive && !isPast ? "bg-[#E5E0EB]" : ""
               )}
             />
           );
