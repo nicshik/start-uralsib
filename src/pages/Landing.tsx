@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn } from "lucide-react";
+import { Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
 import uralsibLogo from "@/assets/uralsib-logo-clean.png";
@@ -193,15 +193,6 @@ export default function Landing() {
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-[#6440BF] transition-colors shrink-0" />
           </button>
-        </div>
-
-        {/* Info bar */}
-        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs text-muted-foreground max-w-2xl mx-auto">
-          <span className="inline-flex items-center gap-1"><FileText className="h-3 w-3" /> Паспорт, ИНН, СНИЛС</span>
-          <span className="hidden sm:inline text-[#E5E0EB]">|</span>
-          <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> ~10 минут</span>
-          <span className="hidden sm:inline text-[#E5E0EB]">|</span>
-          <span className="inline-flex items-center gap-1"><Shield className="h-3 w-3" /> Бесплатно</span>
         </div>
 
         {/* FAQ */}
