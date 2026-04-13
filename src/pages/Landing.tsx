@@ -162,8 +162,8 @@ export default function Landing() {
         {/* CTA Cards — compact 3-col */}
         <div id="cta-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto scroll-mt-24">
           {[
-            { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Для одного владельца", onClick: () => handleChoice("ip") },
-            { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Для партнёров", onClick: () => handleChoice("ooo") },
+            { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Работа на себя", onClick: () => handleChoice("ip") },
+            { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Бизнес с партнёрами", onClick: () => handleChoice("ooo") },
           ].map((item) => (
             <button
               key={item.type}
@@ -188,8 +188,8 @@ export default function Landing() {
               <UserCheck className="h-4 w-4 text-[#6440BF]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">Подобрать</p>
-              <p className="text-xs text-muted-foreground">Пройдите тест</p>
+              <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">Помочь выбрать</p>
+              <p className="text-xs text-muted-foreground">Ответьте на 3 вопроса</p>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-[#6440BF] transition-colors shrink-0" />
           </button>
