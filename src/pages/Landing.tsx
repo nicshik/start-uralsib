@@ -16,6 +16,13 @@ export default function Landing() {
   const { dispatch, hasDraft, loadDraft, clearDraft } = useApp();
   const [showDraftWarning, setShowDraftWarning] = useState(false);
   const [pendingProduct, setPendingProduct] = useState<"ip" | "ooo" | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     trackEvent("page_view", { page: "landing" });
