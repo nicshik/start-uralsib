@@ -249,7 +249,7 @@ export default function Step1Business() {
                 })}
                 <button
                   onClick={() => dispatch({ type: "UPDATE_BUSINESS", payload: { okvedCodes: [] } })}
-                  className="text-xs text-destructive hover:underline px-2 py-1.5"
+                  className="text-xs text-muted-foreground hover:text-foreground hover:underline px-2 py-1.5"
                 >
                   Сбросить все
                 </button>
