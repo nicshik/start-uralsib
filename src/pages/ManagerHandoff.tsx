@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
 import { Phone, MessageCircle, MapPin, UserCheck } from "lucide-react";
+import { openChat } from "@/components/ChatWidget";
 
 export default function ManagerHandoff() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function ManagerHandoff() {
             <Card
               key={item.method}
               className="hover:border-primary hover:shadow-md transition-all cursor-pointer group"
-              onClick={() => { trackEvent("manager_contact", { method: item.method }); alert(`${item.title} (демо)`); }}
+              onClick={() => { trackEvent("manager_contact", { method: item.method }); openChat(); }}
             >
               <CardContent className="p-5 flex flex-col items-center text-center gap-3">
                 <div className="w-11 h-11 rounded-xl bg-accent flex items-center justify-center group-hover:bg-primary/10 transition-colors">

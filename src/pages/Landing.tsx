@@ -11,6 +11,7 @@ import heroCard3d from "@/assets/hero-card-3d.png";
 import uralsibLogo from "@/assets/uralsib-logo-clean.png";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.png";
 import { ProductQuiz } from "@/components/ProductQuiz";
+import { openChat } from "@/components/ChatWidget";
 
 
 export default function Landing() {
@@ -280,7 +281,7 @@ export default function Landing() {
       <button
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#2D1B69] text-white flex items-center justify-center hover:scale-105 transition-transform"
         style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
-        onClick={() => alert('Чат поддержки (демо)')}
+        onClick={() => openChat()}
         aria-label="Открыть чат"
       >
         <MessageCircle className="h-6 w-6" />

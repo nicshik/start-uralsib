@@ -14,6 +14,7 @@ import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
 import { Search, X, Check, HelpCircle, UserCheck } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
+import { openChat } from "@/components/ChatWidget";
 
 export default function Step1Business() {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ export default function Step1Business() {
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-base font-semibold">Виды деятельности (ОКВЭД)</Label>
-              <button className="text-xs text-primary flex items-center gap-1 hover:underline" onClick={() => alert("Подбор ОКВЭД с менеджером (демо)")}>
+              <button className="text-xs text-primary flex items-center gap-1 hover:underline" onClick={() => openChat()}>
                 <HelpCircle className="h-3 w-3" /> Помочь выбрать
               </button>
             </div>

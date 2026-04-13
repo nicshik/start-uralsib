@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import { MetrikaConsole } from "./components/MetrikaConsole";
+import { ChatWidget } from "./components/ChatWidget";
 import { RouteGuard } from "./components/RouteGuard";
 
 import Landing from "./pages/Landing";
@@ -39,6 +40,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
         
+        <ChatWidget />
         <MetrikaConsole />
       </AppProvider>
     </TooltipProvider>
