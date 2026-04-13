@@ -238,26 +238,28 @@ export default function Landing() {
             </AccordionItem>
             <AccordionItem value="3" className="border-b border-[#E5E0EB] last:border-0">
               <AccordionTrigger className="text-sm px-4 py-3">Какие документы будут подготовлены?</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground px-4 pb-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <p className="font-medium text-foreground">Для ИП</p>
-                    <ul className="space-y-1.5">
-                      <li>Заявление на регистрацию ИП</li>
-                      <li>Заявление на УСН</li>
-                      <li>Инструкция по регистрации ИП</li>
-                    </ul>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="font-medium text-foreground">Для ООО</p>
-                    <ul className="space-y-1.5">
-                      <li>Заявление на регистрацию ООО</li>
-                      <li>Заявление на УСН</li>
-                      <li>Устав ООО</li>
-                      <li>Решение единственного учредителя</li>
-                      <li>Протокол собрания учредителей</li>
-                      <li>Инструкция по регистрации ООО</li>
-                    </ul>
+              <AccordionContent className="px-4 pb-4">
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <p>Подготовим пакет под выбранную форму бизнеса.</p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-lg bg-[#F4F3F7] p-3 space-y-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-foreground">ИП</p>
+                      <ul className="space-y-1.5 text-xs leading-relaxed">
+                        <li>Заявление на регистрацию ИП</li>
+                        <li>Заявление на УСН</li>
+                        <li>Инструкция по регистрации ИП</li>
+                      </ul>
+                    </div>
+                    <div className="rounded-lg bg-[#F4F3F7] p-3 space-y-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-foreground">ООО</p>
+                      <ul className="space-y-1.5 text-xs leading-relaxed">
+                        <li>Заявление на регистрацию ООО</li>
+                        <li>Заявление на УСН</li>
+                        <li>Устав ООО</li>
+                        <li>Решение или протокол учредителей</li>
+                        <li>Инструкция по регистрации ООО</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </AccordionContent>
