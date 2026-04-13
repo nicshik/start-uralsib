@@ -139,7 +139,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         {/* Draft Warning */}
         {showDraftWarning && (
           <Card className="border-primary max-w-2xl mx-auto">
@@ -159,98 +159,73 @@ export default function Landing() {
           </Card>
         )}
 
-        {/* CTA Cards */}
-        <div id="cta-cards" className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto scroll-mt-24">
+        {/* CTA Cards — compact 3-col */}
+        <div id="cta-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto scroll-mt-24">
           {[
-            {
-              type: "ip" as const,
-              icon: Briefcase,
-              title: "Открыть ИП",
-              desc: "Простая регистрация для одного владельца",
-              benefits: ["Быстрый вывод прибыли", "Минимум отчётности", "Патент или УСН"],
-              onClick: () => handleChoice("ip"),
-            },
-            {
-              type: "ooo" as const,
-              icon: Building2,
-              title: "Открыть ООО",
-              desc: "Для партнёров и масштабного бизнеса",
-              benefits: ["Ограниченная ответственность", "Привлечение инвесторов", "Работа с НДС"],
-              onClick: () => handleChoice("ooo"),
-            },
+            { type: "ip" as const, icon: Briefcase, title: "Открыть ИП", desc: "Для одного владельца", onClick: () => handleChoice("ip") },
+            { type: "ooo" as const, icon: Building2, title: "Открыть ООО", desc: "Для партнёров", onClick: () => handleChoice("ooo") },
           ].map((item) => (
             <button
               key={item.type}
               onClick={item.onClick}
-              className="text-left rounded-2xl border border-[#E5E0EB] bg-white p-5 hover:border-[#6440BF] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group"
+              className="text-left rounded-xl border border-[#E5E0EB] bg-white px-4 py-3.5 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex items-center gap-3"
             >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-[#F0ECFA] flex items-center justify-center">
-                  <item.icon className="h-5 w-5 text-[#6440BF]" />
-                </div>
-                <div>
-                  <p className="font-bold text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
-                  <p className="text-xs text-muted-foreground">{item.desc}</p>
-                </div>
+              <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center shrink-0">
+                <item.icon className="h-4 w-4 text-[#6440BF]" />
               </div>
-              <ul className="space-y-1.5 mb-4">
-                {item.benefits.map((b) => (
-                  <li key={b} className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="w-1 h-1 rounded-full bg-[#6440BF] shrink-0" />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#6440BF] font-medium">Бесплатно · ~10 мин</span>
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-[#6440BF] transition-colors" />
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">{item.title}</p>
+                <p className="text-xs text-muted-foreground">{item.desc}</p>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-[#6440BF] transition-colors shrink-0" />
             </button>
           ))}
-        </div>
-
-        {/* Quiz link */}
-        <div className="max-w-3xl mx-auto text-center">
-          <button onClick={openQuiz} className="text-sm text-[#6440BF] hover:underline inline-flex items-center gap-1.5 font-medium">
-            <UserCheck className="h-4 w-4" />
-            Не знаете что выбрать? Пройдите короткий тест
+          <button
+            onClick={openQuiz}
+            className="text-left rounded-xl border border-[#E5E0EB] bg-white px-4 py-3.5 hover:border-[#6440BF] hover:shadow-md transition-all duration-200 group flex items-center gap-3"
+          >
+            <div className="w-9 h-9 rounded-lg bg-[#F0ECFA] flex items-center justify-center shrink-0">
+              <UserCheck className="h-4 w-4 text-[#6440BF]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm text-foreground group-hover:text-[#6440BF] transition-colors">Подобрать</p>
+              <p className="text-xs text-muted-foreground">Пройдите тест</p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-[#6440BF] transition-colors shrink-0" />
           </button>
         </div>
 
-        {/* Info section */}
-        <div className="max-w-3xl mx-auto space-y-6">
-          {/* Docs + Process inline */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><FileText className="h-3.5 w-3.5" /> Паспорт, ИНН, СНИЛС</span>
-            <span className="hidden sm:inline text-[#E5E0EB]">|</span>
-            <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> Заявка за 10 минут</span>
-            <span className="hidden sm:inline text-[#E5E0EB]">|</span>
-            <span className="inline-flex items-center gap-1.5"><Shield className="h-3.5 w-3.5" /> Без госпошлины</span>
-          </div>
+        {/* Info bar */}
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs text-muted-foreground max-w-2xl mx-auto">
+          <span className="inline-flex items-center gap-1"><FileText className="h-3 w-3" /> Паспорт, ИНН, СНИЛС</span>
+          <span className="hidden sm:inline text-[#E5E0EB]">|</span>
+          <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> ~10 минут</span>
+          <span className="hidden sm:inline text-[#E5E0EB]">|</span>
+          <span className="inline-flex items-center gap-1"><Shield className="h-3 w-3" /> Бесплатно</span>
+        </div>
 
-          {/* FAQ */}
-          <div className="rounded-2xl border border-[#E5E0EB] bg-white overflow-hidden">
-            <Accordion type="single" collapsible>
-              <AccordionItem value="1" className="border-b border-[#E5E0EB] last:border-0">
-                <AccordionTrigger className="text-sm px-5 py-3.5">Это полностью онлайн?</AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground px-5 pb-4">
-                  Онлайн-часть — заполнение заявки (~10 минут). После этого менеджер свяжется с вами и назначит встречу в офисе для подписания документов.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="2" className="border-b border-[#E5E0EB] last:border-0">
-                <AccordionTrigger className="text-sm px-5 py-3.5">Сколько стоит регистрация?</AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground px-5 pb-4">
-                  Подача заявки через наш сервис бесплатна. Госпошлина при электронной подаче не взимается.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="3" className="border-b border-[#E5E0EB] last:border-0">
-                <AccordionTrigger className="text-sm px-5 py-3.5">Нужно ли приходить в офис?</AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground px-5 pb-4">
-                  Да, потребуется один визит для подписания и проверки документов. Менеджер согласует удобное время.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+        {/* FAQ */}
+        <div className="max-w-2xl mx-auto rounded-xl border border-[#E5E0EB] bg-white overflow-hidden">
+          <Accordion type="single" collapsible>
+            <AccordionItem value="1" className="border-b border-[#E5E0EB] last:border-0">
+              <AccordionTrigger className="text-sm px-4 py-3">Это полностью онлайн?</AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground px-4 pb-3">
+                Онлайн-часть — заполнение заявки (~10 минут). После менеджер свяжется и назначит встречу в офисе.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="2" className="border-b border-[#E5E0EB] last:border-0">
+              <AccordionTrigger className="text-sm px-4 py-3">Сколько стоит регистрация?</AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground px-4 pb-3">
+                Подача заявки бесплатна. Госпошлина при электронной подаче не взимается.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="3" className="border-b border-[#E5E0EB] last:border-0">
+              <AccordionTrigger className="text-sm px-4 py-3">Нужно ли приходить в офис?</AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground px-4 pb-3">
+                Да, один визит для подписания документов. Менеджер согласует удобное время.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </main>
 
