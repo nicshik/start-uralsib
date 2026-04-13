@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { FileText, Shield, Clock, ChevronRight, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.png";
-import uralsibLogo from "@/assets/uralsib-logo.png";
+import uralsibLogo from "@/assets/uralsib-logo-clean.png";
 
 
 export default function Landing() {
