@@ -84,7 +84,7 @@ export default function SmsAuth() {
               />
               {error && <p className="text-sm text-destructive text-center">{error}</p>}
             </div>
-            <Button className="w-full h-12" onClick={sendSms}>Получить код</Button>
+            <Button className="w-full h-12 rounded-[8px] bg-[#6440BF] hover:bg-[#5535a6] text-white font-medium" onClick={sendSms}>Получить код</Button>
           </div>
         ) : (
           <div className="space-y-4">
