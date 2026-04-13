@@ -103,8 +103,8 @@ export default function SmsAuth() {
           </div>
         )}
 
-        {/* Tips */}
-        <div className="space-y-2.5">
+        {/* Tip */}
+        {smsSent ? (
           <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
             <Sparkles className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
             <p className="text-xs text-muted-foreground leading-relaxed">
@@ -112,6 +112,7 @@ export default function SmsAuth() {
               На следующем шаге ИИ подберёт коды по описанию вашего бизнеса.
             </p>
           </div>
+        ) : (
           <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
             <Headset className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
             <p className="text-xs text-muted-foreground leading-relaxed">
@@ -119,7 +120,7 @@ export default function SmsAuth() {
               на любом этапе — от выбора формы до подачи документов.
             </p>
           </div>
-        </div>
+        )}
 
       </main>
     </div>
