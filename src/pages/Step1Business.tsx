@@ -12,9 +12,10 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
-import { Search, X, Check, HelpCircle, UserCheck, ChevronDown, Receipt, Briefcase, Filter } from "lucide-react";
+import { Search, X, Check, HelpCircle, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { openChat } from "@/components/ChatWidget";
+import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
 
 type SubStep = "tax" | "okved" | "ooo";
 
@@ -25,6 +26,7 @@ export default function Step1Business() {
   const [showComplete, setShowComplete] = useState(false);
   const [showAllCodes, setShowAllCodes] = useState(false);
   const [sectionFilter, setSectionFilter] = useState<string | null>(null);
+  const [showAiSuggest, setShowAiSuggest] = useState(false);
   const isOoo = state.productType === "ooo";
 
   // Determine which sub-step to show
@@ -182,6 +184,32 @@ export default function Step1Business() {
                 <HelpCircle className="h-3 w-3" /> Помочь выбрать
               </button>
             </div>
+
+            {/* AI Suggest toggle */}
+            <button
+              onClick={() => setShowAiSuggest(!showAiSuggest)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-sm text-left transition-all ${
+                showAiSuggest
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-gray-200 bg-white hover:border-primary/40 text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <div className="w-8 h-8 rounded-lg bg-[#6440BF] flex items-center justify-center shrink-0">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-foreground">Опишите своими словами</p>
+                <p className="text-xs text-muted-foreground">ИИ подскажет, какие коды выбрать</p>
+              </div>
+            </button>
+
+            {showAiSuggest && (
+              <AiOkvedSuggest
+                selectedCodes={state.business.okvedCodes}
+                onToggle={toggleOkved}
+                onClose={() => setShowAiSuggest(false)}
+              />
+            )}
 
             {/* Search */}
             <div className="relative">
