@@ -107,7 +107,7 @@ export function ProductQuiz({ open, onOpenChange, onResultChoice }: ProductQuizP
                   <button
                     key={idx}
                     onClick={() => handleAnswer(opt)}
-                    className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-primary hover:bg-accent/50 transition-all font-medium text-sm"
+                    className="w-full text-left p-4 rounded-xl border border-border hover:border-primary hover:bg-accent/50 transition-all font-medium text-sm"
                   >
                     {opt.text}
                   </button>
@@ -119,11 +119,11 @@ export function ProductQuiz({ open, onOpenChange, onResultChoice }: ProductQuizP
           {step === QUESTIONS.length && (
             <div className="space-y-6 animate-in zoom-in-95 fade-in">
               <div className="text-center space-y-3">
-                <div className="mx-auto w-16 h-16 rounded-2xl bg-[#F0ECFA] flex items-center justify-center">
+                <div className="mx-auto w-16 h-16 rounded-2xl bg-light-purple flex items-center justify-center">
                   {resultType === "ooo" ? (
-                    <Building2 className="h-8 w-8 text-[#6440BF]" />
+                    <Building2 className="h-8 w-8 text-primary" />
                   ) : (
-                    <Briefcase className="h-8 w-8 text-[#6440BF]" />
+                    <Briefcase className="h-8 w-8 text-primary" />
                   )}
                 </div>
                 <h3 className="text-xl font-bold">Вам отлично подойдёт {resultType === "ooo" ? "ООО" : "ИП"}</h3>

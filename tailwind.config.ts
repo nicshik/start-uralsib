@@ -22,6 +22,8 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "#4B2D96",
+          active: "#3A2080",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -47,6 +49,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "brand-light": "#F4F3F7",
+        "inputBg": "hsl(var(--input-bg))",
+        "light-purple": "#F0ECFA",
+        "green-badge": "#E8F5E9",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -66,6 +72,14 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        card: "16px",
+        "card-lg": "20px",
+        "card-xl": "24px",
+      },
+      boxShadow: {
+        "uralsib-sm": "0 2px 8px rgba(0,0,0,0.06)",
+        "uralsib-md": "0 4px 16px rgba(0,0,0,0.1)",
+        "uralsib-lg": "0 8px 32px rgba(0,0,0,0.15)",
       },
       keyframes: {
         "accordion-down": {

@@ -48,7 +48,7 @@ export default function Success() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-brand-light">
       <AppHeader />
 
       <main className="max-w-lg mx-auto px-4 py-10 space-y-6">

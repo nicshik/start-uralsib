@@ -49,7 +49,7 @@ export default function Step2Passport() {
   };
 
   return (
-    <div className="min-h-screen pb-24 bg-background">
+    <div className="min-h-screen pb-24 bg-brand-light">
       <AppHeader showBack>
         <AutosaveIndicator />
       </AppHeader>

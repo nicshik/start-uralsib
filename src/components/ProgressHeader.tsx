@@ -1,4 +1,4 @@
-import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 interface Props {
   step: number;
@@ -7,9 +7,8 @@ interface Props {
 }
 
 export function ProgressHeader({ step, totalSteps, timeEstimate }: Props) {
-  const pct = (step / totalSteps) * 100;
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3">
       <div className="flex items-center justify-between text-sm">
         <span className="font-semibold text-foreground">
           Шаг {step} из {totalSteps}
@@ -18,7 +17,24 @@ export function ProgressHeader({ step, totalSteps, timeEstimate }: Props) {
           <span className="text-muted-foreground text-xs">~{timeEstimate}</span>
         )}
       </div>
-      <Progress value={pct} className="h-1.5" />
+      <div className="flex items-center gap-1.5 h-2">
+        {Array.from({ length: totalSteps }).map((_, idx) => {
+          const isActive = idx === step - 1;
+          const isPast = idx < step - 1;
+          return (
+            <div
+              key={idx}
+              className={cn(
+                "h-2 transition-all duration-300",
+                isActive ? "w-6 rounded-[4px] bg-primary" : "w-2 rounded-full",
+                isPast && !isActive ? "bg-primary/50" : "", // optional: style past steps differently, or simply bg-primary
+                !isActive && !isPast ? "bg-[#E5E0EB]" : "",
+                isPast && !isActive && "bg-primary" // strictly primary text-wise for past dots? Let's assume filled primary.
+              )}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

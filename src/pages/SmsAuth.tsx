@@ -83,11 +83,11 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
                   placeholder="+7 (___) ___-__-__"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="text-center text-lg bg-white border-[#E5E0EB] rounded-xl h-14 px-4"
+                  className="text-center text-lg bg-white border-border rounded-xl h-14 px-4"
                 />
                 {error && <p className="text-sm text-destructive text-center">{error}</p>}
               </div>
-              <Button className="w-full h-12 rounded-[8px] bg-[#6440BF] hover:bg-[#5535a6] text-white font-medium" onClick={sendSms}>Получить код</Button>
+              <Button className="w-full text-base font-medium" onClick={sendSms}>Получить код</Button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -115,16 +115,16 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
 
           {/* Tip */}
           {smsSent ? (
-            <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
-              <Sparkles className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
+            <div className="flex items-start gap-3 rounded-xl bg-light-purple/60 border border-border px-4 py-3">
+              <Sparkles className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">
                 <span className="font-medium text-foreground">Не знаете, какой ОКВЭД выбрать?</span>{" "}
                 На следующем шаге ИИ подберёт коды по описанию вашего бизнеса.
               </p>
             </div>
           ) : (
-            <div className="flex items-start gap-3 rounded-xl bg-[#F0ECFA]/60 border border-[#E5E0EB] px-4 py-3">
-              <Headset className="h-4 w-4 text-[#6440BF] mt-0.5 shrink-0" />
+            <div className="flex items-start gap-3 rounded-xl bg-light-purple/60 border border-border px-4 py-3">
+              <Headset className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">
                 <span className="font-medium text-foreground">Наши менеджеры готовы помочь</span>{" "}
                 на любом этапе — от выбора формы до подачи документов.

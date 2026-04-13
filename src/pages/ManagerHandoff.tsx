@@ -64,7 +64,7 @@ export default function ManagerHandoff() {
     meetingTime;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-brand-light">
       <AppHeader showBack backTo="/" />
 
       <main className="max-w-2xl mx-auto px-4 py-10 space-y-8">

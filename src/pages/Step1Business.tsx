@@ -99,7 +99,7 @@ export default function Step1Business() {
   const selectedTax = TAX_REGIMES.find((t) => t.id === state.business.taxRegime);
 
   return (
-    <div className="min-h-screen pb-24 bg-background">
+    <div className="min-h-screen pb-24 bg-brand-light">
       <AppHeader showBack>
         <AutosaveIndicator />
       </AppHeader>
@@ -394,7 +394,7 @@ export default function Step1Business() {
                 </div>
 
                 {showManagerPrompt && (
-                  <div className="rounded-xl border border-primary bg-accent/50 p-4 space-y-3">
+                  <div className="rounded-card border border-primary bg-accent/50 p-4 space-y-3">
                     <div className="flex items-start gap-2">
                       <UserCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <div>
