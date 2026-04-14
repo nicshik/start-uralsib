@@ -7,12 +7,13 @@ import type { PassportData } from "@/context/AppContext";
 interface Props {
   passport: PassportData;
   email?: string;
+  phone?: string;
   emailValid: boolean;
   onUpdate: (payload: Partial<PassportData>) => void;
   onEmailUpdate: (email: string) => void;
 }
 
-export default function AdditionalFields({ passport, email, emailValid, onUpdate, onEmailUpdate }: Props) {
+export default function AdditionalFields({ passport, email, phone, emailValid, onUpdate, onEmailUpdate }: Props) {
   return (
     <Card>
       <CardContent className="p-4 space-y-4">
@@ -21,16 +22,22 @@ export default function AdditionalFields({ passport, email, emailValid, onUpdate
           <p className="font-semibold text-sm">Контакты и реквизиты</p>
         </div>
 
-        <div className="space-y-1">
-          <Label className="text-xs text-muted-foreground">Email</Label>
-          <Input
-            type="email"
-            placeholder="example@mail.ru"
-            value={email || ""}
-            onChange={(e) => onEmailUpdate(e.target.value)}
-            className={`text-sm h-10 ${email && !emailValid ? "border-destructive focus-visible:ring-destructive" : ""}`}
-          />
-          <p className={`text-xs ${email && !emailValid ? "text-destructive" : "text-muted-foreground"}`}>
+        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Email</Label>
+            <Input
+              type="email"
+              placeholder="example@mail.ru"
+              value={email || ""}
+              onChange={(e) => onEmailUpdate(e.target.value)}
+              className={`text-sm h-10 ${email && !emailValid ? "border-destructive focus-visible:ring-destructive" : ""}`}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Телефон</Label>
+            <Input value={phone || ""} readOnly className="h-10 bg-muted text-sm text-muted-foreground" />
+          </div>
+          <p className={`text-xs sm:col-span-2 ${email && !emailValid ? "text-destructive" : "text-muted-foreground"}`}>
             {email && !emailValid
               ? "Введите корректный email"
               : "На этот email придут уведомления по заявке и документы сервиса."}

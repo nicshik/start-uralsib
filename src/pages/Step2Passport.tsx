@@ -84,6 +84,7 @@ export default function Step2Passport() {
             <AdditionalFields
               passport={state.passport}
               email={state.email}
+              phone={state.phone}
               emailValid={emailValid}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
               onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
