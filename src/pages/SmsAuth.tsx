@@ -130,7 +130,7 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
               <Sparkles className="h-4 w-4 text-primary mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">
                 <span className="font-medium text-foreground">Не знаете, какой ОКВЭД выбрать?</span>{" "}
-                На следующем шаге ИИ подберёт коды по описанию вашего бизнеса.
+                На следующем этапе ИИ подберёт коды по описанию вашего бизнеса.
               </p>
             </div>
           ) : (
