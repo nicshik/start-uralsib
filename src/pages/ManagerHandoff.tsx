@@ -36,23 +36,23 @@ export default function ManagerHandoff() {
   const [requestSent, setRequestSent] = useState<ContactMethod>(null);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "manager_handoff", product: state.productType });
-  }, [state.productType]);
+    trackEvent("page_view", { page: "manager_handoff", product: state.productType, flowType: state.flowType });
+  }, [state.productType, state.flowType]);
 
   const openContactMethod = (method: ContactMethod) => {
     setActiveMethod(method);
     setRequestSent(null);
-    trackEvent("manager_contact", { method });
+    trackEvent("manager_contact", { method, flowType: state.flowType });
   };
 
   const submitCallback = () => {
     setRequestSent("callback");
-    trackEvent("manager_callback_requested");
+    trackEvent("manager_callback_requested", { flowType: state.flowType });
   };
 
   const submitOfficeMeeting = () => {
     setRequestSent("office");
-    trackEvent("manager_office_meeting_requested", { office: officeAddress, date: meetingDate, time: meetingTime });
+    trackEvent("manager_office_meeting_requested", { office: officeAddress, date: meetingDate, time: meetingTime, flowType: state.flowType });
   };
 
   const canSubmitCallback = callbackName.trim().length > 1 && callbackPhone.replace(/\D/g, "").length >= 10;
@@ -91,7 +91,7 @@ export default function ManagerHandoff() {
               }`}
               onClick={() => {
                 if (item.method === "chat") {
-                  trackEvent("manager_contact", { method: item.method });
+                  trackEvent("manager_contact", { method: item.method, flowType: state.flowType });
                   openChat();
                   return;
                 }

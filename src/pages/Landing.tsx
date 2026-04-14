@@ -30,7 +30,7 @@ export default function Landing() {
   }, []);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "landing" });
+    trackEvent("page_view", { page: "landing", flowType: "online" });
   }, []);
 
   const handleChoice = (type: "ip" | "ooo") => {
@@ -43,8 +43,9 @@ export default function Landing() {
   };
 
   const proceed = (type: "ip" | "ooo") => {
+    dispatch({ type: "SET_FLOW", payload: "online" });
     dispatch({ type: "SET_PRODUCT", payload: type });
-    trackEvent("product_selected", { product: type });
+    trackEvent("product_selected", { product: type, flowType: "online" });
     setIsSmsOpen(true);
   };
 
@@ -69,8 +70,9 @@ export default function Landing() {
     // Delay navigation slightly so the dialog unmounts first
     setTimeout(() => {
       if (choice === "help") {
+        dispatch({ type: "SET_FLOW", payload: "online" });
         dispatch({ type: "SET_PRODUCT", payload: "help" });
-        trackEvent("product_selected", { product: "help" });
+        trackEvent("product_selected", { product: "help", flowType: "online" });
         navigate("/manager");
       } else {
         handleChoice(choice);
@@ -87,7 +89,11 @@ export default function Landing() {
             <img src={scrolled ? uralsibLogoDark : uralsibLogo} alt="Уралсиб" className="h-8 object-contain transition-opacity duration-300" />
           </div>
           <button
-            onClick={() => { trackEvent("header_login_click"); setIsSmsOpen(true); }}
+            onClick={() => {
+              dispatch({ type: "SET_FLOW", payload: "online" });
+              trackEvent("header_login_click", { flowType: "online" });
+              setIsSmsOpen(true);
+            }}
             className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] flex items-center gap-1.5 ${scrolled ? 'text-primary border-primary hover:bg-primary/5' : 'text-white border-white hover:bg-white/10'}`}
           >
             <LogIn className="h-4 w-4" />
@@ -317,6 +323,17 @@ export default function Landing() {
             Этот сайт выполнен в рамках учебного проекта, вся информация представлена в демонстрационных целях.<br />
             Введенные персональные данные не сохраняются на сервере и не передаются третьим лицам.
           </p>
+          <div className="text-center">
+            <button
+              onClick={() => {
+                trackEvent("assisted_entry_link_click", { placement: "footer" });
+                navigate("/assisted-start");
+              }}
+              className="text-xs text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+            >
+              Вход для сотрудника банка
+            </button>
+          </div>
         </div>
       </footer>
 

@@ -27,9 +27,9 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
       setSmsSent(false);
       setOtp("");
       setError("");
-      trackEvent("page_view", { page: "sms_auth" });
+      trackEvent("page_view", { page: "sms_auth", flowType: state.flowType });
     }
-  }, [open]);
+  }, [open, state.flowType]);
 
   useEffect(() => {
     if (smsSent && timer > 0) {
@@ -44,7 +44,7 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
       return;
     }
     dispatch({ type: "SET_PHONE", payload: phone });
-    trackEvent("sms_sent", { phone: "***" });
+    trackEvent("sms_sent", { phone: "***", flowType: state.flowType });
     setSmsSent(true);
     setTimer(60);
     setError("");
@@ -54,11 +54,11 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
     if (otp === "0000" || otp.length === 4) {
       dispatch({ type: "SET_SMS_VERIFIED" });
       dispatch({ type: "SET_STEP", payload: 1 });
-      trackEvent("sms_verified");
+      trackEvent("sms_verified", { flowType: state.flowType });
       onOpenChange(false);
       setTimeout(() => navigate("/step/1"), 150);
     }
-  }, [otp, dispatch, navigate, onOpenChange]);
+  }, [otp, dispatch, navigate, onOpenChange, state.flowType]);
 
   useEffect(() => {
     if (otp.length === 4) verifySms();
@@ -105,7 +105,7 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
                 {timer > 0 ? (
                   `Повторная отправка через ${timer} сек.`
                 ) : (
-                  <button className="text-primary underline" onClick={() => { setTimer(60); trackEvent("sms_resent"); }}>
+                  <button className="text-primary underline" onClick={() => { setTimer(60); trackEvent("sms_resent", { flowType: state.flowType }); }}>
                     Отправить код повторно
                   </button>
                 )}

@@ -8,6 +8,7 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { Pencil, CheckCircle2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
+import { AssistedModeBanner } from "@/components/AssistedModeBanner";
 
 export default function Step3Review() {
   const navigate = useNavigate();
@@ -15,8 +16,8 @@ export default function Step3Review() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "step3_review" });
-  }, []);
+    trackEvent("page_view", { page: "step3_review", flowType: state.flowType });
+  }, [state.flowType]);
 
   const tax = TAX_REGIMES.find((t) => t.id === state.business.taxRegime);
   const selectedOkveds = OKVED_CODES.filter((c) => state.business.okvedCodes.includes(c.code));
@@ -25,7 +26,10 @@ export default function Step3Review() {
 
   const handleSubmit = () => {
     setSubmitting(true);
-    trackEvent("application_submitted");
+    trackEvent("application_submitted", { flowType: state.flowType });
+    if (state.flowType === "manager") {
+      trackEvent("assisted_step_completed", { step: 3, flowType: "manager" });
+    }
     setTimeout(() => {
       dispatch({ type: "SUBMIT" });
       navigate("/success");
@@ -44,6 +48,8 @@ export default function Step3Review() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+        <AssistedModeBanner />
+
         <div>
           <h2 className="text-lg font-bold tracking-tight">Проверьте данные перед отправкой</h2>
           <p className="text-sm text-muted-foreground mt-1">Убедитесь, что всё заполнено верно — после отправки изменить данные можно будет только через менеджера.</p>

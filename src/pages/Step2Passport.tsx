@@ -8,6 +8,7 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
+import { AssistedModeBanner } from "@/components/AssistedModeBanner";
 
 import OcrCapture from "@/components/step2/OcrCapture";
 import OcrProgress from "@/components/step2/OcrProgress";
@@ -23,11 +24,11 @@ export default function Step2Passport() {
   const [manualMode, setManualMode] = useState(false);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "step2_passport" });
-  }, []);
+    trackEvent("page_view", { page: "step2_passport", flowType: state.flowType });
+  }, [state.flowType]);
 
   const startOcr = () => {
-    trackEvent("ocr_started");
+    trackEvent("ocr_started", { flowType: state.flowType });
     setOcrPhase("scanning");
     setTimeout(() => setOcrPhase("checking"), 1000);
     setTimeout(() => {
@@ -36,7 +37,7 @@ export default function Step2Passport() {
         type: "UPDATE_PASSPORT",
         payload: { ...MOCK_PASSPORT_DATA, ocrCompleted: true },
       });
-      trackEvent("ocr_completed", { fieldsAutoFilled: 8 });
+      trackEvent("ocr_completed", { fieldsAutoFilled: 8, flowType: state.flowType });
     }, 2000);
   };
 
@@ -44,7 +45,10 @@ export default function Step2Passport() {
 
   const handleNext = () => {
     dispatch({ type: "SET_STEP", payload: 3 });
-    trackEvent("step2_completed");
+    trackEvent("step2_completed", { flowType: state.flowType });
+    if (state.flowType === "manager") {
+      trackEvent("assisted_step_completed", { step: 2, flowType: "manager" });
+    }
     navigate("/step/3");
   };
 
@@ -60,8 +64,10 @@ export default function Step2Passport() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        <AssistedModeBanner />
+
         {ocrPhase === "idle" && !manualMode && (
-          <OcrCapture onStartOcr={startOcr} onManualMode={() => { setManualMode(true); trackEvent("manual_entry_selected"); }} />
+          <OcrCapture onStartOcr={startOcr} onManualMode={() => { setManualMode(true); trackEvent("manual_entry_selected", { flowType: state.flowType }); }} />
         )}
 
         {(ocrPhase === "scanning" || ocrPhase === "checking") && (

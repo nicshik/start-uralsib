@@ -26,6 +26,9 @@ export function MetrikaConsole() {
 
   if (!isVisible) return null;
 
+  const onlineEvents = events.filter((event) => event.data?.flowType === "online").length;
+  const assistedEvents = events.filter((event) => event.data?.flowType === "manager").length;
+
   if (!isOpen) {
     return (
       <button
@@ -74,11 +77,30 @@ export function MetrikaConsole() {
       {!isMinimized && (
         <>
           <ScrollArea className="flex-1 p-2">
+            <div className="mb-2 grid grid-cols-2 gap-2">
+              <div className="rounded bg-slate-800/70 p-2 text-[10px] text-slate-300">
+                <div className="text-slate-500">Online</div>
+                <div className="font-mono text-sm font-bold text-blue-300">{onlineEvents}</div>
+              </div>
+              <div className="rounded bg-slate-800/70 p-2 text-[10px] text-slate-300">
+                <div className="text-slate-500">Assisted</div>
+                <div className="font-mono text-sm font-bold text-emerald-300">{assistedEvents}</div>
+              </div>
+            </div>
             <div className="space-y-2">
               {[...events].reverse().map((ev, i) => (
                 <div key={i} className="p-2 rounded bg-slate-800/50 border border-slate-700/50 text-[11px] space-y-1">
                   <div className="flex items-start justify-between">
-                    <span className="font-mono text-green-300 font-bold">{ev.event}</span>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-mono text-green-300 font-bold">{ev.event}</span>
+                      {ev.data?.flowType && (
+                        <span className={`rounded px-1.5 py-0.5 text-[9px] font-bold uppercase ${
+                          ev.data.flowType === "manager" ? "bg-emerald-500/10 text-emerald-300" : "bg-blue-500/10 text-blue-300"
+                        }`}>
+                          {String(ev.data.flowType)}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-slate-500 flex items-center gap-0.5">
                       <Clock className="h-3 w-3" />
                       {new Date(ev.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}

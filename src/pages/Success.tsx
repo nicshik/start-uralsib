@@ -24,28 +24,36 @@ export default function Success() {
   }, []);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "success", appNumber });
-  }, [appNumber]);
+    trackEvent("page_view", { page: "success", appNumber, flowType: state.flowType });
+  }, [appNumber, state.flowType]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(appNumber);
     setCopied(true);
-    trackEvent("app_number_copied");
+    trackEvent("app_number_copied", { flowType: state.flowType });
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSendEmail = () => {
     if (!email.trim() || !email.includes("@")) return;
     setEmailSent(true);
-    trackEvent("success_email_sent", { email: email.replace(/(.{2}).*(@.*)/, "$1***$2") });
+    trackEvent("success_email_sent", { email: email.replace(/(.{2}).*(@.*)/, "$1***$2"), flowType: state.flowType });
   };
 
-  const steps = [
-    { icon: CheckCircle2, title: "Заявка принята", desc: "Только что", active: true, done: true },
-    { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня", active: false, done: false },
-    { icon: Clock, title: "Назначение встречи", desc: "В удобное для вас время", active: false, done: false },
-    { icon: Building, title: "Визит в офис", desc: "Подписание и открытие счёта", active: false, done: false },
-  ];
+  const isAssisted = state.flowType === "manager";
+  const steps = isAssisted
+    ? [
+        { icon: CheckCircle2, title: "Заявка заполнена с сотрудником", desc: "Только что", active: true, done: true },
+        { icon: FileText, title: "Проверка в рабочем месте", desc: "Сотрудник сверяет вводные клиента", active: true, done: false },
+        { icon: Clock, title: "Подписание клиентом", desc: "SMS-код и документы в офисе", active: false, done: false },
+        { icon: Building, title: "Отправка в ФНС", desc: "После финальной проверки", active: false, done: false },
+      ]
+    : [
+        { icon: CheckCircle2, title: "Заявка принята", desc: "Только что", active: true, done: true },
+        { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня", active: false, done: false },
+        { icon: Clock, title: "Назначение встречи", desc: "В удобное для вас время", active: false, done: false },
+        { icon: Building, title: "Визит в офис", desc: "Подписание и открытие счёта", active: false, done: false },
+      ];
 
   return (
     <div className="min-h-screen bg-brand-light">
@@ -59,7 +67,7 @@ export default function Success() {
           </div>
           <h1 className="text-2xl font-bold tracking-tight">Заявка отправлена!</h1>
           <p className="text-muted-foreground text-sm">
-            Менеджер свяжется с вами для согласования встречи
+            {isAssisted ? "Можно перейти к офисной проверке и подписанию" : "Менеджер свяжется с вами для согласования встречи"}
           </p>
         </div>
 
@@ -84,6 +92,26 @@ export default function Success() {
             </button>
           </CardContent>
         </Card>
+
+        {isAssisted && (
+          <Card className="border-emerald-200 bg-emerald-50">
+            <CardContent className="space-y-3 p-5">
+              <p className="font-semibold text-emerald-950">Assisted-заявка отделена от онлайн-воронки</p>
+              <p className="text-sm leading-relaxed text-emerald-800">
+                В Метрике эта заявка идет с признаком `flowType: manager`. Следующий шаг — сверить данные и завершить пакет в рабочем месте сотрудника.
+              </p>
+              <Button
+                className="h-11 w-full bg-emerald-700 hover:bg-emerald-800"
+                onClick={() => {
+                  trackEvent("assisted_handoff_to_workspace", { appNumber, flowType: "manager" });
+                  navigate("/office-agent");
+                }}
+              >
+                Перейти в рабочее место сотрудника
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Timeline */}
         <Card>
@@ -174,13 +202,6 @@ export default function Success() {
           >
             На главную
           </Button>
-
-          <button 
-            onClick={() => navigate('/office-agent')}
-            className="text-[10px] text-gray-300 hover:text-gray-500 transition-colors"
-          >
-            [DEMO: Открыть интерфейс сотрудника в офисе]
-          </button>
         </div>
 
         <SupportBlock />

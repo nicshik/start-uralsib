@@ -15,6 +15,7 @@ import { MicroReinforcement } from "@/components/MicroReinforcement";
 import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles, Building2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
+import { AssistedModeBanner } from "@/components/AssistedModeBanner";
 
 type SubStep = "tax" | "okved" | "ooo";
 
@@ -38,8 +39,8 @@ export default function Step1Business() {
   const [subStep, setSubStep] = useState<SubStep>(getSubStep);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "step1_business" });
-  }, []);
+    trackEvent("page_view", { page: "step1_business", flowType: state.flowType });
+  }, [state.flowType]);
 
   const showManagerPrompt = isOoo && state.business.directorIsFounder === false;
 
@@ -64,12 +65,12 @@ export default function Step1Business() {
       ? current.filter((c) => c !== code)
       : [...current, code];
     dispatch({ type: "UPDATE_BUSINESS", payload: { okvedCodes: updated } });
-    trackEvent("okved_toggled", { code, selected: !current.includes(code) });
+    trackEvent("okved_toggled", { code, selected: !current.includes(code), flowType: state.flowType });
   };
 
   const setTax = (id: string) => {
     dispatch({ type: "UPDATE_BUSINESS", payload: { taxRegime: id } });
-    trackEvent("tax_selected", { regime: id });
+    trackEvent("tax_selected", { regime: id, flowType: state.flowType });
     // Auto-advance to next sub-step
     setTimeout(() => setSubStep("okved"), 300);
   };
@@ -89,7 +90,11 @@ export default function Step1Business() {
     trackEvent("step1_completed", {
       okvedCount: state.business.okvedCodes.length,
       taxRegime: state.business.taxRegime,
+      flowType: state.flowType,
     });
+    if (state.flowType === "manager") {
+      trackEvent("assisted_step_completed", { step: 1, flowType: "manager" });
+    }
     setShowComplete(true);
     setTimeout(() => navigate("/step/2"), 1500);
   };
@@ -110,6 +115,8 @@ export default function Step1Business() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        <AssistedModeBanner />
+
         {showComplete && (
           <MicroReinforcement message="Шаг 1 готов. Осталось подтвердить паспорт" />
         )}
@@ -404,7 +411,7 @@ export default function Step1Business() {
                         </p>
                       </div>
                     </div>
-                    <Button size="sm" onClick={() => { trackEvent("manager_redirect", { reason: "director_not_founder" }); navigate("/manager"); }}>
+                    <Button size="sm" onClick={() => { trackEvent("manager_redirect", { reason: "director_not_founder", flowType: state.flowType }); navigate("/manager"); }}>
                       Связаться с менеджером
                     </Button>
                   </div>

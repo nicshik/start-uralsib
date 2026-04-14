@@ -1,189 +1,333 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
-import { Building2, Briefcase, User, Search, CheckCircle2, FileText, CreditCard, PenTool } from "lucide-react";
+import { TAX_REGIMES } from "@/lib/mockData";
+import {
+  BadgeCheck,
+  Building2,
+  Briefcase,
+  CheckCircle2,
+  FileText,
+  MonitorUp,
+  PenTool,
+  Search,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+
+type AgentProduct = "ip" | "ooo";
 
 export default function ManagerWorkspace() {
   const navigate = useNavigate();
   const { state } = useApp();
-  
-  const [address, setAddress] = useState("");
+
+  const initialProduct: AgentProduct = state.productType === "ooo" ? "ooo" : "ip";
+  const initialName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
+  const hasOnlineData = Boolean(
+    state.phone ||
+      state.passport.lastName ||
+      state.business.okvedCodes.length ||
+      state.business.companyName ||
+      state.submitted,
+  );
+
+  const [agentProduct, setAgentProduct] = useState<AgentProduct>(initialProduct);
+  const [clientName, setClientName] = useState(initialName || "");
+  const [clientPhone, setClientPhone] = useState(state.phone || "");
+  const [clientInn, setClientInn] = useState(state.passport.inn || "");
+  const [companyName, setCompanyName] = useState(state.business.companyName || "");
+  const [tax, setTax] = useState(state.business.taxRegime || "usn6");
+  const [okvedText, setOkvedText] = useState(
+    state.business.okvedCodes.length
+      ? state.business.okvedCodes.join("\n")
+      : "62.01 Разработка компьютерного программного обеспечения",
+  );
+  const [address, setAddress] = useState(state.business.legalAddress || "");
   const [tariff, setTariff] = useState("start");
   const [completed, setCompleted] = useState(false);
 
-  // Fallback to demo data if accessed directly without Context
-  const isOOO = state.productType === "ooo";
-  const name = state.passport?.lastName ? `${state.passport.lastName} ${state.passport.firstName} ${state.passport.middleName || ""}` : "Иванов Иван Иванович";
-  const phone = state.phone || "+7 (999) 000-00-00";
-  const tax = state.business?.taxRegime || "УСН Доходы (6%)";
-  const okveds = state.business?.okvedCodes?.length ? state.business.okvedCodes : ["62.01 Разработка компьютерного программного обеспечения"];
-  const companyName = state.business?.companyName || "ООО «Альфа»";
+  const sourceLabel = hasOnlineData
+    ? state.flowType === "manager"
+      ? "Заявка заполнена с сотрудником"
+      : "Клиент начал онлайн"
+    : "Новая заявка в офисе";
+
+  const selectedTax = useMemo(() => TAX_REGIMES.find((item) => item.id === tax), [tax]);
+  const availableRegimes = useMemo(
+    () => TAX_REGIMES.filter((item) => item.availableFor.includes(agentProduct)),
+    [agentProduct],
+  );
+
+  useEffect(() => {
+    if (!availableRegimes.some((item) => item.id === tax)) {
+      setTax(availableRegimes[0]?.id || "usn6");
+    }
+  }, [agentProduct, availableRegimes, tax]);
+
+  useEffect(() => {
+    trackEvent("page_view", {
+      page: "office_agent",
+      flowType: state.flowType,
+      source: hasOnlineData ? "draft_or_submitted" : "office_new",
+    });
+    trackEvent("office_agent_view", {
+      flowType: state.flowType,
+      source: hasOnlineData ? "draft_or_submitted" : "office_new",
+    });
+  }, [hasOnlineData, state.flowType]);
+
+  const canComplete =
+    clientName.trim().length > 3 &&
+    clientPhone.replace(/\D/g, "").length >= 10 &&
+    okvedText.trim().length > 5 &&
+    address.trim().length >= 5 &&
+    (agentProduct === "ip" || companyName.trim().length > 2);
 
   const handleSign = () => {
-    trackEvent("manager_workspace_completed");
+    trackEvent("office_agent_completed", {
+      flowType: state.flowType,
+      source: hasOnlineData ? "draft_or_submitted" : "office_new",
+      product: agentProduct,
+      tariff,
+      tax,
+    });
+    trackEvent("manager_workspace_completed", { flowType: state.flowType });
     setCompleted(true);
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] font-sans flex text-slate-800">
-      {/* Sidebar - strict CRM style */}
-      <aside className="w-64 bg-[#1E293B] text-slate-200 flex flex-col fixed h-full z-10 left-0 top-0">
-        <div className="p-5 border-b border-slate-700/50">
-          <div className="font-bold text-white text-lg tracking-tight mb-1">УРАЛСИБ | CRM</div>
-          <div className="text-xs text-slate-400">Единое окно агента</div>
+    <div className="flex min-h-screen bg-[#F8F9FA] font-sans text-slate-800">
+      <aside className="fixed left-0 top-0 z-10 flex h-full w-64 flex-col bg-[#1E293B] text-slate-200">
+        <div className="border-b border-slate-700/50 p-5">
+          <div className="mb-1 text-lg font-bold tracking-tight text-white">УРАЛСИБ | CRM</div>
+          <div className="text-xs text-slate-400">Единое окно сотрудника</div>
         </div>
-        
-        <div className="p-4 space-y-4 flex-1">
-          <div className="bg-slate-800 rounded-lg p-3">
-            <div className="text-xs text-slate-400 mb-1">Сотрудник</div>
-            <div className="text-sm font-medium text-white flex items-center gap-2">
+
+        <div className="flex-1 space-y-4 p-4">
+          <div className="rounded-lg bg-slate-800 p-3">
+            <div className="mb-1 text-xs text-slate-400">Сотрудник</div>
+            <div className="flex items-center gap-2 text-sm font-medium text-white">
               <User className="h-4 w-4" /> Константинов М.А.
             </div>
-            <div className="text-xs text-slate-400 mt-1">ДО «Петровский», Окно 4</div>
+            <div className="mt-1 text-xs text-slate-400">ДО «Петровский», Окно 4</div>
           </div>
-          
+
           <nav className="space-y-1">
-            <a href="#" className="flex items-center gap-3 px-3 py-2 bg-[#6440BF] text-white rounded-md text-sm font-medium">
+            <button className="flex w-full items-center gap-3 rounded-md bg-[#6440BF] px-3 py-2 text-sm font-medium text-white">
               <CheckCircle2 className="h-4 w-4" /> Текущая заявка
-            </a>
-            <a href="#" className="flex items-center gap-3 px-3 py-2 text-slate-300 hover:bg-slate-800 rounded-md text-sm transition-colors">
+            </button>
+            <button
+              onClick={() => navigate("/assisted-start")}
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-slate-300 transition-colors hover:bg-slate-800"
+            >
+              <MonitorUp className="h-4 w-4" /> Assisted-вход
+            </button>
+            <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-slate-300 transition-colors hover:bg-slate-800">
               <Search className="h-4 w-4" /> Поиск клиентов
-            </a>
+            </button>
           </nav>
         </div>
-        
-        <div className="p-4 border-t border-slate-700/50">
-          <button onClick={() => navigate("/")} className="text-xs text-slate-400 hover:text-white transition-colors">
+
+        <div className="border-t border-slate-700/50 p-4">
+          <button onClick={() => navigate("/")} className="text-xs text-slate-400 transition-colors hover:text-white">
             &larr; Вернуться на клиентский сайт
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="ml-64 flex-1 p-8">
-        <header className="mb-8 flex justify-between items-end border-b border-gray-200 pb-4">
+        <header className="mb-8 flex items-end justify-between border-b border-gray-200 pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Встреча с клиентом</h1>
-            <p className="text-sm text-slate-500 mt-1">Номер заявки: #UR-849-21-APP</p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Рабочее место сотрудника</h1>
+            <p className="mt-1 text-sm text-slate-500">Номер заявки: #UR-849-21-APP</p>
           </div>
           <div className="flex gap-2">
-            <span className="inline-flex items-center rounded-md bg-green-50 px-2.5 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-              Клиент идентифицирован
+            <span className="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+              <BadgeCheck className="mr-1.5 h-4 w-4" />
+              {sourceLabel}
             </span>
             <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-              Онлайн-часть пройдена
+              Клиент рядом
             </span>
           </div>
         </header>
 
         {completed ? (
-          <div className="flex flex-col items-center justify-center h-64 space-y-4">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+          <div className="flex h-64 flex-col items-center justify-center space-y-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <CheckCircle2 className="h-8 w-8 text-green-600" />
             </div>
             <h2 className="text-2xl font-bold">Документы отправлены в ФНС</h2>
-            <p className="text-muted-foreground">Пакет документов ушел на регистрацию. Счет будет активирован после отбивки из налоговой.</p>
-            <Button onClick={() => window.location.reload()} variant="outline" className="mt-4">Следующий клиент</Button>
+            <p className="text-muted-foreground">
+              Пакет документов ушел на регистрацию. Счет будет активирован после отбивки из налоговой.
+            </p>
+            <Button onClick={() => navigate("/assisted-start")} variant="outline" className="mt-4">
+              Следующий клиент
+            </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-            
-            {/* Left Column: Read-Only Data from Context */}
-            <div className="xl:col-span-5 space-y-6">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+            <div className="space-y-6 xl:col-span-5">
               <Card className="border-0 shadow-sm ring-1 ring-gray-200">
-                <CardHeader className="bg-slate-50/50 border-b border-gray-100 pb-4">
-                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                <CardHeader className="border-b border-gray-100 bg-slate-50/50 pb-4">
+                  <CardTitle className="flex items-center gap-2 text-base font-semibold">
                     <User className="h-4 w-4 text-slate-400" />
-                    Заявитель
+                    Вводные клиента
                   </CardTitle>
+                  <CardDescription>Данные можно собрать здесь или продолжить assisted-заявку с сайта.</CardDescription>
                 </CardHeader>
-                <CardContent className="pt-4 space-y-3">
-                  <div className="grid grid-cols-2 gap-y-3 text-sm">
-                    <div className="text-slate-500">ФИО</div>
-                    <div className="font-medium">{name}</div>
-                    <div className="text-slate-500">Телефон</div>
-                    <div className="font-medium">{phone}</div>
-                    <div className="text-slate-500">ИНН</div>
-                    <div className="font-medium">{state.passport.inn || "770012345678"}</div>
+                <CardContent className="space-y-5 pt-4">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-semibold">Форма бизнеса</Label>
+                    <RadioGroup value={agentProduct} onValueChange={(value) => setAgentProduct(value as AgentProduct)} className="grid grid-cols-2 gap-3">
+                      <div>
+                        <RadioGroupItem value="ip" id="agent-ip" className="peer sr-only" />
+                        <Label
+                          htmlFor="agent-ip"
+                          className="flex cursor-pointer items-center gap-2 rounded-md border-2 border-muted bg-white p-3 text-sm hover:bg-slate-50 peer-data-[state=checked]:border-[#6440BF]"
+                        >
+                          <Briefcase className="h-4 w-4 text-[#6440BF]" />
+                          ИП
+                        </Label>
+                      </div>
+                      <div>
+                        <RadioGroupItem value="ooo" id="agent-ooo" className="peer sr-only" />
+                        <Label
+                          htmlFor="agent-ooo"
+                          className="flex cursor-pointer items-center gap-2 rounded-md border-2 border-muted bg-white p-3 text-sm hover:bg-slate-50 peer-data-[state=checked]:border-[#6440BF]"
+                        >
+                          <Building2 className="h-4 w-4 text-[#6440BF]" />
+                          ООО
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label htmlFor="agent-name">ФИО клиента</Label>
+                      <Input
+                        id="agent-name"
+                        value={clientName}
+                        onChange={(event) => setClientName(event.target.value)}
+                        placeholder="Иванов Иван Иванович"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-phone">Телефон</Label>
+                      <Input
+                        id="agent-phone"
+                        type="tel"
+                        value={clientPhone}
+                        onChange={(event) => setClientPhone(event.target.value)}
+                        placeholder="+7 (___) ___-__-__"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-inn">ИНН</Label>
+                      <Input
+                        id="agent-inn"
+                        value={clientInn}
+                        onChange={(event) => setClientInn(event.target.value)}
+                        placeholder="770012345678"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    {agentProduct === "ooo" && (
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="agent-company">Наименование ООО</Label>
+                        <Input
+                          id="agent-company"
+                          value={companyName}
+                          onChange={(event) => setCompanyName(event.target.value)}
+                          placeholder='ООО "Альфа"'
+                          className="h-10 bg-white"
+                        />
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="border-0 shadow-sm ring-1 ring-gray-200">
-                <CardHeader className="bg-slate-50/50 border-b border-gray-100 pb-4 flex flex-row items-center justify-between">
-                  <CardTitle className="text-base font-semibold flex items-center gap-2">
-                    {isOOO ? <Building2 className="h-4 w-4 text-[#6440BF]" /> : <Briefcase className="h-4 w-4 text-[#6440BF]" />}
-                    Данные бизнеса
+                <CardHeader className="border-b border-gray-100 bg-slate-50/50 pb-4">
+                  <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                    {agentProduct === "ooo" ? <Building2 className="h-4 w-4 text-[#6440BF]" /> : <Briefcase className="h-4 w-4 text-[#6440BF]" />}
+                    Бизнес и документы
                   </CardTitle>
-                  <span className="text-xs bg-[#F0ECFA] text-[#6440BF] px-2 py-0.5 rounded font-medium">Собрано онлайн</span>
                 </CardHeader>
-                <CardContent className="pt-4 space-y-3">
-                  <div className="grid grid-cols-1 gap-y-4 text-sm">
-                    {isOOO && (
-                      <div>
-                        <div className="text-slate-500 mb-1">Наименование</div>
-                        <div className="font-medium">{companyName}</div>
-                      </div>
-                    )}
-                    <div>
-                      <div className="text-slate-500 mb-1">Форма и налоги</div>
-                      <div className="font-medium">{isOOO ? "ООО" : "ИП"} на {tax}</div>
-                    </div>
-                    <div>
-                      <div className="text-slate-500 mb-1">Виды деятельности (ОКВЭД)</div>
-                      <ul className="list-disc pl-4 space-y-1 mt-1 text-slate-700">
-                        {okveds.map((code, idx) => (
-                          <li key={idx} className={idx === 0 ? "font-semibold" : ""}>
-                            {code} {idx === 0 && <span className="text-xs text-muted-foreground font-normal ml-1">(Основной)</span>}
-                          </li>
+                <CardContent className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label>Налоговый режим</Label>
+                    <Select value={tax} onValueChange={setTax}>
+                      <SelectTrigger className="h-10 bg-white">
+                        <SelectValue placeholder="Выберите режим" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableRegimes.map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
+                            {item.name}
+                          </SelectItem>
                         ))}
-                      </ul>
-                    </div>
+                      </SelectContent>
+                    </Select>
+                    {selectedTax && <p className="text-xs text-slate-500">{selectedTax.description}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="agent-okveds">ОКВЭД</Label>
+                    <Textarea
+                      id="agent-okveds"
+                      value={okvedText}
+                      onChange={(event) => setOkvedText(event.target.value)}
+                      placeholder="62.01 Разработка компьютерного программного обеспечения"
+                      className="min-h-24 bg-white text-sm"
+                    />
+                    <p className="text-xs text-slate-500">Можно вставить один или несколько кодов, которые клиент назвал на консультации.</p>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Right Column: Actions needed by Manager */}
-            <div className="xl:col-span-7 space-y-6">
+            <div className="space-y-6 xl:col-span-7">
               <Card className="border-0 shadow-sm ring-1 ring-gray-200">
                 <CardHeader className="bg-[#1E293B] text-white">
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     <PenTool className="h-5 w-5" />
-                    Совместное заполнение (Задачи менеджера)
+                    Завершение заявки в офисе
                   </CardTitle>
                   <CardDescription className="text-slate-300">
-                    Эти данные нельзя было собрать онлайн. Заполните их вместе с клиентом в офисе.
+                    Сотрудник сверяет данные, выбирает РКО и передает пакет на подписание клиенту.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="pt-6 space-y-8">
-                  
-                  {/* Task 1: FIAS Address */}
+                <CardContent className="space-y-8 pt-6">
                   <div className="space-y-3">
-                    <Label className="text-base font-semibold flex items-center gap-2">
+                    <Label className="flex items-center gap-2 text-base font-semibold">
                       1. Подтверждение юридического адреса
-                      <span className="text-xs font-normal text-slate-400 ml-auto flex items-center gap-1">
+                      <span className="ml-auto flex items-center gap-1 text-xs font-normal text-slate-400">
                         <Search className="h-3 w-3" /> Поиск по ФИАС
                       </span>
                     </Label>
-                    <Input 
-                      placeholder="Начните вводить адрес (город, улица, дом)..." 
+                    <Input
+                      placeholder="Начните вводить адрес (город, улица, дом)..."
                       value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      className="h-10 border-slate-300 focus-visible:ring-[#6440BF]"
+                      onChange={(event) => setAddress(event.target.value)}
+                      className="h-10 border-slate-300 bg-white focus-visible:ring-[#6440BF]"
                     />
                     <div className="text-xs text-slate-500">
-                      Адрес должен точно совпадать с государственным реестром (ФИАС). При необходимости запросите договор аренды.
+                      Адрес должен точно совпадать с государственным реестром. При необходимости запросите договор аренды.
                     </div>
                   </div>
 
-                  {/* Task 2: Account Tariff */}
                   <div className="space-y-4">
                     <Label className="text-base font-semibold">2. Выбор тарифа расчётно-кассового обслуживания</Label>
                     <RadioGroup value={tariff} onValueChange={setTariff} className="grid grid-cols-2 gap-4">
@@ -191,10 +335,10 @@ export default function ManagerWorkspace() {
                         <RadioGroupItem value="start" id="start" className="peer sr-only" />
                         <Label
                           htmlFor="start"
-                          className="flex flex-col items-start justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-[#6440BF] [&:has([data-state=checked])]:border-[#6440BF]"
+                          className="flex cursor-pointer flex-col items-start justify-between rounded-md border-2 border-muted bg-white p-4 hover:bg-slate-50 peer-data-[state=checked]:border-[#6440BF]"
                         >
-                          <div className="font-semibold mb-1">Начни с нуля</div>
-                          <div className="text-xs text-muted-foreground mb-2">0 ₽/мес, бесплатно навсегда</div>
+                          <div className="mb-1 font-semibold">Начни с нуля</div>
+                          <div className="mb-2 text-xs text-muted-foreground">0 ₽/мес, бесплатно навсегда</div>
                           <div className="text-xs font-medium text-[#6440BF]">Подходит для старта</div>
                         </Label>
                       </div>
@@ -202,35 +346,37 @@ export default function ManagerWorkspace() {
                         <RadioGroupItem value="growth" id="growth" className="peer sr-only" />
                         <Label
                           htmlFor="growth"
-                          className="flex flex-col items-start justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-[#6440BF] [&:has([data-state=checked])]:border-[#6440BF]"
+                          className="flex cursor-pointer flex-col items-start justify-between rounded-md border-2 border-muted bg-white p-4 hover:bg-slate-50 peer-data-[state=checked]:border-[#6440BF]"
                         >
-                          <div className="font-semibold mb-1">Развитие</div>
-                          <div className="text-xs text-muted-foreground mb-2">990 ₽/мес, бесплатные переводы</div>
+                          <div className="mb-1 font-semibold">Развитие</div>
+                          <div className="mb-2 text-xs text-muted-foreground">990 ₽/мес, бесплатные переводы</div>
                           <div className="text-xs font-medium text-[#6440BF]">Для стабильной выручки</div>
                         </Label>
                       </div>
                     </RadioGroup>
                   </div>
 
-                  {/* Task 3: Signing */}
-                  <div className="pt-4 mt-6 border-t border-slate-100 flex items-center justify-between">
-                    <div className="text-sm text-slate-500 flex items-center gap-2">
+                  <div className="rounded-lg border border-blue-100 bg-blue-50 p-4">
+                    <p className="mb-2 text-sm font-semibold text-blue-950">3. Контроль перед подписанием</p>
+                    <ul className="space-y-1 text-sm text-blue-800">
+                      <li>Клиент находится рядом и подтверждает корректность данных.</li>
+                      <li>SMS-код вводится клиентом, не сотрудником.</li>
+                      <li>Заявка уходит в отдельный assisted/office канал Метрики.</li>
+                    </ul>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
                       <FileText className="h-4 w-4" />
-                      Клиент получит SMS-код для подписания (КЭП)
+                      Клиент получит SMS-код для подписания
                     </div>
-                    <Button 
-                      onClick={handleSign}
-                      disabled={!address || address.length < 5}
-                      className="bg-[#6440BF] hover:bg-[#503399] px-8"
-                    >
+                    <Button onClick={handleSign} disabled={!canComplete} className="bg-[#6440BF] px-8 hover:bg-[#503399]">
                       Подписать и отправить в ФНС
                     </Button>
                   </div>
-
                 </CardContent>
               </Card>
             </div>
-
           </div>
         )}
       </main>

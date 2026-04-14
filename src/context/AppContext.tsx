@@ -44,6 +44,7 @@ export interface AppState {
 }
 
 const initialState: AppState = {
+  flowType: "online",
   smsVerified: false,
   currentStep: 0,
   business: { okvedCodes: [], directorIsFounder: true, addressIsFounder: true },

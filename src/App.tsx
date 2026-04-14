@@ -10,6 +10,7 @@ import { ChatWidget } from "./components/ChatWidget";
 import { RouteGuard } from "./components/RouteGuard";
 
 import Landing from "./pages/Landing";
+import AssistedStart from "./pages/AssistedStart";
 import ManagerHandoff from "./pages/ManagerHandoff";
 import SmsAuth from "./pages/SmsAuth";
 import Step1Business from "./pages/Step1Business";
@@ -37,6 +38,7 @@ const App = () => (
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/assisted-start" element={<AssistedStart />} />
             <Route path="/manager" element={<ManagerHandoff />} />
             <Route path="/sms-auth" element={<SmsAuth />} />
             <Route path="/step/1" element={<RouteGuard requireSms><Step1Business /></RouteGuard>} />

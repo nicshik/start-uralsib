@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
+import { useApp } from "@/context/AppContext";
 import { Building2, Briefcase, UserCheck } from "lucide-react";
 
 interface ProductQuizProps {
@@ -46,6 +47,7 @@ const QUESTIONS = [
 ];
 
 export function ProductQuiz({ open, onOpenChange, onResultChoice }: ProductQuizProps) {
+  const { state } = useApp();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, { type: string, force?: boolean }>>({});
 
@@ -53,9 +55,9 @@ export function ProductQuiz({ open, onOpenChange, onResultChoice }: ProductQuizP
     if (open) {
       setStep(0);
       setAnswers({});
-      trackEvent("quiz_start");
+      trackEvent("quiz_start", { flowType: state.flowType });
     }
-  }, [open]);
+  }, [open, state.flowType]);
 
   const handleAnswer = (option: { type: string, force?: boolean }) => {
     const currentQ = QUESTIONS[step];
@@ -65,19 +67,19 @@ export function ProductQuiz({ open, onOpenChange, onResultChoice }: ProductQuizP
     if (step < QUESTIONS.length - 1) {
       setStep(step + 1);
     } else {
-      trackEvent("quiz_complete", { final_step: true });
+      trackEvent("quiz_complete", { recommendation: getResult(newAnswers), flowType: state.flowType });
       setStep(QUESTIONS.length); // Results step
     }
   };
 
-  const getResult = () => {
+  const getResult = (sourceAnswers = answers) => {
     // If any force OOO is selected, then definitely OOO.
-    const hasForceOoo = Object.values(answers).some(a => a.force);
+    const hasForceOoo = Object.values(sourceAnswers).some(a => a.force);
     if (hasForceOoo) return "ooo";
     
     // Otherwise count
-    const oooCount = Object.values(answers).filter(a => a.type === "ooo").length;
-    const ipCount = Object.values(answers).filter(a => a.type === "ip").length;
+    const oooCount = Object.values(sourceAnswers).filter(a => a.type === "ooo").length;
+    const ipCount = Object.values(sourceAnswers).filter(a => a.type === "ip").length;
 
     if (oooCount > ipCount) return "ooo";
     return "ip";
