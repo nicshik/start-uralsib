@@ -154,7 +154,7 @@ export default function Step1Business() {
             <div>
               <h2 className="text-xl font-bold tracking-tight">Налоги для {productLabel}</h2>
               <p className="text-sm text-muted-foreground mt-1">
-                {isOoo ? "Выберите систему налогообложения для вашей компании" : "Выберите подходящий режим. Менеджер поможет определиться на встрече."}
+                {isOoo ? "Выберите систему налогообложения для вашей компании" : "Выберите подходящий режим (можно будет изменить позже)."}
               </p>
             </div>
             <div className="space-y-3">
