@@ -47,6 +47,7 @@ export interface AppState {
 
 const initialState: AppState = {
   flowType: "online",
+  email: "client@email.com",
   paperDocuments: false,
   smsVerified: false,
   currentStep: 0,
