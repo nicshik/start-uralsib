@@ -139,7 +139,7 @@ export default function Step2Passport() {
                     navigate("/manager-request");
                   }}
                 >
-                  Проверить и отправить заявку
+                  Проверить данные и отправить заявку
                 </Button>
               </div>
             )}

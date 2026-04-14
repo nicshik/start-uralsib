@@ -442,7 +442,7 @@ export default function ManagerWorkspace() {
                   <CardHeader className="border-b border-gray-100 bg-amber-50/70 pb-4">
                     <CardTitle className="flex items-center gap-2 text-base font-semibold text-amber-950">
                       <AlertCircle className="h-4 w-4" />
-                      Сложный ООО-сценарий
+                      Оформление с помощью менеджера
                     </CardTitle>
                     <CardDescription>
                       Причины перевода и поля, которые менеджер проверяет перед подготовкой пакета.

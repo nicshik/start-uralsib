@@ -25,19 +25,19 @@ export function getManagerReasons(business: BusinessData): string[] {
   const reasons: string[] = [];
 
   if (business.founderCount === "multiple") {
-    reasons.push("Онлайн-подача для ООО доступна только с одним учредителем");
+    reasons.push("Для нескольких учредителей менеджер поможет подготовить комплект документов");
   }
   if (business.founderCitizenship === "foreign") {
-    reasons.push("Онлайн-подача недоступна для иностранных граждан");
+    reasons.push("Для учредителя с иностранным гражданством потребуется дополнительная проверка документов");
   }
   if (business.directorIsFounder === false) {
-    reasons.push("Руководитель должен быть учредителем");
+    reasons.push("Если руководитель не является учредителем, менеджер уточнит данные для документов");
   }
   if (business.addressIsFounder === false) {
-    reasons.push("Нестандартный юридический адрес проверит менеджер");
+    reasons.push("Менеджер проверит юридический адрес перед подготовкой документов");
   }
   if (business.charterType === "custom") {
-    reasons.push("Свой устав или загрузку документов проверит менеджер");
+    reasons.push("Менеджер проверит устав и поможет подготовить комплект документов");
   }
   if (business.requiresManager && reasons.length === 0) {
     reasons.push(business.managerReason || "Требуется помощь менеджера");
@@ -102,7 +102,7 @@ export function getApplicantValidation(
     if (!passport.citizenship) {
       missingFields.push("Гражданство");
     } else if (passport.citizenship !== "ru") {
-      managerReasons.push("Онлайн-подача ИП доступна только для граждан РФ");
+      managerReasons.push("Для иностранного гражданства потребуется дополнительная проверка документов");
     }
     if (!passport.documentType) {
       missingFields.push("Вид документа");

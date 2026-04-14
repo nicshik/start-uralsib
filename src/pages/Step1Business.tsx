@@ -442,7 +442,7 @@ export default function Step1Business() {
                 <div className="space-y-4 pt-2 border-t">
                   <div className="space-y-1">
                     <p className="text-sm font-semibold">Учредитель</p>
-                    <p className="text-xs text-muted-foreground">Онлайн-подача ООО доступна для одного учредителя-гражданина РФ.</p>
+                    <p className="text-xs text-muted-foreground">Быстрее всего оформляем онлайн, когда учредитель один и он гражданин РФ.</p>
                   </div>
 
                   <div className="space-y-2">
@@ -620,9 +620,9 @@ export default function Step1Business() {
                     <div className="flex items-start gap-2">
                       <UserCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <div>
-                        <p className="font-medium text-sm">Сложный ООО-сценарий</p>
+                        <p className="font-medium text-sm">Менеджер поможет завершить оформление</p>
                         <p className="text-sm text-muted-foreground">
-                          Заявку можно отправить сейчас. Менеджер позвонит, проверит детали и поможет завершить оформление.
+                          Заявку можно отправить сейчас. Менеджер проверит детали, подскажет по документам для ФНС и поможет завершить оформление.
                         </p>
                         <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
                           {businessValidation.managerReasons.map((reason) => (
@@ -632,7 +632,7 @@ export default function Step1Business() {
                       </div>
                     </div>
                     <Button size="sm" onClick={() => { trackEvent("manager_request_opened", { reason: businessValidation.managerReasons[0], flowType: state.flowType }); navigate("/manager-request"); }}>
-                      Проверить и отправить заявку
+                      Проверить данные и отправить заявку
                     </Button>
                   </div>
                 )}
