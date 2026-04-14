@@ -88,7 +88,7 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
                 {error && <p className="text-sm text-destructive text-center">{error}</p>}
               </div>
               <Button className="w-full text-base font-medium" onClick={sendSms}>Получить код</Button>
-              <p className="text-center text-xs leading-relaxed text-muted-foreground">
+              <p className="whitespace-nowrap text-center text-[9px] leading-none text-muted-foreground sm:text-[11px]">
                 Нажимая кнопку «Получить код», я принимаю{" "}
                 <a
                   href="https://start.uralsib.ru/consent-processing-personal-data"
