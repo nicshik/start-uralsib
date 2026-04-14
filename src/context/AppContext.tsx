@@ -5,6 +5,8 @@ export type FlowType = "online" | "manager";
 export type FounderCount = "one" | "multiple";
 export type FounderCitizenship = "ru" | "foreign";
 export type CharterType = "generated" | "custom";
+export type ApplicantCitizenship = "ru" | "foreign" | "stateless";
+export type IdentityDocumentType = "passport_rf" | "other";
 
 export interface BusinessData {
   okvedCodes: string[];
@@ -34,6 +36,8 @@ export interface PassportData {
   birthDate?: string;
   gender?: string;
   birthPlace?: string;
+  citizenship?: ApplicantCitizenship;
+  documentType?: IdentityDocumentType;
   passportSeries?: string;
   passportNumber?: string;
   issuedBy?: string;

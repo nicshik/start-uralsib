@@ -9,6 +9,7 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
+import { UserCheck } from "lucide-react";
 
 import OcrCapture from "@/components/step2/OcrCapture";
 import OcrProgress from "@/components/step2/OcrProgress";
@@ -49,6 +50,7 @@ export default function Step2Passport() {
     state.business,
   );
   const emailValid = !applicantValidation.missingFields.includes("Email");
+  const showManagerPrompt = applicantValidation.managerReasons.length > 0;
   const canProceed = (state.passport.ocrCompleted || manualMode) && applicantValidation.isComplete;
 
   const handleNext = () => {
@@ -84,6 +86,7 @@ export default function Step2Passport() {
           <>
             <PassportFields
               passport={state.passport}
+              productType={state.productType}
               ocrDone={ocrPhase === "done"}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
             />
@@ -107,9 +110,37 @@ export default function Step2Passport() {
               onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
             />
 
-            {!applicantValidation.isComplete && (
+            {applicantValidation.missingFields.length > 0 && (
               <div className="rounded-card border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                 Для отправки в ФНС осталось заполнить: {applicantValidation.missingFields.join(", ")}.
+              </div>
+            )}
+
+            {showManagerPrompt && (
+              <div className="rounded-card border border-primary bg-accent/50 p-4 space-y-3">
+                <div className="flex items-start gap-2">
+                  <UserCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-medium text-sm">Нужна помощь менеджера</p>
+                    <p className="text-sm text-muted-foreground">
+                      Этот ИП-сценарий требует проверки документов перед подачей.
+                    </p>
+                    <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+                      {applicantValidation.managerReasons.map((reason) => (
+                        <li key={reason}>{reason}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    trackEvent("manager_redirect", { reason: applicantValidation.managerReasons[0], flowType: state.flowType });
+                    navigate("/office-agent");
+                  }}
+                >
+                  Передать менеджеру
+                </Button>
               </div>
             )}
 

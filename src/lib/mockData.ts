@@ -1,13 +1,17 @@
+import type { PassportData } from "@/context/AppContext";
+
 export type { OkvedCode } from "./okvedData";
 export { OKVED_FULL as OKVED_CODES, OKVED_SECTIONS } from "./okvedData";
 
-export const MOCK_PASSPORT_DATA = {
+export const MOCK_PASSPORT_DATA: PassportData = {
   lastName: "Иванов",
   firstName: "Алексей",
   middleName: "Сергеевич",
   birthDate: "15.03.1990",
   gender: "Мужской",
   birthPlace: "г. Москва",
+  citizenship: "ru",
+  documentType: "passport_rf",
   passportSeries: "45 12",
   passportNumber: "345678",
   issuedBy: "Отделом УФМС России по гор. Москве по району Тверской",

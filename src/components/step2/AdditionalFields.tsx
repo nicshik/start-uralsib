@@ -82,7 +82,9 @@ export default function AdditionalFields({
 
         <div className="grid grid-cols-2 gap-x-3 gap-y-3">
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">ИНН</Label>
+            <Label className="text-xs text-muted-foreground">
+              {productType === "ip" ? "ИНН (для банковского пакета)" : "ИНН"}
+            </Label>
             <Input
               placeholder="12 цифр"
               maxLength={12}
@@ -110,6 +112,11 @@ export default function AdditionalFields({
             onChange={(e) => handleRegistrationAddressChange(e.target.value)}
             className="text-sm h-10"
           />
+          {productType === "ip" && (
+            <p className="text-xs text-muted-foreground">
+              Укажите адрес регистрации по паспорту. Менеджер сверит ФИАС/ГАР при расхождении.
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>

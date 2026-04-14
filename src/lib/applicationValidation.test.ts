@@ -27,6 +27,8 @@ const validPassport: PassportData = {
   birthDate: "01.01.1990",
   gender: "Мужской",
   birthPlace: "г. Москва",
+  citizenship: "ru",
+  documentType: "passport_rf",
   passportSeries: "45 12",
   passportNumber: "123456",
   issuedBy: "ОВД Тверской",
@@ -101,6 +103,32 @@ describe("application validation", () => {
     expect(result.isComplete).toBe(false);
     expect(result.missingFields).toContain("Email");
     expect(result.missingFields).toContain("Адрес регистрации");
+  });
+
+  it("requires ИП citizenship and document type on applicant step", () => {
+    const result = getApplicantValidation("ip", {
+      ...validPassport,
+      citizenship: undefined,
+      documentType: undefined,
+    }, "client@example.ru", "+7 985 999 99 99");
+
+    expect(result.isComplete).toBe(false);
+    expect(result.missingFields).toContain("Гражданство");
+    expect(result.missingFields).toContain("Вид документа");
+  });
+
+  it("routes unsupported ИП applicant documents to manager", () => {
+    const result = getApplicantValidation("ip", {
+      ...validPassport,
+      citizenship: "foreign",
+      documentType: "other",
+    }, "client@example.ru", "+7 985 999 99 99");
+
+    expect(result.isComplete).toBe(false);
+    expect(result.managerReasons).toEqual([
+      "Онлайн-подача ИП доступна только для граждан РФ",
+      "Иной документ, удостоверяющий личность, проверит менеджер",
+    ]);
   });
 
   it("accepts complete ИП applicant data", () => {

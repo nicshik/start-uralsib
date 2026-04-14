@@ -91,12 +91,25 @@ export function getApplicantValidation(
   business?: BusinessData,
 ): ValidationResult {
   const missingFields: string[] = [];
+  const managerReasons: string[] = [];
 
   if (!isFilled(passport.lastName)) missingFields.push("Фамилия");
   if (!isFilled(passport.firstName)) missingFields.push("Имя");
   if (!isFilled(passport.birthDate)) missingFields.push("Дата рождения");
   if (!isFilled(passport.gender)) missingFields.push("Пол");
   if (!isFilled(passport.birthPlace)) missingFields.push("Место рождения");
+  if (productType === "ip") {
+    if (!passport.citizenship) {
+      missingFields.push("Гражданство");
+    } else if (passport.citizenship !== "ru") {
+      managerReasons.push("Онлайн-подача ИП доступна только для граждан РФ");
+    }
+    if (!passport.documentType) {
+      missingFields.push("Вид документа");
+    } else if (passport.documentType !== "passport_rf") {
+      managerReasons.push("Иной документ, удостоверяющий личность, проверит менеджер");
+    }
+  }
   if (!isFilled(passport.passportSeries)) missingFields.push("Серия паспорта");
   if (!isFilled(passport.passportNumber)) missingFields.push("Номер паспорта");
   if (!isFilled(passport.issuedBy)) missingFields.push("Кем выдан паспорт");
@@ -114,8 +127,8 @@ export function getApplicantValidation(
   if (!isFilled(registrationAddress)) missingFields.push("Адрес регистрации");
 
   return {
-    isComplete: missingFields.length === 0,
+    isComplete: missingFields.length === 0 && managerReasons.length === 0,
     missingFields,
-    managerReasons: [],
+    managerReasons,
   };
 }

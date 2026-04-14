@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
+import type { ApplicantCitizenship, IdentityDocumentType } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
-import { getBusinessValidation } from "@/lib/applicationValidation";
+import { getApplicantValidation, getBusinessValidation } from "@/lib/applicationValidation";
 import { TAX_REGIMES } from "@/lib/mockData";
 import {
   AlertCircle,
@@ -48,6 +49,8 @@ export default function ManagerWorkspace() {
   const [clientPhone, setClientPhone] = useState(state.phone || "");
   const [clientEmail, setClientEmail] = useState(state.email || "");
   const [clientInn, setClientInn] = useState(state.passport.inn || "");
+  const [citizenship, setCitizenship] = useState<ApplicantCitizenship>(state.passport.citizenship || "ru");
+  const [documentType, setDocumentType] = useState<IdentityDocumentType>(state.passport.documentType || "passport_rf");
   const [companyName, setCompanyName] = useState(state.business.companyName || "");
   const [tax, setTax] = useState(state.business.taxRegime || "usn6");
   const [okvedText, setOkvedText] = useState(
@@ -76,10 +79,17 @@ export default function ManagerWorkspace() {
     () => TAX_REGIMES.filter((item) => item.availableFor.includes(agentProduct)),
     [agentProduct],
   );
-  const managerReasons = useMemo(
-    () => agentProduct === "ooo" ? getBusinessValidation("ooo", state.business).managerReasons : [],
-    [agentProduct, state.business],
-  );
+  const managerReasons = useMemo(() => {
+    if (agentProduct === "ooo") return getBusinessValidation("ooo", state.business).managerReasons;
+
+    return getApplicantValidation(
+      "ip",
+      { ...state.passport, citizenship, documentType },
+      clientEmail,
+      clientPhone,
+      state.business,
+    ).managerReasons;
+  }, [agentProduct, citizenship, clientEmail, clientPhone, documentType, state.business, state.passport]);
 
   useEffect(() => {
     if (!availableRegimes.some((item) => item.id === tax)) {
@@ -105,11 +115,12 @@ export default function ManagerWorkspace() {
     isValidEmail(clientEmail) &&
     okvedText.trim().length > 5 &&
     address.trim().length >= 5 &&
-    (agentProduct === "ip" ||
-      (companyName.trim().length > 2 &&
+    (agentProduct === "ip"
+      ? Boolean(citizenship && documentType)
+      : companyName.trim().length > 2 &&
         founderAddress.trim().length >= 5 &&
         directorPosition.trim().length > 2 &&
-        directorTerm.trim().length > 0));
+        directorTerm.trim().length > 0);
 
   const handleSign = () => {
     const okvedCodes = okvedText
@@ -130,6 +141,8 @@ export default function ManagerWorkspace() {
         lastName: lastName || state.passport.lastName,
         firstName: firstName || state.passport.firstName,
         middleName: middleNameParts.join(" ") || state.passport.middleName,
+        citizenship,
+        documentType,
         inn: clientInn,
         registrationAddress: agentProduct === "ip" ? address : founderAddress,
       },
@@ -317,6 +330,35 @@ export default function ManagerWorkspace() {
                         className="h-10 bg-white"
                       />
                     </div>
+                    {agentProduct === "ip" && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>Гражданство</Label>
+                          <Select value={citizenship} onValueChange={(value) => setCitizenship(value as ApplicantCitizenship)}>
+                            <SelectTrigger className="h-10 bg-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ru">Гражданин РФ</SelectItem>
+                              <SelectItem value="foreign">Иностранный гражданин</SelectItem>
+                              <SelectItem value="stateless">Лицо без гражданства</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Документ</Label>
+                          <Select value={documentType} onValueChange={(value) => setDocumentType(value as IdentityDocumentType)}>
+                            <SelectTrigger className="h-10 bg-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="passport_rf">Паспорт гражданина РФ</SelectItem>
+                              <SelectItem value="other">Иной документ</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </>
+                    )}
                     {agentProduct === "ooo" && (
                       <div className="space-y-2 sm:col-span-2">
                         <Label htmlFor="agent-company">Наименование ООО</Label>
@@ -374,6 +416,27 @@ export default function ManagerWorkspace() {
             </div>
 
             <div className="space-y-6 xl:col-span-7">
+              {agentProduct === "ip" && managerReasons.length > 0 && (
+                <Card className="border-0 shadow-sm ring-1 ring-gray-200">
+                  <CardHeader className="border-b border-gray-100 bg-amber-50/70 pb-4">
+                    <CardTitle className="flex items-center gap-2 text-base font-semibold text-amber-950">
+                      <AlertCircle className="h-4 w-4" />
+                      Сложный ИП-сценарий
+                    </CardTitle>
+                    <CardDescription>
+                      Причины перевода к менеджеру по данным Р21001.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <ul className="list-disc space-y-1 pl-4 text-sm text-amber-900">
+                      {managerReasons.map((reason) => (
+                        <li key={reason}>{reason}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+
               {agentProduct === "ooo" && (
                 <Card className="border-0 shadow-sm ring-1 ring-gray-200">
                   <CardHeader className="border-b border-gray-100 bg-amber-50/70 pb-4">

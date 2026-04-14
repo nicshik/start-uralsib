@@ -30,6 +30,15 @@ export default function Step3Review() {
   const legalAddress = state.business.addressIsFounder === false ? state.business.legalAddress : state.business.founderRegistrationAddress;
   const registrationAddress = isOoo ? state.business.founderRegistrationAddress : state.passport.registrationAddress;
   const charterLabel = state.business.charterType === "custom" ? "Свой устав / документы" : "Сгенерировать по шаблону";
+  const citizenshipLabel = {
+    ru: "Гражданин РФ",
+    foreign: "Иностранный гражданин",
+    stateless: "Лицо без гражданства",
+  }[state.passport.citizenship || "ru"];
+  const documentTypeLabel = {
+    passport_rf: "Паспорт гражданина РФ",
+    other: "Иной документ",
+  }[state.passport.documentType || "passport_rf"];
 
   const handleSubmit = () => {
     setSubmitting(true);
@@ -177,6 +186,18 @@ export default function Step3Review() {
                 <div className="col-span-2">
                   <span className="text-muted-foreground">Место рождения: </span>
                   <span className="font-medium">{state.passport.birthPlace}</span>
+                </div>
+              )}
+              {!isOoo && state.passport.citizenship && (
+                <div>
+                  <span className="text-muted-foreground">Гражданство: </span>
+                  <span className="font-medium">{citizenshipLabel}</span>
+                </div>
+              )}
+              {!isOoo && state.passport.documentType && (
+                <div>
+                  <span className="text-muted-foreground">Документ: </span>
+                  <span className="font-medium">{documentTypeLabel}</span>
                 </div>
               )}
               <div>

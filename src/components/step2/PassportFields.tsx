@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Check, User, CreditCard } from "lucide-react";
-import type { PassportData } from "@/context/AppContext";
+import type { PassportData, ProductType } from "@/context/AppContext";
 
 interface FieldDef {
   key: string;
@@ -12,7 +12,7 @@ interface FieldDef {
   placeholder?: string;
 }
 
-const sections: { title: string; icon: React.ElementType; fields: FieldDef[] }[] = [
+const baseSections: { title: string; icon: React.ElementType; fields: FieldDef[] }[] = [
   {
     title: "Личные данные",
     icon: User,
@@ -40,12 +40,30 @@ const sections: { title: string; icon: React.ElementType; fields: FieldDef[] }[]
 
 interface Props {
   passport: PassportData;
+  productType?: ProductType;
   ocrDone: boolean;
   onUpdate: (payload: Partial<PassportData>) => void;
 }
 
-export default function PassportFields({ passport, ocrDone, onUpdate }: Props) {
+export default function PassportFields({ passport, productType, ocrDone, onUpdate }: Props) {
   const data = passport as Record<string, string>;
+  const sections = productType === "ip"
+    ? baseSections.map((section) => {
+      if (section.title === "Личные данные") {
+        return {
+          ...section,
+          fields: [...section.fields, { key: "citizenship", label: "Гражданство", span: "full" as const }],
+        };
+      }
+      if (section.title === "Паспорт") {
+        return {
+          ...section,
+          fields: [{ key: "documentType", label: "Вид документа", span: "full" as const }, ...section.fields],
+        };
+      }
+      return section;
+    })
+    : baseSections;
 
   return (
     <div className="space-y-4">
@@ -72,6 +90,37 @@ export default function PassportFields({ passport, ocrDone, onUpdate }: Props) {
                         </SelectContent>
                       </Select>
                       {ocrDone && data[f.key] && (
+                        <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                      )}
+                    </div>
+                  ) : f.key === "citizenship" ? (
+                    <div className="flex items-center gap-1.5">
+                      <Select value={passport.citizenship || ""} onValueChange={(val) => onUpdate({ citizenship: val as PassportData["citizenship"] })}>
+                        <SelectTrigger className="text-sm h-10">
+                          <SelectValue placeholder="Выберите" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ru">Гражданин РФ</SelectItem>
+                          <SelectItem value="foreign">Иностранный гражданин</SelectItem>
+                          <SelectItem value="stateless">Лицо без гражданства</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {ocrDone && passport.citizenship && (
+                        <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                      )}
+                    </div>
+                  ) : f.key === "documentType" ? (
+                    <div className="flex items-center gap-1.5">
+                      <Select value={passport.documentType || ""} onValueChange={(val) => onUpdate({ documentType: val as PassportData["documentType"] })}>
+                        <SelectTrigger className="text-sm h-10">
+                          <SelectValue placeholder="Выберите" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="passport_rf">Паспорт гражданина РФ</SelectItem>
+                          <SelectItem value="other">Иной документ</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {ocrDone && passport.documentType && (
                         <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
                       )}
                     </div>
