@@ -60,8 +60,8 @@ export default function PassportFields({ passport, ocrDone, onUpdate }: Props) {
               {section.fields.map((f) => (
                 <div key={f.key} className={`space-y-1 ${f.span === "full" ? "col-span-2" : ""}`}>
                   <Label className="text-xs text-muted-foreground">{f.label}</Label>
-                  <div className="relative">
-                    {f.key === "gender" ? (
+                  {f.key === "gender" ? (
+                    <div className="flex items-center gap-1.5">
                       <Select value={data[f.key] || ""} onValueChange={(val) => onUpdate({ [f.key]: val })}>
                         <SelectTrigger className="text-sm h-10">
                           <SelectValue placeholder="Выберите" />
@@ -71,18 +71,23 @@ export default function PassportFields({ passport, ocrDone, onUpdate }: Props) {
                           <SelectItem value="Женский">Женский</SelectItem>
                         </SelectContent>
                       </Select>
-                    ) : (
+                      {ocrDone && data[f.key] && (
+                        <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="relative">
                       <Input
                         value={data[f.key] || ""}
                         placeholder={f.placeholder}
                         onChange={(e) => onUpdate({ [f.key]: e.target.value })}
                         className="text-sm h-10 pr-8"
                       />
-                    )}
-                    {ocrDone && data[f.key] && (
-                      <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-emerald-500" />
-                    )}
-                  </div>
+                      {ocrDone && data[f.key] && (
+                        <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-emerald-500" />
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
