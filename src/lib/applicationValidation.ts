@@ -52,9 +52,6 @@ export function getManagerReasons(business: BusinessData): string[] {
   if (business.charterType === "custom") {
     reasons.push("Менеджер проверит устав и поможет подготовить комплект документов");
   }
-  if (business.requiresManager && reasons.length === 0) {
-    reasons.push(business.managerReason || "Требуется помощь менеджера");
-  }
 
   return reasons;
 }

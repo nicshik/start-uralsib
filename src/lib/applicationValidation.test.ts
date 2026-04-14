@@ -104,6 +104,17 @@ describe("application validation", () => {
     ]);
   });
 
+  it("ignores stale manager flags when current ООО fields are supported", () => {
+    const result = getBusinessValidation("ooo", {
+      ...validOooBusiness,
+      requiresManager: true,
+      managerReason: "Если руководитель не является учредителем, менеджер уточнит данные для документов",
+    });
+
+    expect(result.isComplete).toBe(true);
+    expect(result.managerReasons).toEqual([]);
+  });
+
   it("requires primary OKVED for ИП business step", () => {
     const result = getBusinessValidation("ip", {
       okvedCodes: ["62.01"],
