@@ -193,7 +193,7 @@ export default function Landing() {
               <UserCheck className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">Помочь выбрать</p>
+              <p className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">Помощь с выбором</p>
               <p className="text-sm text-muted-foreground mt-1">Ответьте на 4 вопроса — подскажем подходящую форму</p>
             </div>
           </button>
