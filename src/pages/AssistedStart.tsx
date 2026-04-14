@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2, Briefcase, ClipboardCheck, MonitorUp, UserCheck } from "lucide-react";
+import { Building2, Briefcase, ClipboardCheck, MonitorUp } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
-import { ProductQuiz } from "@/components/ProductQuiz";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useApp } from "@/context/AppContext";
@@ -15,7 +14,6 @@ export default function AssistedStart() {
   const navigate = useNavigate();
   const { dispatch, clearDraft } = useApp();
   const [isSmsOpen, setIsSmsOpen] = useState(false);
-  const [isQuizOpen, setIsQuizOpen] = useState(false);
 
   useEffect(() => {
     dispatch({ type: "SET_FLOW", payload: "manager" });
@@ -38,17 +36,6 @@ export default function AssistedStart() {
     navigate("/office-agent");
   };
 
-  const handleQuizChoice = (choice: "ip" | "ooo" | "help") => {
-    setIsQuizOpen(false);
-    setTimeout(() => {
-      if (choice === "help") {
-        openWorkspace("expert_help");
-        return;
-      }
-      startAssistedFlow(choice);
-    }, 150);
-  };
-
   return (
     <div className="min-h-screen bg-brand-light">
       <AppHeader showBack backTo="/" />
@@ -66,7 +53,7 @@ export default function AssistedStart() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             <button
               onClick={() => startAssistedFlow("ip")}
               className="rounded-lg border border-border bg-white p-5 text-left shadow-sm transition-all hover:border-primary hover:shadow-md"
@@ -93,21 +80,6 @@ export default function AssistedStart() {
               </p>
             </button>
 
-            <button
-              onClick={() => {
-                trackEvent("assisted_quiz_opened", { flowType: "manager" });
-                setIsQuizOpen(true);
-              }}
-              className="rounded-lg border border-border bg-white p-5 text-left shadow-sm transition-all hover:border-primary hover:shadow-md"
-            >
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-light-purple">
-                <UserCheck className="h-5 w-5 text-primary" />
-              </div>
-              <p className="font-semibold">Помочь выбрать</p>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                Пройдите короткие вопросы вместе с клиентом.
-              </p>
-            </button>
           </div>
 
           <Accordion type="single" collapsible className="rounded-lg border border-border bg-white px-4">
@@ -145,7 +117,6 @@ export default function AssistedStart() {
       </main>
 
       <SmsAuthDialog open={isSmsOpen} onOpenChange={setIsSmsOpen} />
-      <ProductQuiz open={isQuizOpen} onOpenChange={setIsQuizOpen} onResultChoice={handleQuizChoice} />
     </div>
   );
 }
