@@ -18,6 +18,7 @@ import Step2Passport from "./pages/Step2Passport";
 import Step3Review from "./pages/Step3Review";
 import Success from "./pages/Success";
 import ManagerRequest from "./pages/ManagerRequest";
+import RkoRequest from "./pages/RkoRequest";
 import NotFound from "./pages/NotFound";
 import ManagerWorkspace from "./pages/ManagerWorkspace";
 
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/step/3" element={<RouteGuard requireSms requireStep={2}><Step3Review /></RouteGuard>} />
             <Route path="/manager-request" element={<RouteGuard requireSms><ManagerRequest /></RouteGuard>} />
             <Route path="/success" element={<RouteGuard requireSms><Success /></RouteGuard>} />
+            <Route path="/rko-request" element={<RouteGuard requireSms><RkoRequest /></RouteGuard>} />
             <Route path="/office-agent" element={<ManagerWorkspace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
