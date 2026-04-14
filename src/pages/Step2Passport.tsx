@@ -8,7 +8,6 @@ import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
-import { AssistedModeBanner } from "@/components/AssistedModeBanner";
 
 import OcrCapture from "@/components/step2/OcrCapture";
 import OcrProgress from "@/components/step2/OcrProgress";
@@ -64,8 +63,6 @@ export default function Step2Passport() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        <AssistedModeBanner />
-
         {ocrPhase === "idle" && !manualMode && (
           <OcrCapture onStartOcr={startOcr} onManualMode={() => { setManualMode(true); trackEvent("manual_entry_selected", { flowType: state.flowType }); }} />
         )}

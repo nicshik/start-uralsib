@@ -15,7 +15,6 @@ import { MicroReinforcement } from "@/components/MicroReinforcement";
 import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles, Building2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
-import { AssistedModeBanner } from "@/components/AssistedModeBanner";
 
 type SubStep = "tax" | "okved" | "ooo";
 
@@ -115,8 +114,6 @@ export default function Step1Business() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        <AssistedModeBanner />
-
         {showComplete && (
           <MicroReinforcement message="Шаг 1 готов. Осталось подтвердить паспорт" />
         )}
