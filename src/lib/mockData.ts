@@ -13,6 +13,9 @@ export const MOCK_PASSPORT_DATA = {
   issuedBy: "Отделом УФМС России по гор. Москве по району Тверской",
   issueDate: "20.05.2010",
   divisionCode: "770-045",
+  inn: "770012345678",
+  snils: "123-456-789 00",
+  registrationAddress: "г. Москва, ул. Тверская, д. 1, кв. 12",
 };
 
 export const TAX_REGIMES = [

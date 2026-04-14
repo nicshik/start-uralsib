@@ -8,15 +8,29 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { MicroReinforcement } from "@/components/MicroReinforcement";
-import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles, Building2 } from "lucide-react";
+import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles, Building2, AlertCircle } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
+import { getBusinessValidation, getCompanyFullName } from "@/lib/applicationValidation";
+import type { BusinessData } from "@/context/AppContext";
 
 type SubStep = "tax" | "okved" | "ooo";
+
+const DIRECTOR_TERMS = [
+  { value: "1 год", label: "1 год" },
+  { value: "3 года", label: "3 года" },
+  { value: "5 лет", label: "5 лет" },
+  { value: "бессрочно", label: "Бессрочно" },
+];
+
+const getGeneratedFullName = (business: BusinessData, companyName: string) =>
+  getCompanyFullName({ ...business, companyName, companyNameFull: "" });
 
 export default function Step1Business() {
   const navigate = useNavigate();
@@ -28,12 +42,11 @@ export default function Step1Business() {
   const [showAiSuggest, setShowAiSuggest] = useState(false);
   const isOoo = state.productType === "ooo";
 
-  // Determine which sub-step to show
   const getSubStep = (): SubStep => {
     if (!state.business.taxRegime) return "tax";
     if (state.business.okvedCodes.length === 0) return "okved";
-    if (isOoo && !state.business.companyName) return "ooo";
-    return "okved"; // default back to okved for editing
+    if (isOoo) return "ooo";
+    return "okved";
   };
   const [subStep, setSubStep] = useState<SubStep>(getSubStep);
 
@@ -41,7 +54,25 @@ export default function Step1Business() {
     trackEvent("page_view", { page: "step1_business", flowType: state.flowType });
   }, [state.flowType]);
 
-  const showManagerPrompt = isOoo && state.business.directorIsFounder === false;
+  useEffect(() => {
+    if (!isOoo) return;
+
+    const defaults: Partial<BusinessData> = {};
+    if (!state.business.charterCapital) defaults.charterCapital = "10000";
+    if (!state.business.directorPosition) defaults.directorPosition = "Генеральный директор";
+    if (!state.business.charterType) defaults.charterType = "generated";
+    if (state.business.hasSeal === undefined) defaults.hasSeal = false;
+
+    if (Object.keys(defaults).length > 0) {
+      dispatch({ type: "UPDATE_BUSINESS", payload: defaults });
+    }
+  }, [dispatch, isOoo, state.business]);
+
+  const businessValidation = useMemo(
+    () => getBusinessValidation(state.productType, state.business),
+    [state.productType, state.business],
+  );
+  const showManagerPrompt = isOoo && businessValidation.managerReasons.length > 0;
 
   const filteredCodes = useMemo(() => {
     let codes = OKVED_CODES;
@@ -58,37 +89,81 @@ export default function Step1Business() {
     return codes;
   }, [search, showAllCodes, sectionFilter]);
 
+  const updateBusiness = (payload: Partial<BusinessData>) => {
+    const nextBusiness = { ...state.business, ...payload };
+    const managerReasons = getBusinessValidation("ooo", nextBusiness).managerReasons;
+    dispatch({
+      type: "UPDATE_BUSINESS",
+      payload: {
+        ...payload,
+        requiresManager: managerReasons.length > 0,
+        managerReason: managerReasons[0],
+      },
+    });
+  };
+
+  const updateCompanyName = (companyName: string) => {
+    const previousGeneratedName = getGeneratedFullName(state.business, state.business.companyName || "");
+    const payload: Partial<BusinessData> = { companyName };
+    if (!state.business.companyNameFull || state.business.companyNameFull === previousGeneratedName) {
+      payload.companyNameFull = getGeneratedFullName(state.business, companyName);
+    }
+    updateBusiness(payload);
+  };
+
   const toggleOkved = (code: string) => {
     const current = state.business.okvedCodes;
     const updated = current.includes(code)
       ? current.filter((c) => c !== code)
       : [...current, code];
-    dispatch({ type: "UPDATE_BUSINESS", payload: { okvedCodes: updated } });
+    const primaryOkvedCode = current.includes(code)
+      ? state.business.primaryOkvedCode === code
+        ? updated[0]
+        : state.business.primaryOkvedCode
+      : state.business.primaryOkvedCode || code;
+
+    dispatch({ type: "UPDATE_BUSINESS", payload: { okvedCodes: updated, primaryOkvedCode } });
     trackEvent("okved_toggled", { code, selected: !current.includes(code), flowType: state.flowType });
+  };
+
+  const setPrimaryOkved = (code: string) => {
+    dispatch({ type: "UPDATE_BUSINESS", payload: { primaryOkvedCode: code } });
+    trackEvent("primary_okved_selected", { code, flowType: state.flowType });
   };
 
   const setTax = (id: string) => {
     dispatch({ type: "UPDATE_BUSINESS", payload: { taxRegime: id } });
     trackEvent("tax_selected", { regime: id, flowType: state.flowType });
-    // Auto-advance to next sub-step
     setTimeout(() => setSubStep("okved"), 300);
   };
 
-  const canProceed =
-    state.business.okvedCodes.length > 0 &&
+  const okvedReady = Boolean(
     state.business.taxRegime &&
-    (!isOoo || subStep !== "ooo" || state.business.companyName) &&
-    !showManagerPrompt;
+    state.business.okvedCodes.length > 0 &&
+    state.business.primaryOkvedCode &&
+    state.business.okvedCodes.includes(state.business.primaryOkvedCode),
+  );
+  const canProceed =
+    (subStep === "tax" && Boolean(state.business.taxRegime)) ||
+    (subStep === "okved" && okvedReady) ||
+    (subStep === "ooo" && businessValidation.isComplete);
 
   const handleNext = () => {
-    if (subStep === "okved" && isOoo && !state.business.companyName) {
+    if (subStep === "tax" && state.business.taxRegime) {
+      setSubStep("okved");
+      return;
+    }
+    if (subStep === "okved" && isOoo) {
       setSubStep("ooo");
       return;
     }
+    if (!businessValidation.isComplete) return;
+
     dispatch({ type: "SET_STEP", payload: 2 });
     trackEvent("step1_completed", {
       okvedCount: state.business.okvedCodes.length,
       taxRegime: state.business.taxRegime,
+      primaryOkved: state.business.primaryOkvedCode,
       flowType: state.flowType,
     });
     if (state.flowType === "manager") {
@@ -118,7 +193,6 @@ export default function Step1Business() {
           <MicroReinforcement message="Шаг 1 готов. Осталось подтвердить паспорт" />
         )}
 
-        {/* Sub-step indicator */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <button
             onClick={() => setSubStep("tax")}
@@ -130,7 +204,7 @@ export default function Step1Business() {
           <div className="w-4 h-px bg-border" />
           <button
             onClick={() => state.business.taxRegime ? setSubStep("okved") : undefined}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${subStep === "okved" ? "bg-primary text-white font-medium" : state.business.okvedCodes.length > 0 ? "bg-accent text-accent-foreground" : "bg-muted"}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${subStep === "okved" ? "bg-primary text-white font-medium" : state.business.okvedCodes.length > 0 && state.business.primaryOkvedCode ? "bg-accent text-accent-foreground" : "bg-muted"}`}
           >
             <Briefcase className="h-3 w-3" />
             ОКВЭД {state.business.okvedCodes.length > 0 && `(${state.business.okvedCodes.length})`}
@@ -140,7 +214,7 @@ export default function Step1Business() {
               <div className="w-4 h-px bg-border" />
               <button
                 onClick={() => state.business.okvedCodes.length > 0 ? setSubStep("ooo") : undefined}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${subStep === "ooo" ? "bg-primary text-white font-medium" : state.business.companyName ? "bg-accent text-accent-foreground" : "bg-muted"}`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${subStep === "ooo" ? "bg-primary text-white font-medium" : businessValidation.isComplete ? "bg-accent text-accent-foreground" : "bg-muted"}`}
               >
                 Компания
               </button>
@@ -148,7 +222,6 @@ export default function Step1Business() {
           )}
         </div>
 
-        {/* SUB-STEP: Tax regime */}
         {subStep === "tax" && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div>
@@ -179,13 +252,12 @@ export default function Step1Business() {
           </section>
         )}
 
-        {/* SUB-STEP: OKVED */}
         {subStep === "okved" && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-xl font-bold tracking-tight">Чем будет заниматься {isOoo ? "компания" : "ваш бизнес"}?</h2>
-                <p className="text-sm text-muted-foreground mt-1">{isOoo ? "Выберите ОКВЭД-коды для устава ООО" : "Найдите свою сферу через поиск или выберите из списка"}</p>
+                <p className="text-sm text-muted-foreground mt-1">Выберите коды и отметьте основной вид деятельности для ФНС</p>
               </div>
               <button
                 className="text-xs text-primary flex items-center gap-1 hover:underline mt-1 shrink-0"
@@ -203,7 +275,6 @@ export default function Step1Business() {
               />
             )}
 
-            {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -219,7 +290,6 @@ export default function Step1Business() {
               )}
             </div>
 
-            {/* Section filter */}
             <div className="flex flex-wrap gap-1.5">
               <button
                 onClick={() => { setSectionFilter(null); setShowAllCodes(false); }}
@@ -238,17 +308,24 @@ export default function Step1Business() {
               ))}
             </div>
 
-            {/* Selected tags */}
             {state.business.okvedCodes.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {state.business.okvedCodes.map((code) => {
                   const found = OKVED_CODES.find((c) => c.code === code);
+                  const isPrimary = state.business.primaryOkvedCode === code;
                   return (
                     <span
                       key={code}
                       className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 text-xs font-medium"
                     >
-                      {code} {found && `— ${found.name.substring(0, 30)}${found.name.length > 30 ? "…" : ""}`}
+                      {code} {found && `- ${found.name.substring(0, 30)}${found.name.length > 30 ? "..." : ""}`}
+                      {isPrimary ? (
+                        <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] text-white">Основной</span>
+                      ) : (
+                        <button onClick={() => setPrimaryOkved(code)} className="text-[10px] hover:underline">
+                          Сделать основным
+                        </button>
+                      )}
                       <button onClick={() => toggleOkved(code)} className="hover:text-destructive transition-colors">
                         <X className="h-3 w-3" />
                       </button>
@@ -256,7 +333,7 @@ export default function Step1Business() {
                   );
                 })}
                 <button
-                  onClick={() => dispatch({ type: "UPDATE_BUSINESS", payload: { okvedCodes: [] } })}
+                  onClick={() => dispatch({ type: "UPDATE_BUSINESS", payload: { okvedCodes: [], primaryOkvedCode: undefined } })}
                   className="text-xs text-muted-foreground hover:text-foreground hover:underline px-2 py-1.5"
                 >
                   Сбросить все
@@ -264,7 +341,6 @@ export default function Step1Business() {
               </div>
             )}
 
-            {/* Code list */}
             <Card>
               <CardContent className="p-0">
                 <div className="divide-y max-h-80 overflow-y-auto">
@@ -282,6 +358,9 @@ export default function Step1Business() {
                         <div>
                           <span className="font-mono text-xs text-muted-foreground">{c.code}</span>{" "}
                           <span>{c.name}</span>
+                          {state.business.primaryOkvedCode === c.code && (
+                            <p className="text-xs text-primary mt-0.5">Основной вид деятельности</p>
+                          )}
                           {c.linked && (
                             <p className="text-xs text-muted-foreground mt-0.5">
                               + связанные: {c.linked.join(", ")}
@@ -313,63 +392,118 @@ export default function Step1Business() {
           </section>
         )}
 
-        {/* SUB-STEP: OOO extras */}
         {subStep === "ooo" && isOoo && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div>
               <h2 className="text-xl font-bold tracking-tight">Данные компании</h2>
-              <p className="text-sm text-muted-foreground mt-1">Заполните основные реквизиты ООО</p>
+              <p className="text-sm text-muted-foreground mt-1">Заполните данные для Р11001 и банковского пакета документов</p>
             </div>
             <Card>
-              <CardContent className="p-5 space-y-5">
-                {/* Company names */}
+              <CardContent className="p-5 space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-1">
                     <Building2 className="h-4 w-4 text-muted-foreground" />
                     <p className="text-sm font-semibold">Наименование</p>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm">Краткое наименование</Label>
+                    <Label className="text-sm">Краткое наименование *</Label>
                     <Input
                       placeholder='ООО "Ромашка"'
                       value={state.business.companyName || ""}
-                      onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { companyName: e.target.value } })}
+                      onChange={(e) => updateCompanyName(e.target.value)}
                       className="h-11 text-base"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm">Полное наименование</Label>
+                    <Label className="text-sm">Полное наименование *</Label>
                     <Input
                       placeholder='Общество с ограниченной ответственностью "Ромашка"'
                       value={state.business.companyNameFull || ""}
-                      onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { companyNameFull: e.target.value } })}
+                      onChange={(e) => updateBusiness({ companyNameFull: e.target.value })}
                       className="h-11 text-sm"
                     />
-                    <p className="text-xs text-muted-foreground">Автоматически сформируется из краткого, если оставить пустым</p>
+                    <p className="text-xs text-muted-foreground">Автоматически сформируется из краткого, но его нужно проверить.</p>
                   </div>
                 </div>
 
-                {/* Charter capital */}
                 <div className="space-y-2 pt-2 border-t">
-                  <Label className="text-sm">Уставной капитал, ₽</Label>
+                  <Label className="text-sm">Уставной капитал, ₽ *</Label>
                   <Input
                     type="number"
                     placeholder="10 000"
                     min={10000}
                     value={state.business.charterCapital || ""}
-                    onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { charterCapital: e.target.value } })}
+                    onChange={(e) => updateBusiness({ charterCapital: e.target.value })}
                     className="h-11 text-base"
                   />
                   <p className="text-xs text-muted-foreground">Минимум 10 000 ₽. Вносится в течение 4 месяцев после регистрации.</p>
                 </div>
 
-                {/* Legal address */}
+                <div className="space-y-4 pt-2 border-t">
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold">Учредитель</p>
+                    <p className="text-xs text-muted-foreground">Онлайн-подача ООО доступна для одного учредителя-гражданина РФ.</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">Количество учредителей *</Label>
+                    <RadioGroup
+                      value={state.business.founderCount || ""}
+                      onValueChange={(value) => updateBusiness({ founderCount: value as BusinessData["founderCount"] })}
+                      className="grid grid-cols-2 gap-2"
+                    >
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="one" />
+                        Один
+                      </Label>
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="multiple" />
+                        Несколько
+                      </Label>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">Гражданство учредителя *</Label>
+                    <RadioGroup
+                      value={state.business.founderCitizenship || ""}
+                      onValueChange={(value) => updateBusiness({ founderCitizenship: value as BusinessData["founderCitizenship"] })}
+                      className="grid grid-cols-2 gap-2"
+                    >
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="ru" />
+                        Гражданин РФ
+                      </Label>
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="foreign" />
+                        Иностранный гражданин
+                      </Label>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">Адрес регистрации учредителя в РФ *</Label>
+                    <Input
+                      placeholder="г. Москва, ул. Тверская, д. 1, кв. 12"
+                      value={state.business.founderRegistrationAddress || ""}
+                      onChange={(e) => updateBusiness({
+                        founderRegistrationAddress: e.target.value,
+                        legalAddress: state.business.addressIsFounder === false ? state.business.legalAddress : e.target.value,
+                      })}
+                      className="h-11 text-sm"
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-3 pt-2 border-t">
                   <div className="flex items-center justify-between">
                     <Label className="text-sm">Юр. адрес = адрес учредителя</Label>
                     <Switch
                       checked={state.business.addressIsFounder ?? true}
-                      onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { addressIsFounder: v } })}
+                      onCheckedChange={(v) => updateBusiness({
+                        addressIsFounder: v,
+                        legalAddress: v ? state.business.founderRegistrationAddress : state.business.legalAddress,
+                      })}
                     />
                   </div>
                   {!state.business.addressIsFounder && (
@@ -378,38 +512,127 @@ export default function Step1Business() {
                       <Input
                         placeholder="г. Москва, ул. Примерная, д. 1, оф. 101"
                         value={state.business.legalAddress || ""}
-                        onChange={(e) => dispatch({ type: "UPDATE_BUSINESS", payload: { legalAddress: e.target.value } })}
+                        onChange={(e) => updateBusiness({ legalAddress: e.target.value })}
                         className="h-11 text-sm"
                       />
-                      <p className="text-xs text-muted-foreground">Адрес, по которому будет зарегистрировано ООО</p>
+                      <p className="text-xs text-muted-foreground">Отдельный юридический адрес проверит менеджер.</p>
                     </div>
                   )}
                 </div>
 
-                {/* Director = founder */}
-                <div className="space-y-3 pt-2 border-t">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm">Директор = единственный учредитель</Label>
-                    <Switch
-                      checked={state.business.directorIsFounder ?? true}
-                      onCheckedChange={(v) => dispatch({ type: "UPDATE_BUSINESS", payload: { directorIsFounder: v } })}
-                    />
+                <div className="space-y-4 pt-2 border-t">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Руководитель является учредителем *</Label>
+                    <RadioGroup
+                      value={state.business.directorIsFounder === undefined ? "" : state.business.directorIsFounder ? "yes" : "no"}
+                      onValueChange={(value) => updateBusiness({ directorIsFounder: value === "yes" })}
+                      className="grid grid-cols-2 gap-2"
+                    >
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="yes" />
+                        Да
+                      </Label>
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="no" />
+                        Нет
+                      </Label>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label className="text-sm">Должность руководителя *</Label>
+                      <Input
+                        placeholder="Генеральный директор"
+                        value={state.business.directorPosition || ""}
+                        onChange={(e) => updateBusiness({ directorPosition: e.target.value })}
+                        className="h-11 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm">Срок избрания *</Label>
+                      <Select value={state.business.directorTerm || ""} onValueChange={(value) => updateBusiness({ directorTerm: value })}>
+                        <SelectTrigger className="h-11 bg-white">
+                          <SelectValue placeholder="Выберите срок" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DIRECTOR_TERMS.map((term) => (
+                            <SelectItem key={term.value} value={term.value}>
+                              {term.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
+
+                <div className="space-y-4 pt-2 border-t">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Устав *</Label>
+                    <RadioGroup
+                      value={state.business.charterType || "generated"}
+                      onValueChange={(value) => updateBusiness({ charterType: value as BusinessData["charterType"] })}
+                      className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+                    >
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="generated" />
+                        Сгенерировать по шаблону
+                      </Label>
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="custom" />
+                        Свой устав / документы
+                      </Label>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">Печать организации *</Label>
+                    <RadioGroup
+                      value={state.business.hasSeal ? "yes" : "no"}
+                      onValueChange={(value) => updateBusiness({ hasSeal: value === "yes" })}
+                      className="grid grid-cols-2 gap-2"
+                    >
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="no" />
+                        Без печати
+                      </Label>
+                      <Label className="flex cursor-pointer items-center gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                        <RadioGroupItem value="yes" />
+                        С печатью
+                      </Label>
+                    </RadioGroup>
+                  </div>
+                </div>
+
+                {businessValidation.missingFields.length > 0 && !showManagerPrompt && (
+                  <div className="rounded-card border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    <div className="mb-2 flex items-center gap-2 font-medium">
+                      <AlertCircle className="h-4 w-4" />
+                      Для отправки в ФНС осталось заполнить
+                    </div>
+                    <p>{businessValidation.missingFields.join(", ")}.</p>
+                  </div>
+                )}
 
                 {showManagerPrompt && (
                   <div className="rounded-card border border-primary bg-accent/50 p-4 space-y-3">
                     <div className="flex items-start gap-2">
                       <UserCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <div>
-                        <p className="font-medium text-sm">Несколько учредителей?</p>
+                        <p className="font-medium text-sm">Сложный ООО-сценарий</p>
                         <p className="text-sm text-muted-foreground">
-                          Если директор и учредитель — разные лица или учредителей несколько, менеджер поможет подготовить документы.
+                          Менеджер продолжит оформление, потому что этот случай требует проверки документов.
                         </p>
+                        <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
+                          {businessValidation.managerReasons.map((reason) => (
+                            <li key={reason}>{reason}</li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
-                    <Button size="sm" onClick={() => { trackEvent("manager_redirect", { reason: "director_not_founder", flowType: state.flowType }); navigate("/manager"); }}>
-                      Связаться с менеджером
+                    <Button size="sm" onClick={() => { trackEvent("manager_redirect", { reason: businessValidation.managerReasons[0], flowType: state.flowType }); navigate("/office-agent"); }}>
+                      Передать менеджеру
                     </Button>
                   </div>
                 )}

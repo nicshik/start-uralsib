@@ -2,18 +2,49 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail } from "lucide-react";
-import type { PassportData } from "@/context/AppContext";
+import type { BusinessData, PassportData, ProductType } from "@/context/AppContext";
 
 interface Props {
   passport: PassportData;
+  productType?: ProductType;
+  business?: BusinessData;
   email?: string;
   phone?: string;
   emailValid: boolean;
   onUpdate: (payload: Partial<PassportData>) => void;
+  onBusinessUpdate?: (payload: Partial<BusinessData>) => void;
+  onPhoneUpdate?: (phone: string) => void;
   onEmailUpdate: (email: string) => void;
 }
 
-export default function AdditionalFields({ passport, email, phone, emailValid, onUpdate, onEmailUpdate }: Props) {
+export default function AdditionalFields({
+  passport,
+  productType,
+  business,
+  email,
+  phone,
+  emailValid,
+  onUpdate,
+  onBusinessUpdate,
+  onPhoneUpdate,
+  onEmailUpdate,
+}: Props) {
+  const isOoo = productType === "ooo";
+  const registrationAddress = isOoo
+    ? business?.founderRegistrationAddress || passport.registrationAddress || ""
+    : passport.registrationAddress || "";
+  const registrationAddressLabel = isOoo ? "Адрес регистрации учредителя" : "Адрес регистрации";
+  const handleRegistrationAddressChange = (value: string) => {
+    if (isOoo && onBusinessUpdate) {
+      onBusinessUpdate({
+        founderRegistrationAddress: value,
+        legalAddress: business?.addressIsFounder === false ? business?.legalAddress : value,
+      });
+      return;
+    }
+    onUpdate({ registrationAddress: value });
+  };
+
   return (
     <Card>
       <CardContent className="p-4 space-y-4">
@@ -35,7 +66,12 @@ export default function AdditionalFields({ passport, email, phone, emailValid, o
           </div>
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">Телефон</Label>
-            <Input value={phone || ""} readOnly className="h-10 bg-muted text-sm text-muted-foreground" />
+            <Input
+              value={phone || ""}
+              onChange={(e) => onPhoneUpdate?.(e.target.value)}
+              readOnly={!onPhoneUpdate}
+              className={`h-10 text-sm ${onPhoneUpdate ? "" : "bg-muted text-muted-foreground"}`}
+            />
           </div>
           {email && !emailValid && (
             <p className="text-xs sm:col-span-2 text-destructive">
@@ -64,6 +100,16 @@ export default function AdditionalFields({ passport, email, phone, emailValid, o
               className="text-sm h-10"
             />
           </div>
+        </div>
+
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground">{registrationAddressLabel}</Label>
+          <Input
+            placeholder="Город, улица, дом, квартира"
+            value={registrationAddress}
+            onChange={(e) => handleRegistrationAddressChange(e.target.value)}
+            className="text-sm h-10"
+          />
         </div>
       </CardContent>
     </Card>

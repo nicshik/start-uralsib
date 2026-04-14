@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
+import { getApplicantValidation } from "@/lib/applicationValidation";
 import { MOCK_PASSPORT_DATA } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { ProgressHeader } from "@/components/ProgressHeader";
@@ -15,8 +16,6 @@ import PassportFields from "@/components/step2/PassportFields";
 import AdditionalFields from "@/components/step2/AdditionalFields";
 
 type OcrPhase = "idle" | "scanning" | "checking" | "done";
-
-const isValidEmail = (email?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() || "");
 
 export default function Step2Passport() {
   const navigate = useNavigate();
@@ -38,12 +37,19 @@ export default function Step2Passport() {
         type: "UPDATE_PASSPORT",
         payload: { ...MOCK_PASSPORT_DATA, ocrCompleted: true },
       });
-      trackEvent("ocr_completed", { fieldsAutoFilled: 8, flowType: state.flowType });
+      trackEvent("ocr_completed", { fieldsAutoFilled: Object.keys(MOCK_PASSPORT_DATA).length, flowType: state.flowType });
     }, 2000);
   };
 
-  const emailValid = isValidEmail(state.email);
-  const canProceed = (state.passport.ocrCompleted || manualMode) && emailValid;
+  const applicantValidation = getApplicantValidation(
+    state.productType,
+    state.passport,
+    state.email,
+    state.phone,
+    state.business,
+  );
+  const emailValid = !applicantValidation.missingFields.includes("Email");
+  const canProceed = (state.passport.ocrCompleted || manualMode) && applicantValidation.isComplete;
 
   const handleNext = () => {
     dispatch({ type: "SET_STEP", payload: 3 });
@@ -90,12 +96,22 @@ export default function Step2Passport() {
 
             <AdditionalFields
               passport={state.passport}
+              productType={state.productType}
+              business={state.business}
               email={state.email}
               phone={state.phone}
               emailValid={emailValid}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
+              onBusinessUpdate={(payload) => dispatch({ type: "UPDATE_BUSINESS", payload })}
+              onPhoneUpdate={(phone) => dispatch({ type: "SET_PHONE", payload: phone })}
               onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
             />
+
+            {!applicantValidation.isComplete && (
+              <div className="rounded-card border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                Для отправки в ФНС осталось заполнить: {applicantValidation.missingFields.join(", ")}.
+              </div>
+            )}
 
             <SupportBlock compact />
           </>

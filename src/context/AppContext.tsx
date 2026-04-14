@@ -2,16 +2,29 @@ import React, { createContext, useContext, useReducer, useEffect, useCallback } 
 
 export type ProductType = "ip" | "ooo" | "help";
 export type FlowType = "online" | "manager";
+export type FounderCount = "one" | "multiple";
+export type FounderCitizenship = "ru" | "foreign";
+export type CharterType = "generated" | "custom";
 
 export interface BusinessData {
   okvedCodes: string[];
+  primaryOkvedCode?: string;
   taxRegime?: string;
   companyName?: string;
   companyNameFull?: string;
   charterCapital?: string;
   legalAddress?: string;
+  founderCount?: FounderCount;
+  founderCitizenship?: FounderCitizenship;
+  founderRegistrationAddress?: string;
   directorIsFounder?: boolean;
   addressIsFounder?: boolean;
+  directorPosition?: string;
+  directorTerm?: string;
+  charterType?: CharterType;
+  hasSeal?: boolean;
+  requiresManager?: boolean;
+  managerReason?: string;
 }
 
 export interface PassportData {
@@ -28,6 +41,7 @@ export interface PassportData {
   divisionCode?: string;
   inn?: string;
   snils?: string;
+  registrationAddress?: string;
   ocrCompleted?: boolean;
 }
 
@@ -51,7 +65,13 @@ const initialState: AppState = {
   paperDocuments: false,
   smsVerified: false,
   currentStep: 0,
-  business: { okvedCodes: [], directorIsFounder: true, addressIsFounder: true },
+  business: {
+    okvedCodes: [],
+    charterCapital: "10000",
+    directorPosition: "Генеральный директор",
+    charterType: "generated",
+    hasSeal: false,
+  },
   passport: {},
   submitted: false,
 };

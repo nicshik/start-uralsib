@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
+import { getCompanyFullName } from "@/lib/applicationValidation";
 import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,8 +22,14 @@ export default function Step3Review() {
 
   const tax = TAX_REGIMES.find((t) => t.id === state.business.taxRegime);
   const selectedOkveds = OKVED_CODES.filter((c) => state.business.okvedCodes.includes(c.code));
+  const primaryOkved = OKVED_CODES.find((c) => c.code === state.business.primaryOkvedCode);
+  const secondaryOkveds = selectedOkveds.filter((c) => c.code !== state.business.primaryOkvedCode);
   const isOoo = state.productType === "ooo";
   const fullName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
+  const companyFullName = getCompanyFullName(state.business);
+  const legalAddress = state.business.addressIsFounder === false ? state.business.legalAddress : state.business.founderRegistrationAddress;
+  const registrationAddress = isOoo ? state.business.founderRegistrationAddress : state.passport.registrationAddress;
+  const charterLabel = state.business.charterType === "custom" ? "Свой устав / документы" : "Сгенерировать по шаблону";
 
   const handleSubmit = () => {
     setSubmitting(true);
@@ -76,8 +83,14 @@ export default function Step3Review() {
               )}
               {state.business.companyName && (
                 <div className="col-span-2">
-                  <span className="text-muted-foreground">Название: </span>
+                  <span className="text-muted-foreground">Краткое название: </span>
                   <span className="font-medium">{state.business.companyName}</span>
+                </div>
+              )}
+              {isOoo && companyFullName && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Полное название: </span>
+                  <span className="font-medium">{companyFullName}</span>
                 </div>
               )}
               {state.business.charterCapital && (
@@ -86,20 +99,58 @@ export default function Step3Review() {
                   <span className="font-medium">{Number(state.business.charterCapital).toLocaleString("ru-RU")} ₽</span>
                 </div>
               )}
-              {state.business.legalAddress && (
+              {legalAddress && (
                 <div className="col-span-2">
                   <span className="text-muted-foreground">Юр. адрес: </span>
-                  <span className="font-medium">{state.business.legalAddress}</span>
+                  <span className="font-medium">{legalAddress}</span>
+                </div>
+              )}
+              {isOoo && (
+                <>
+                  <div>
+                    <span className="text-muted-foreground">Учредители: </span>
+                    <span className="font-medium">{state.business.founderCount === "multiple" ? "Несколько" : "Один"}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Гражданство: </span>
+                    <span className="font-medium">{state.business.founderCitizenship === "foreign" ? "Иностранный гражданин" : "Гражданин РФ"}</span>
+                  </div>
+                  {state.business.directorPosition && (
+                    <div>
+                      <span className="text-muted-foreground">Руководитель: </span>
+                      <span className="font-medium">{state.business.directorPosition}</span>
+                    </div>
+                  )}
+                  {state.business.directorTerm && (
+                    <div>
+                      <span className="text-muted-foreground">Срок: </span>
+                      <span className="font-medium">{state.business.directorTerm}</span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-muted-foreground">Устав: </span>
+                    <span className="font-medium">{charterLabel}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Печать: </span>
+                    <span className="font-medium">{state.business.hasSeal ? "С печатью" : "Без печати"}</span>
+                  </div>
+                </>
+              )}
+              {primaryOkved && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Основной ОКВЭД: </span>
+                  <span className="font-medium">{primaryOkved.code} — {primaryOkved.name}</span>
                 </div>
               )}
             </div>
-            {selectedOkveds.length > 0 && (
+            {secondaryOkveds.length > 0 && (
               <div className="text-xs text-muted-foreground pt-1 space-y-0.5">
-                <p>ОКВЭД:</p>
-                {selectedOkveds.slice(0, 5).map((c) => (
+                <p>Дополнительные ОКВЭД:</p>
+                {secondaryOkveds.slice(0, 5).map((c) => (
                   <p key={c.code}>{c.code} — {c.name}</p>
                 ))}
-                {selectedOkveds.length > 5 && <p>и ещё {selectedOkveds.length - 5}</p>}
+                {secondaryOkveds.length > 5 && <p>и ещё {secondaryOkveds.length - 5}</p>}
               </div>
             )}
           </div>
@@ -162,6 +213,12 @@ export default function Step3Review() {
                   <span className="font-medium">{state.passport.snils}</span>
                 </div>
               )}
+              {registrationAddress && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">{isOoo ? "Адрес регистрации учредителя: " : "Адрес регистрации: "}</span>
+                  <span className="font-medium">{registrationAddress}</span>
+                </div>
+              )}
               {state.email && (
                 <div className="col-span-2">
                   <span className="text-muted-foreground">Email: </span>
@@ -182,7 +239,7 @@ export default function Step3Review() {
                 <span className="font-medium">{state.email}</span>
               </div>
               <p className="text-xs text-muted-foreground">
-                Используем email, указанный на предыдущем шаге. На него придут уведомления и документы по заявке.
+                Используем email, указанный на предыдущем шаге. Документы придут на бумаге только при выбранной отметке ниже.
               </p>
             </div>
             <button onClick={() => navigate("/step/2")} className="text-xs text-primary flex items-center gap-1 hover:underline shrink-0">

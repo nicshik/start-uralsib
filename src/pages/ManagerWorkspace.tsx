@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
+import { getBusinessValidation } from "@/lib/applicationValidation";
 import { TAX_REGIMES } from "@/lib/mockData";
 import {
+  AlertCircle,
   BadgeCheck,
   Building2,
   Briefcase,
@@ -28,7 +30,7 @@ const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.
 
 export default function ManagerWorkspace() {
   const navigate = useNavigate();
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
 
   const initialProduct: AgentProduct = state.productType === "ooo" ? "ooo" : "ip";
   const initialName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
@@ -53,7 +55,13 @@ export default function ManagerWorkspace() {
       ? state.business.okvedCodes.join("\n")
       : "62.01 Разработка компьютерного программного обеспечения",
   );
-  const [address, setAddress] = useState(state.business.legalAddress || "");
+  const [founderAddress, setFounderAddress] = useState(state.business.founderRegistrationAddress || state.passport.registrationAddress || "");
+  const [address, setAddress] = useState(state.business.legalAddress || state.business.founderRegistrationAddress || state.passport.registrationAddress || "");
+  const [directorPosition, setDirectorPosition] = useState(state.business.directorPosition || "Генеральный директор");
+  const [directorTerm, setDirectorTerm] = useState(state.business.directorTerm || "");
+  const [charterType, setCharterType] = useState(state.business.charterType || "generated");
+  const [hasSeal, setHasSeal] = useState(state.business.hasSeal ? "yes" : "no");
+  const [managerNotes, setManagerNotes] = useState(state.business.managerReason || "");
   const [tariff, setTariff] = useState("start");
   const [completed, setCompleted] = useState(false);
 
@@ -67,6 +75,10 @@ export default function ManagerWorkspace() {
   const availableRegimes = useMemo(
     () => TAX_REGIMES.filter((item) => item.availableFor.includes(agentProduct)),
     [agentProduct],
+  );
+  const managerReasons = useMemo(
+    () => agentProduct === "ooo" ? getBusinessValidation("ooo", state.business).managerReasons : [],
+    [agentProduct, state.business],
   );
 
   useEffect(() => {
@@ -93,9 +105,53 @@ export default function ManagerWorkspace() {
     isValidEmail(clientEmail) &&
     okvedText.trim().length > 5 &&
     address.trim().length >= 5 &&
-    (agentProduct === "ip" || companyName.trim().length > 2);
+    (agentProduct === "ip" ||
+      (companyName.trim().length > 2 &&
+        founderAddress.trim().length >= 5 &&
+        directorPosition.trim().length > 2 &&
+        directorTerm.trim().length > 0));
 
   const handleSign = () => {
+    const okvedCodes = okvedText
+      .split("\n")
+      .map((line) => line.trim().split(/\s+/)[0])
+      .filter(Boolean);
+    const primaryOkvedCode = state.business.primaryOkvedCode && okvedCodes.includes(state.business.primaryOkvedCode)
+      ? state.business.primaryOkvedCode
+      : okvedCodes[0];
+    const [lastName, firstName, ...middleNameParts] = clientName.trim().split(/\s+/);
+
+    dispatch({ type: "SET_PRODUCT", payload: agentProduct });
+    dispatch({ type: "SET_PHONE", payload: clientPhone });
+    dispatch({ type: "SET_EMAIL", payload: clientEmail });
+    dispatch({
+      type: "UPDATE_PASSPORT",
+      payload: {
+        lastName: lastName || state.passport.lastName,
+        firstName: firstName || state.passport.firstName,
+        middleName: middleNameParts.join(" ") || state.passport.middleName,
+        inn: clientInn,
+        registrationAddress: agentProduct === "ip" ? address : founderAddress,
+      },
+    });
+    dispatch({
+      type: "UPDATE_BUSINESS",
+      payload: {
+        companyName,
+        taxRegime: tax,
+        okvedCodes,
+        primaryOkvedCode,
+        founderRegistrationAddress: founderAddress,
+        legalAddress: address,
+        directorPosition,
+        directorTerm,
+        charterType: charterType as "generated" | "custom",
+        hasSeal: hasSeal === "yes",
+        requiresManager: agentProduct === "ooo" && managerReasons.length > 0,
+        managerReason: managerNotes || managerReasons[0],
+      },
+    });
+
     trackEvent("office_agent_completed", {
       flowType: state.flowType,
       source: hasOnlineData ? "draft_or_submitted" : "office_new",
@@ -103,6 +159,8 @@ export default function ManagerWorkspace() {
       tariff,
       tax,
       emailProvided: true,
+      complexOoo: agentProduct === "ooo" && managerReasons.length > 0,
+      managerNotesProvided: managerNotes.trim().length > 0,
     });
     trackEvent("manager_workspace_completed", { flowType: state.flowType });
     setCompleted(true);
@@ -316,6 +374,104 @@ export default function ManagerWorkspace() {
             </div>
 
             <div className="space-y-6 xl:col-span-7">
+              {agentProduct === "ooo" && (
+                <Card className="border-0 shadow-sm ring-1 ring-gray-200">
+                  <CardHeader className="border-b border-gray-100 bg-amber-50/70 pb-4">
+                    <CardTitle className="flex items-center gap-2 text-base font-semibold text-amber-950">
+                      <AlertCircle className="h-4 w-4" />
+                      Сложный ООО-сценарий
+                    </CardTitle>
+                    <CardDescription>
+                      Причины перевода и поля, которые менеджер проверяет перед подготовкой пакета.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4 pt-4">
+                    {managerReasons.length > 0 ? (
+                      <ul className="list-disc space-y-1 pl-4 text-sm text-amber-900">
+                        {managerReasons.map((reason) => (
+                          <li key={reason}>{reason}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-slate-500">Ограничений онлайн-сценария не отмечено, но данные ООО нужно сверить перед подписанием.</p>
+                    )}
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="agent-founder-address">Адрес регистрации учредителя</Label>
+                        <Input
+                          id="agent-founder-address"
+                          value={founderAddress}
+                          onChange={(event) => setFounderAddress(event.target.value)}
+                          placeholder="Адрес по паспорту"
+                          className="h-10 bg-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="agent-director-position">Должность руководителя</Label>
+                        <Input
+                          id="agent-director-position"
+                          value={directorPosition}
+                          onChange={(event) => setDirectorPosition(event.target.value)}
+                          placeholder="Генеральный директор"
+                          className="h-10 bg-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="agent-director-term">Срок избрания</Label>
+                        <Input
+                          id="agent-director-term"
+                          value={directorTerm}
+                          onChange={(event) => setDirectorTerm(event.target.value)}
+                          placeholder="Например, 5 лет"
+                          className="h-10 bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label>Устав</Label>
+                        <RadioGroup value={charterType} onValueChange={setCharterType} className="grid gap-2">
+                          <Label className="flex cursor-pointer items-center gap-2 rounded-md border bg-white p-3 text-sm [&:has([data-state=checked])]:border-[#6440BF]">
+                            <RadioGroupItem value="generated" />
+                            Сгенерировать по шаблону
+                          </Label>
+                          <Label className="flex cursor-pointer items-center gap-2 rounded-md border bg-white p-3 text-sm [&:has([data-state=checked])]:border-[#6440BF]">
+                            <RadioGroupItem value="custom" />
+                            Свой устав / документы
+                          </Label>
+                        </RadioGroup>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Печать</Label>
+                        <RadioGroup value={hasSeal} onValueChange={setHasSeal} className="grid gap-2">
+                          <Label className="flex cursor-pointer items-center gap-2 rounded-md border bg-white p-3 text-sm [&:has([data-state=checked])]:border-[#6440BF]">
+                            <RadioGroupItem value="no" />
+                            Без печати
+                          </Label>
+                          <Label className="flex cursor-pointer items-center gap-2 rounded-md border bg-white p-3 text-sm [&:has([data-state=checked])]:border-[#6440BF]">
+                            <RadioGroupItem value="yes" />
+                            С печатью
+                          </Label>
+                        </RadioGroup>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-manager-notes">Комментарий менеджера</Label>
+                      <Textarea
+                        id="agent-manager-notes"
+                        value={managerNotes}
+                        onChange={(event) => setManagerNotes(event.target.value)}
+                        placeholder="Что проверить перед подписанием"
+                        className="min-h-20 bg-white text-sm"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               <Card className="border-0 shadow-sm ring-1 ring-gray-200">
                 <CardHeader className="bg-[#1E293B] text-white">
                   <CardTitle className="flex items-center gap-2 text-lg">
