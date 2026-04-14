@@ -37,11 +37,11 @@ export default function AdditionalFields({ passport, email, phone, emailValid, o
             <Label className="text-xs text-muted-foreground">Телефон</Label>
             <Input value={phone || ""} readOnly className="h-10 bg-muted text-sm text-muted-foreground" />
           </div>
-          <p className={`text-xs sm:col-span-2 ${email && !emailValid ? "text-destructive" : "text-muted-foreground"}`}>
-            {email && !emailValid
-              ? "Введите корректный email"
-              : "На этот email придут уведомления по заявке и документы сервиса."}
-          </p>
+          {email && !emailValid && (
+            <p className="text-xs sm:col-span-2 text-destructive">
+              Введите корректный email
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-x-3 gap-y-3">
