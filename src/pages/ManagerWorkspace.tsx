@@ -557,7 +557,7 @@ export default function ManagerWorkspace() {
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
                         <Label>Устав</Label>
-                        <RadioGroup value={charterType} onValueChange={setCharterType} className="grid gap-2">
+                        <RadioGroup value={charterType} onValueChange={(v) => setCharterType(v as "custom" | "generated")} className="grid gap-2">
                           <Label className="flex cursor-pointer items-center gap-2 rounded-md border bg-white p-3 text-sm [&:has([data-state=checked])]:border-[#6440BF]">
                             <RadioGroupItem value="generated" />
                             Сгенерировать по шаблону
