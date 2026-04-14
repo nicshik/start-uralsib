@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Check, User, CreditCard } from "lucide-react";
 import type { PassportData } from "@/context/AppContext";
 
@@ -60,12 +61,24 @@ export default function PassportFields({ passport, ocrDone, onUpdate }: Props) {
                 <div key={f.key} className={`space-y-1 ${f.span === "full" ? "col-span-2" : ""}`}>
                   <Label className="text-xs text-muted-foreground">{f.label}</Label>
                   <div className="relative">
-                    <Input
-                      value={data[f.key] || ""}
-                      placeholder={f.placeholder}
-                      onChange={(e) => onUpdate({ [f.key]: e.target.value })}
-                      className="text-sm h-10 pr-8"
-                    />
+                    {f.key === "gender" ? (
+                      <Select value={data[f.key] || ""} onValueChange={(val) => onUpdate({ [f.key]: val })}>
+                        <SelectTrigger className="text-sm h-10">
+                          <SelectValue placeholder="Выберите" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Мужской">Мужской</SelectItem>
+                          <SelectItem value="Женский">Женский</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        value={data[f.key] || ""}
+                        placeholder={f.placeholder}
+                        onChange={(e) => onUpdate({ [f.key]: e.target.value })}
+                        className="text-sm h-10 pr-8"
+                      />
+                    )}
                     {ocrDone && data[f.key] && (
                       <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-emerald-500" />
                     )}
