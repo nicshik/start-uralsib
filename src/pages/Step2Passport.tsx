@@ -121,9 +121,9 @@ export default function Step2Passport() {
                 <div className="flex items-start gap-2">
                   <UserCheck className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                   <div>
-                    <p className="font-medium text-sm">Нужна помощь менеджера</p>
+                    <p className="font-medium text-sm">Нужна проверка менеджера</p>
                     <p className="text-sm text-muted-foreground">
-                      Этот ИП-сценарий требует проверки документов перед подачей.
+                      Заявку можно отправить сейчас. Менеджер позвонит и подскажет, какие документы нужны.
                     </p>
                     <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
                       {applicantValidation.managerReasons.map((reason) => (
@@ -135,11 +135,11 @@ export default function Step2Passport() {
                 <Button
                   size="sm"
                   onClick={() => {
-                    trackEvent("manager_redirect", { reason: applicantValidation.managerReasons[0], flowType: state.flowType });
-                    navigate("/office-agent");
+                    trackEvent("manager_request_opened", { reason: applicantValidation.managerReasons[0], flowType: state.flowType });
+                    navigate("/manager-request");
                   }}
                 >
-                  Передать менеджеру
+                  Проверить и отправить заявку
                 </Button>
               </div>
             )}

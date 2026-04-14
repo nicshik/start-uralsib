@@ -622,7 +622,7 @@ export default function Step1Business() {
                       <div>
                         <p className="font-medium text-sm">Сложный ООО-сценарий</p>
                         <p className="text-sm text-muted-foreground">
-                          Менеджер продолжит оформление, потому что этот случай требует проверки документов.
+                          Заявку можно отправить сейчас. Менеджер позвонит, проверит детали и поможет завершить оформление.
                         </p>
                         <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-muted-foreground">
                           {businessValidation.managerReasons.map((reason) => (
@@ -631,8 +631,8 @@ export default function Step1Business() {
                         </ul>
                       </div>
                     </div>
-                    <Button size="sm" onClick={() => { trackEvent("manager_redirect", { reason: businessValidation.managerReasons[0], flowType: state.flowType }); navigate("/office-agent"); }}>
-                      Передать менеджеру
+                    <Button size="sm" onClick={() => { trackEvent("manager_request_opened", { reason: businessValidation.managerReasons[0], flowType: state.flowType }); navigate("/manager-request"); }}>
+                      Проверить и отправить заявку
                     </Button>
                   </div>
                 )}
