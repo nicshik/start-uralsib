@@ -45,10 +45,10 @@ export default function AssistedStart() {
           <div className="space-y-3">
             <div className="max-w-2xl space-y-2">
               <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Заявка вместе с клиентом
+                Заявка на открытие ИП или ООО
               </h1>
               <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Используйте этот вход, когда клиент рядом с вами в офисе или на консультации. Форма остается клиентской, но визит сотрудника не смешивается с самостоятельной онлайн-воронкой.
+                Используйте этот вход, когда клиент рядом с вами в офисе или на консультации.
               </p>
             </div>
           </div>
@@ -80,7 +80,14 @@ export default function AssistedStart() {
             <AccordionItem value="help" className="border-0">
               <AccordionTrigger className="py-4 text-sm font-medium">Справка</AccordionTrigger>
               <AccordionContent>
-                <div className="grid gap-4 pb-4 md:grid-cols-2">
+                <div className="grid gap-4 pb-4 md:grid-cols-3">
+                  <div className="space-y-3 rounded-lg border border-[#E5E0EB] bg-brand-light p-4">
+                    <p className="font-semibold">Зачем нужна эта отдельная форма?</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      Форма остается клиентской, но визит сотрудника не смешивается с самостоятельной онлайн-воронкой.
+                    </p>
+                  </div>
+
                   <div className="space-y-3 rounded-lg border border-[#E5E0EB] bg-brand-light p-4">
                     <div className="flex items-center gap-2">
                       <ClipboardCheck className="h-5 w-5 text-emerald-600" />
