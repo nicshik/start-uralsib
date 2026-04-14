@@ -70,7 +70,7 @@ export default function RkoRequest() {
   const [submitted, setSubmitted] = useState(false);
 
   const cities = useMemo(() => Object.keys(OFFICES[region].cities), [region]);
-  const offices = useMemo(() => OFFICES[region].cities[city as keyof (typeof OFFICES)[Region]["cities"]] || [], [city, region]);
+  const offices = useMemo((): string[] => OFFICES[region].cities[city as keyof (typeof OFFICES)[Region]["cities"]] || [], [city, region]);
   const productLabel = state.productType === "ooo" ? "ООО" : "ИП";
 
   useEffect(() => {
