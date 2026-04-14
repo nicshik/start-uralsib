@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
-import type { ApplicantCitizenship, IdentityDocumentType } from "@/context/AppContext";
+import type { ApplicantCitizenship, BusinessData, IdentityDocumentType, PassportData } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { getApplicantValidation, getBusinessValidation } from "@/lib/applicationValidation";
 import { TAX_REGIMES } from "@/lib/mockData";
@@ -66,12 +66,14 @@ export default function ManagerWorkspace() {
   const [hasSeal, setHasSeal] = useState(state.business.hasSeal ? "yes" : "no");
   const [managerNotes, setManagerNotes] = useState(state.business.managerReason || "");
   const [tariff, setTariff] = useState("start");
-  const [completed, setCompleted] = useState(false);
+  const [completionStatus, setCompletionStatus] = useState<"office_crm_completed" | "submitted_to_fns" | null>(null);
 
   const sourceLabel = hasOnlineData
-    ? state.flowType === "manager"
-      ? "Заявка заполнена с сотрудником"
-      : "Клиент начал онлайн"
+    ? state.applicationStatus === "online_light_submitted"
+      ? "Предзаявка Online Light"
+      : state.applicationStatus === "assisted_submitted"
+        ? "Assisted-заявка"
+        : "Клиент начал онлайн"
     : "Новая заявка в офисе";
 
   const selectedTax = useMemo(() => TAX_REGIMES.find((item) => item.id === tax), [tax]);
@@ -79,17 +81,84 @@ export default function ManagerWorkspace() {
     () => TAX_REGIMES.filter((item) => item.availableFor.includes(agentProduct)),
     [agentProduct],
   );
-  const managerReasons = useMemo(() => {
-    if (agentProduct === "ooo") return getBusinessValidation("ooo", state.business).managerReasons;
-
-    return getApplicantValidation(
+  const okvedCodes = useMemo(
+    () => okvedText
+      .split("\n")
+      .map((line) => line.trim().split(/\s+/)[0])
+      .filter(Boolean),
+    [okvedText],
+  );
+  const primaryOkvedCode = state.business.primaryOkvedCode && okvedCodes.includes(state.business.primaryOkvedCode)
+    ? state.business.primaryOkvedCode
+    : okvedCodes[0];
+  const [lastName, firstName, ...middleNameParts] = clientName.trim().split(/\s+/);
+  const draftPassport: PassportData = {
+    ...state.passport,
+    lastName: lastName || state.passport.lastName,
+    firstName: firstName || state.passport.firstName,
+    middleName: middleNameParts.join(" ") || state.passport.middleName,
+    citizenship,
+    documentType,
+    inn: clientInn,
+    registrationAddress: agentProduct === "ip" ? address : founderAddress,
+  };
+  const draftBusiness: BusinessData = {
+    ...state.business,
+    companyName,
+    legalEntityEmail: agentProduct === "ooo" ? clientEmail : state.business.legalEntityEmail,
+    entrepreneurEmail: agentProduct === "ip" ? clientEmail : state.business.entrepreneurEmail,
+    registrationResultEmail: clientEmail,
+    taxRegime: tax,
+    okvedCodes,
+    primaryOkvedCode,
+    capitalType: "charter",
+    legalLocation: address.split(",")[0]?.trim() || address,
+    founderCount: state.business.founderCount || "one",
+    founderCitizenship: state.business.founderCitizenship || "ru",
+    founderDocumentType: "passport_rf",
+    founderRegistrationAddress: founderAddress,
+    founderSharePercent: "100",
+    legalAddress: address,
+    directorIsFounder: state.business.directorIsFounder ?? true,
+    addressIsFounder: founderAddress.trim() === address.trim(),
+    directorPosition,
+    directorTerm,
+    charterType: charterType as "generated" | "custom",
+    typicalCharterNumber: state.business.typicalCharterNumber || "36",
+    applicantRole: "founder_individual",
+    hasSeal: hasSeal === "yes",
+    managerReason: managerNotes || state.business.managerReason,
+  };
+  const managerReasons = agentProduct === "ooo"
+    ? getBusinessValidation("ooo", draftBusiness, { flowType: "office_crm", target: "fns_ready" }).managerReasons
+    : getApplicantValidation(
       "ip",
-      { ...state.passport, citizenship, documentType },
+      draftPassport,
       clientEmail,
       clientPhone,
-      state.business,
+      draftBusiness,
+      { flowType: "office_crm", target: "fns_ready" },
     ).managerReasons;
-  }, [agentProduct, citizenship, clientEmail, clientPhone, documentType, state.business, state.passport]);
+  const fnsBusinessValidation = getBusinessValidation(agentProduct, draftBusiness, { flowType: "office_crm", target: "fns_ready" });
+  const fnsApplicantValidation = getApplicantValidation(agentProduct, draftPassport, clientEmail, clientPhone, draftBusiness, {
+    flowType: "office_crm",
+    target: "fns_ready",
+  });
+  const fnsMissingFields = Array.from(new Set([
+    ...fnsBusinessValidation.missingFields,
+    ...fnsApplicantValidation.missingFields,
+  ]));
+  const fnsManagerReasons = Array.from(new Set([
+    ...fnsBusinessValidation.managerReasons,
+    ...fnsApplicantValidation.managerReasons,
+  ]));
+  const isFnsReady = fnsBusinessValidation.isComplete && fnsApplicantValidation.isComplete;
+
+  useEffect(() => {
+    if (state.flowType !== "office_crm") {
+      dispatch({ type: "SET_FLOW", payload: "office_crm" });
+    }
+  }, [dispatch, state.flowType]);
 
   useEffect(() => {
     if (!availableRegimes.some((item) => item.id === tax)) {
@@ -123,69 +192,49 @@ export default function ManagerWorkspace() {
         directorTerm.trim().length > 0);
 
   const handleSign = () => {
-    const okvedCodes = okvedText
-      .split("\n")
-      .map((line) => line.trim().split(/\s+/)[0])
-      .filter(Boolean);
-    const primaryOkvedCode = state.business.primaryOkvedCode && okvedCodes.includes(state.business.primaryOkvedCode)
-      ? state.business.primaryOkvedCode
-      : okvedCodes[0];
-    const [lastName, firstName, ...middleNameParts] = clientName.trim().split(/\s+/);
+    const nextStatus = isFnsReady ? "submitted_to_fns" : "office_crm_completed";
 
     dispatch({ type: "SET_PRODUCT", payload: agentProduct });
     dispatch({ type: "SET_PHONE", payload: clientPhone });
     dispatch({ type: "SET_EMAIL", payload: clientEmail });
-    dispatch({
-      type: "UPDATE_PASSPORT",
-      payload: {
-        lastName: lastName || state.passport.lastName,
-        firstName: firstName || state.passport.firstName,
-        middleName: middleNameParts.join(" ") || state.passport.middleName,
-        citizenship,
-        documentType,
-        inn: clientInn,
-        registrationAddress: agentProduct === "ip" ? address : founderAddress,
-      },
-    });
+    dispatch({ type: "UPDATE_PASSPORT", payload: draftPassport });
     dispatch({
       type: "UPDATE_BUSINESS",
       payload: {
-        companyName,
-        legalEntityEmail: agentProduct === "ooo" ? clientEmail : state.business.legalEntityEmail,
-        entrepreneurEmail: agentProduct === "ip" ? clientEmail : state.business.entrepreneurEmail,
-        registrationResultEmail: clientEmail,
-        taxRegime: tax,
-        okvedCodes,
-        primaryOkvedCode,
-        capitalType: "charter",
-        legalLocation: address.split(",")[0]?.trim() || address,
-        founderDocumentType: "passport_rf",
-        founderRegistrationAddress: founderAddress,
-        founderSharePercent: "100",
-        legalAddress: address,
-        directorPosition,
-        directorTerm,
-        charterType: charterType as "generated" | "custom",
-        typicalCharterNumber: state.business.typicalCharterNumber || "36",
-        applicantRole: "founder_individual",
-        hasSeal: hasSeal === "yes",
+        ...draftBusiness,
         requiresManager: agentProduct === "ooo" && managerReasons.length > 0,
         managerReason: managerNotes || managerReasons[0],
       },
     });
+    dispatch({ type: "SET_APPLICATION_STATUS", payload: nextStatus });
+    dispatch({ type: "SUBMIT" });
 
     trackEvent("office_agent_completed", {
-      flowType: state.flowType,
+      flowType: "office_crm",
       source: hasOnlineData ? "draft_or_submitted" : "office_new",
       product: agentProduct,
       tariff,
       tax,
+      applicationStatus: nextStatus,
       emailProvided: true,
       complexOoo: agentProduct === "ooo" && managerReasons.length > 0,
       managerNotesProvided: managerNotes.trim().length > 0,
     });
-    trackEvent("manager_workspace_completed", { flowType: state.flowType });
-    setCompleted(true);
+    trackEvent("office_crm_completed", { flowType: "office_crm", product: agentProduct, applicationStatus: nextStatus });
+    if (isFnsReady) {
+      trackEvent("fns_ready", { flowType: "office_crm", product: agentProduct, applicationStatus: "fns_ready" });
+      trackEvent("submitted_to_fns", { flowType: "office_crm", product: agentProduct, applicationStatus: nextStatus });
+    } else {
+      trackEvent("manager_completed_missing_fields", {
+        flowType: "office_crm",
+        product: agentProduct,
+        missingFields: fnsMissingFields,
+        managerReasons: fnsManagerReasons,
+        applicationStatus: nextStatus,
+      });
+    }
+    trackEvent("manager_workspace_completed", { flowType: "office_crm", applicationStatus: nextStatus });
+    setCompletionStatus(nextStatus);
   };
 
   return (
@@ -245,14 +294,18 @@ export default function ManagerWorkspace() {
           </div>
         </header>
 
-        {completed ? (
+        {completionStatus ? (
           <div className="flex h-64 flex-col items-center justify-center space-y-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <CheckCircle2 className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold">Документы отправлены в ФНС</h2>
+            <h2 className="text-2xl font-bold">
+              {completionStatus === "submitted_to_fns" ? "Документы отправлены в ФНС" : "Заявка сохранена в CRM"}
+            </h2>
             <p className="text-muted-foreground">
-              Пакет документов ушел на регистрацию. Счет будет активирован после отбивки из налоговой.
+              {completionStatus === "submitted_to_fns"
+                ? "Пакет документов ушел на регистрацию. Счет будет активирован после отбивки из налоговой."
+                : "Данные сохранены. Недостающие поля нужно дозаполнить перед передачей пакета в ФНС."}
             </p>
             <Button onClick={() => navigate("/assisted-start")} variant="outline" className="mt-4">
               Следующий клиент
@@ -606,17 +659,40 @@ export default function ManagerWorkspace() {
                     <ul className="space-y-1 text-sm text-blue-800">
                       <li>Клиент находится рядом и подтверждает корректность данных.</li>
                       <li>SMS-код вводится клиентом, не сотрудником.</li>
-                      <li>Заявка уходит в отдельный assisted/office канал Метрики.</li>
+                      <li>Заявка уходит в отдельный office/CRM канал Метрики.</li>
                     </ul>
+                  </div>
+
+                  <div className={`rounded-lg border p-4 ${isFnsReady ? "border-emerald-100 bg-emerald-50" : "border-amber-100 bg-amber-50"}`}>
+                    <p className={`mb-2 text-sm font-semibold ${isFnsReady ? "text-emerald-950" : "text-amber-950"}`}>
+                      4. Готовность к ФНС
+                    </p>
+                    {isFnsReady ? (
+                      <p className="text-sm text-emerald-800">
+                        Все обязательные поля заполнены. Пакет можно передать в ФНС.
+                      </p>
+                    ) : (
+                      <div className="space-y-2 text-sm text-amber-900">
+                        <p>Перед отправкой в ФНС нужно дозаполнить или проверить:</p>
+                        <ul className="list-disc space-y-1 pl-5">
+                          {fnsMissingFields.slice(0, 8).map((field) => (
+                            <li key={field}>{field}</li>
+                          ))}
+                          {fnsManagerReasons.map((reason) => (
+                            <li key={reason}>{reason}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between border-t border-slate-100 pt-4">
                     <div className="flex items-center gap-2 text-sm text-slate-500">
                       <FileText className="h-4 w-4" />
-                      Клиент получит SMS-код для подписания
+                      {isFnsReady ? "Клиент получит SMS-код для подписания" : "Сохраните заявку и продолжите дозаполнение"}
                     </div>
                     <Button onClick={handleSign} disabled={!canComplete} className="bg-[#6440BF] px-8 hover:bg-[#503399]">
-                      Подписать и отправить в ФНС
+                      {isFnsReady ? "Передать пакет в ФНС" : "Сохранить и отметить как дозаполнено"}
                     </Button>
                   </div>
                 </CardContent>

@@ -1,9 +1,20 @@
-import type { BusinessData, PassportData, ProductType } from "@/context/AppContext";
+import type { BusinessData, FlowType, PassportData, ProductType } from "@/context/AppContext";
 
 export interface ValidationResult {
   isComplete: boolean;
   missingFields: string[];
   managerReasons: string[];
+}
+
+export type ValidationTarget =
+  | "online_light_submit"
+  | "assisted_submit"
+  | "office_crm_complete"
+  | "fns_ready";
+
+export interface ValidationOptions {
+  flowType?: FlowType;
+  target?: ValidationTarget;
 }
 
 const isFilled = (value?: string) => Boolean(value?.trim());
@@ -56,7 +67,17 @@ export function getManagerReasons(business: BusinessData): string[] {
   return reasons;
 }
 
-export function getBusinessValidation(productType: ProductType | undefined, business: BusinessData): ValidationResult {
+function isCompleteForTarget(target: ValidationTarget, missingFields: string[], managerReasons: string[]) {
+  const blockOnManagerReasons = target === "assisted_submit" || target === "fns_ready";
+  return missingFields.length === 0 && (!blockOnManagerReasons || managerReasons.length === 0);
+}
+
+export function getBusinessValidation(
+  productType: ProductType | undefined,
+  business: BusinessData,
+  options: ValidationOptions = {},
+): ValidationResult {
+  const target = options.target || "fns_ready";
   const missingFields: string[] = [];
   const managerReasons = productType === "ooo" ? getManagerReasons(business) : [];
 
@@ -64,6 +85,18 @@ export function getBusinessValidation(productType: ProductType | undefined, busi
   if (business.okvedCodes.length === 0) missingFields.push("ОКВЭД");
   if (!business.primaryOkvedCode || !business.okvedCodes.includes(business.primaryOkvedCode)) {
     missingFields.push("Основной ОКВЭД");
+  }
+
+  if (target === "online_light_submit") {
+    if (productType === "ooo" && !isFilled(business.companyName)) {
+      missingFields.push("Краткое наименование ООО");
+    }
+
+    return {
+      isComplete: isCompleteForTarget(target, missingFields, managerReasons),
+      missingFields,
+      managerReasons,
+    };
   }
 
   if (productType === "ooo") {
@@ -95,7 +128,7 @@ export function getBusinessValidation(productType: ProductType | undefined, busi
   }
 
   return {
-    isComplete: missingFields.length === 0 && managerReasons.length === 0,
+    isComplete: isCompleteForTarget(target, missingFields, managerReasons),
     missingFields,
     managerReasons,
   };
@@ -107,13 +140,31 @@ export function getApplicantValidation(
   email?: string,
   phone?: string,
   business?: BusinessData,
+  options: ValidationOptions = {},
 ): ValidationResult {
+  const target = options.target || "fns_ready";
   const missingFields: string[] = [];
   const managerReasons: string[] = [];
 
   if (!isFilled(passport.lastName)) missingFields.push("Фамилия");
   if (!isFilled(passport.firstName)) missingFields.push("Имя");
   if (!isFilled(passport.birthDate)) missingFields.push("Дата рождения");
+
+  if (target === "online_light_submit") {
+    if (!isFilled(passport.passportSeries)) missingFields.push("Серия паспорта");
+    if (!isFilled(passport.passportNumber)) missingFields.push("Номер паспорта");
+    if (!isFilled(passport.issuedBy)) missingFields.push("Кем выдан паспорт");
+    if (!isFilled(passport.issueDate)) missingFields.push("Дата выдачи паспорта");
+    if (!isValidEmail(email)) missingFields.push("Email");
+    if ((phone || "").replace(/\D/g, "").length < 10) missingFields.push("Телефон");
+
+    return {
+      isComplete: isCompleteForTarget(target, missingFields, managerReasons),
+      missingFields,
+      managerReasons,
+    };
+  }
+
   if (!isFilled(passport.gender)) missingFields.push("Пол");
   if (!isFilled(passport.birthPlace)) missingFields.push("Место рождения");
   if (productType === "ip") {
@@ -155,7 +206,7 @@ export function getApplicantValidation(
   if (!isFilled(registrationAddress)) missingFields.push("Адрес регистрации");
 
   return {
-    isComplete: missingFields.length === 0 && managerReasons.length === 0,
+    isComplete: isCompleteForTarget(target, missingFields, managerReasons),
     missingFields,
     managerReasons,
   };

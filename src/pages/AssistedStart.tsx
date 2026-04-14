@@ -16,23 +16,25 @@ export default function AssistedStart() {
   const [isSmsOpen, setIsSmsOpen] = useState(false);
 
   useEffect(() => {
-    dispatch({ type: "SET_FLOW", payload: "manager" });
-    trackEvent("page_view", { page: "assisted_start", flowType: "manager" });
-    trackEvent("assisted_entry_view", { flowType: "manager" });
+    dispatch({ type: "SET_FLOW", payload: "assisted" });
+    trackEvent("page_view", { page: "assisted_start", flowType: "assisted" });
+    trackEvent("assisted_entry_view", { flowType: "assisted" });
   }, [dispatch]);
 
   const startAssistedFlow = (product: AssistedChoice) => {
     clearDraft();
-    dispatch({ type: "SET_FLOW", payload: "manager" });
+    dispatch({ type: "SET_FLOW", payload: "assisted" });
     dispatch({ type: "SET_PRODUCT", payload: product });
-    trackEvent("assisted_flow_started", { product, flowType: "manager" });
+    trackEvent("assisted_started", { product, flowType: "assisted" });
+    trackEvent("assisted_flow_started", { product, flowType: "assisted" });
     setIsSmsOpen(true);
   };
 
   const openWorkspace = (reason = "office_intake") => {
     clearDraft();
-    dispatch({ type: "SET_FLOW", payload: "manager" });
-    trackEvent("assisted_workspace_opened", { reason, flowType: "manager" });
+    dispatch({ type: "SET_FLOW", payload: "office_crm" });
+    trackEvent("office_crm_created", { reason, flowType: "office_crm" });
+    trackEvent("assisted_workspace_opened", { reason, flowType: "office_crm" });
     navigate("/office-agent");
   };
 
@@ -94,7 +96,7 @@ export default function AssistedStart() {
                       <p className="font-semibold">Что меняется в аналитике</p>
                     </div>
                     <p className="text-sm leading-relaxed text-muted-foreground">
-                      Все события получают признак `flowType: manager`. Прямые заходы сотрудников становятся отдельной assisted-воронкой, а клиентский онлайн больше считается чище.
+                      Все события получают признак `flowType: assisted`. Прямые заходы сотрудников становятся отдельной assisted-воронкой, а клиентский онлайн больше считается чище.
                     </p>
                   </div>
 

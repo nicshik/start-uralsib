@@ -30,7 +30,7 @@ export default function Landing() {
   }, []);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "landing", flowType: "online" });
+    trackEvent("page_view", { page: "landing", flowType: "online_light" });
   }, []);
 
   const handleChoice = (type: "ip" | "ooo") => {
@@ -43,9 +43,10 @@ export default function Landing() {
   };
 
   const proceed = (type: "ip" | "ooo") => {
-    dispatch({ type: "SET_FLOW", payload: "online" });
+    dispatch({ type: "SET_FLOW", payload: "online_light" });
     dispatch({ type: "SET_PRODUCT", payload: type });
-    trackEvent("product_selected", { product: type, flowType: "online" });
+    trackEvent("online_light_started", { product: type, flowType: "online_light" });
+    trackEvent("product_selected", { product: type, flowType: "online_light" });
     setIsSmsOpen(true);
   };
 
@@ -70,9 +71,9 @@ export default function Landing() {
     // Delay navigation slightly so the dialog unmounts first
     setTimeout(() => {
       if (choice === "help") {
-        dispatch({ type: "SET_FLOW", payload: "online" });
+        dispatch({ type: "SET_FLOW", payload: "online_light" });
         dispatch({ type: "SET_PRODUCT", payload: "help" });
-        trackEvent("product_selected", { product: "help", flowType: "online" });
+        trackEvent("product_selected", { product: "help", flowType: "online_light" });
         navigate("/manager");
       } else {
         handleChoice(choice);
@@ -90,8 +91,8 @@ export default function Landing() {
           </div>
           <button
             onClick={() => {
-              dispatch({ type: "SET_FLOW", payload: "online" });
-              trackEvent("header_login_click", { flowType: "online" });
+              dispatch({ type: "SET_FLOW", payload: "online_light" });
+              trackEvent("header_login_click", { flowType: "online_light" });
               setIsSmsOpen(true);
             }}
             className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] flex items-center gap-1.5 ${scrolled ? 'text-primary border-primary hover:bg-primary/5' : 'text-white border-white hover:bg-white/10'}`}
@@ -133,7 +134,7 @@ export default function Landing() {
                 </button>
                 <div className="flex items-center gap-4 text-white/50 text-xs">
                   <span className="inline-flex items-center gap-1"><Shield className="h-3 w-3" /> Бесплатно</span>
-                  <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> ~10 минут</span>
+                  <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> ~10 минут на заявку</span>
                 </div>
               </div>
             </div>
@@ -207,22 +208,22 @@ export default function Landing() {
               <div className="w-11 h-11 rounded-lg bg-light-purple flex items-center justify-center">
                 <Clock className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-base font-medium">10 минут на заявку</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">Справочники ФНС, автозаполнение и подсказки — готовый пакет документов для регистрации ИП и ООО</p>
+              <p className="text-base font-medium">10 минут на предзаявку</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Вы оставляете основные данные, а менеджер помогает довести регистрационный пакет до готовности</p>
             </div>
             <div className="rounded-xl border border-border bg-white p-6 space-y-4">
               <div className="w-11 h-11 rounded-lg bg-light-purple flex items-center justify-center">
                 <UserCheck className="h-5 w-5 text-primary" />
               </div>
               <p className="text-base font-medium">Без дублирования</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">Данные вводятся один раз. По завершению вы получите готовые документы для отправки в налоговую</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Данные из заявки сохраняются. В офисе сотрудник проверит их и дозаполнит недостающие поля</p>
             </div>
             <div className="rounded-xl border border-border bg-white p-6 space-y-4">
               <div className="w-11 h-11 rounded-lg bg-light-purple flex items-center justify-center">
                 <Shield className="h-5 w-5 text-primary" />
               </div>
               <p className="text-base font-medium">Актуальные формы</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">Документы по формам Р11001, Р21001 и др. Налоговая примет с первого раза без возврата на доработку</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">Финальный пакет готовится по актуальным формам Р11001 и Р21001 после проверки сотрудником банка</p>
             </div>
           </div>
         </div>
@@ -247,7 +248,7 @@ export default function Landing() {
               <AccordionTrigger className="text-base px-6 py-4">Какие документы будут подготовлены?</AccordionTrigger>
               <AccordionContent className="px-6 pb-5">
                 <div className="space-y-3 text-sm text-muted-foreground">
-                  <p>Подготовим пакет под выбранную форму бизнеса.</p>
+                  <p>После проверки и дозаполнения подготовим пакет под выбранную форму бизнеса.</p>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-lg bg-brand-light p-4 space-y-2">
                       <p className="text-xs font-semibold uppercase tracking-wide text-foreground">ИП</p>

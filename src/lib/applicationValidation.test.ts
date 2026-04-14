@@ -52,6 +52,31 @@ describe("application validation", () => {
     expect(getBusinessValidation("ooo", validOooBusiness).isComplete).toBe(true);
   });
 
+  it("allows a lightweight online ООО business profile without technical package fields", () => {
+    const result = getBusinessValidation("ooo", {
+      okvedCodes: ["62.01"],
+      primaryOkvedCode: "62.01",
+      taxRegime: "usn6",
+      companyName: 'ООО "Ромашка"',
+    }, { flowType: "online_light", target: "online_light_submit" });
+
+    expect(result.isComplete).toBe(true);
+    expect(result.missingFields).toEqual([]);
+  });
+
+  it("does not treat the same lightweight ООО profile as FNS-ready", () => {
+    const result = getBusinessValidation("ooo", {
+      okvedCodes: ["62.01"],
+      primaryOkvedCode: "62.01",
+      taxRegime: "usn6",
+      companyName: 'ООО "Ромашка"',
+    }, { flowType: "office_crm", target: "fns_ready" });
+
+    expect(result.isComplete).toBe(false);
+    expect(result.missingFields).toContain("Срок избрания руководителя");
+    expect(result.missingFields).toContain("Роль заявителя");
+  });
+
   it("requires ООО name, capital, primary OKVED, confirmations, founder address, and director term", () => {
     const result = getBusinessValidation("ooo", {
       ...validOooBusiness,
@@ -134,6 +159,43 @@ describe("application validation", () => {
     expect(result.isComplete).toBe(false);
     expect(result.missingFields).toContain("Email ИП");
     expect(result.missingFields).toContain("Email для документов ФНС");
+    expect(result.missingFields).toContain("Адрес регистрации");
+  });
+
+  it("allows a lightweight online ИП applicant profile without AS-IS completion fields", () => {
+    const result = getApplicantValidation("ip", {
+      lastName: "Иванов",
+      firstName: "Иван",
+      birthDate: "01.01.1990",
+      passportSeries: "45 12",
+      passportNumber: "123456",
+      issuedBy: "ОВД Тверской",
+      issueDate: "01.01.2010",
+    }, "client@example.ru", "+7 985 999 99 99", undefined, {
+      flowType: "online_light",
+      target: "online_light_submit",
+    });
+
+    expect(result.isComplete).toBe(true);
+    expect(result.missingFields).toEqual([]);
+  });
+
+  it("does not treat the lightweight ИП applicant profile as FNS-ready", () => {
+    const result = getApplicantValidation("ip", {
+      lastName: "Иванов",
+      firstName: "Иван",
+      birthDate: "01.01.1990",
+      passportSeries: "45 12",
+      passportNumber: "123456",
+      issuedBy: "ОВД Тверской",
+      issueDate: "01.01.2010",
+    }, "client@example.ru", "+7 985 999 99 99", undefined, {
+      flowType: "office_crm",
+      target: "fns_ready",
+    });
+
+    expect(result.isComplete).toBe(false);
+    expect(result.missingFields).toContain("СНИЛС");
     expect(result.missingFields).toContain("Адрес регистрации");
   });
 

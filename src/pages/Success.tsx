@@ -32,18 +32,28 @@ export default function Success() {
   }, []);
 
   useEffect(() => {
-    trackEvent("page_view", { page: "success", appNumber, flowType: state.flowType });
-  }, [appNumber, state.flowType]);
+    trackEvent("page_view", {
+      page: "success",
+      appNumber,
+      flowType: state.flowType,
+      applicationStatus: state.applicationStatus,
+    });
+  }, [appNumber, state.applicationStatus, state.flowType]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(appNumber);
     setCopied(true);
-    trackEvent("app_number_copied", { flowType: state.flowType });
+    trackEvent("app_number_copied", { flowType: state.flowType, applicationStatus: state.applicationStatus });
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleRkoClick = () => {
-    trackEvent("rko_offer_opened", { source: "success", product: state.productType, flowType: state.flowType });
+    trackEvent("rko_offer_opened", {
+      source: "success",
+      product: state.productType,
+      flowType: state.flowType,
+      applicationStatus: state.applicationStatus,
+    });
     navigate("/rko-request");
   };
 
@@ -92,7 +102,7 @@ export default function Success() {
             <DetailRow label="Форма бизнеса" value={productLabel} />
             <DetailRow label="Копия заявки" value={businessEmail ? businessEmail : "Email можно добавить через менеджера"} />
             <DetailRow
-              label="Что отправим"
+              label="Что передадим менеджеру"
               value={`Номер заявки, ОКВЭД, налоговый режим${state.productType === "ooo" ? ", данные компании" : ""}`}
             />
             <DetailRow

@@ -26,8 +26,9 @@ export function MetrikaConsole() {
 
   if (!isVisible) return null;
 
-  const onlineEvents = events.filter((event) => event.data?.flowType === "online").length;
-  const assistedEvents = events.filter((event) => event.data?.flowType === "manager").length;
+  const onlineEvents = events.filter((event) => event.data?.flowType === "online_light").length;
+  const assistedEvents = events.filter((event) => event.data?.flowType === "assisted").length;
+  const officeEvents = events.filter((event) => event.data?.flowType === "office_crm").length;
 
   if (!isOpen) {
     return (
@@ -77,7 +78,7 @@ export function MetrikaConsole() {
       {!isMinimized && (
         <>
           <ScrollArea className="flex-1 p-2">
-            <div className="mb-2 grid grid-cols-2 gap-2">
+            <div className="mb-2 grid grid-cols-3 gap-2">
               <div className="rounded bg-slate-800/70 p-2 text-[10px] text-slate-300">
                 <div className="text-slate-500">Online</div>
                 <div className="font-mono text-sm font-bold text-blue-300">{onlineEvents}</div>
@@ -85,6 +86,10 @@ export function MetrikaConsole() {
               <div className="rounded bg-slate-800/70 p-2 text-[10px] text-slate-300">
                 <div className="text-slate-500">Assisted</div>
                 <div className="font-mono text-sm font-bold text-emerald-300">{assistedEvents}</div>
+              </div>
+              <div className="rounded bg-slate-800/70 p-2 text-[10px] text-slate-300">
+                <div className="text-slate-500">CRM</div>
+                <div className="font-mono text-sm font-bold text-amber-300">{officeEvents}</div>
               </div>
             </div>
             <div className="space-y-2">
@@ -95,7 +100,11 @@ export function MetrikaConsole() {
                       <span className="font-mono text-green-300 font-bold">{ev.event}</span>
                       {ev.data?.flowType && (
                         <span className={`rounded px-1.5 py-0.5 text-[9px] font-bold uppercase ${
-                          ev.data.flowType === "manager" ? "bg-emerald-500/10 text-emerald-300" : "bg-blue-500/10 text-blue-300"
+                          ev.data.flowType === "assisted"
+                            ? "bg-emerald-500/10 text-emerald-300"
+                            : ev.data.flowType === "office_crm"
+                              ? "bg-amber-500/10 text-amber-300"
+                              : "bg-blue-500/10 text-blue-300"
                         }`}>
                           {String(ev.data.flowType)}
                         </span>

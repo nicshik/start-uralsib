@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { getApplicantValidation } from "@/lib/applicationValidation";
+import type { ValidationTarget } from "@/lib/applicationValidation";
 import { MOCK_PASSPORT_DATA } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { ProgressHeader } from "@/components/ProgressHeader";
@@ -23,6 +24,8 @@ export default function Step2Passport() {
   const { state, dispatch } = useApp();
   const [ocrPhase, setOcrPhase] = useState<OcrPhase>(state.passport.ocrCompleted ? "done" : "idle");
   const [manualMode, setManualMode] = useState(false);
+  const isOnlineLight = state.flowType === "online_light";
+  const applicantValidationTarget: ValidationTarget = isOnlineLight ? "online_light_submit" : "assisted_submit";
 
   useEffect(() => {
     trackEvent("page_view", { page: "step2_passport", flowType: state.flowType });
@@ -48,15 +51,16 @@ export default function Step2Passport() {
     state.email,
     state.phone,
     state.business,
+    { flowType: state.flowType, target: applicantValidationTarget },
   );
-  const showManagerPrompt = applicantValidation.managerReasons.length > 0;
+  const showManagerPrompt = !isOnlineLight && applicantValidation.managerReasons.length > 0;
   const canProceed = (state.passport.ocrCompleted || manualMode) && applicantValidation.isComplete;
 
   const handleNext = () => {
     dispatch({ type: "SET_STEP", payload: 3 });
     trackEvent("step2_completed", { flowType: state.flowType, emailProvided: true });
-    if (state.flowType === "manager") {
-      trackEvent("assisted_step_completed", { step: 2, flowType: "manager" });
+    if (state.flowType === "assisted") {
+      trackEvent("assisted_step_completed", { step: 2, flowType: "assisted" });
     }
     navigate("/step/3");
   };
@@ -86,6 +90,7 @@ export default function Step2Passport() {
             <PassportFields
               passport={state.passport}
               productType={state.productType}
+              flowType={state.flowType}
               ocrDone={ocrPhase === "done"}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
             />
@@ -99,6 +104,7 @@ export default function Step2Passport() {
             <AdditionalFields
               passport={state.passport}
               productType={state.productType}
+              flowType={state.flowType}
               business={state.business}
               email={state.email}
               phone={state.phone}
@@ -110,7 +116,7 @@ export default function Step2Passport() {
 
             {applicantValidation.missingFields.length > 0 && (
               <div className="rounded-card border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-                Для отправки в ФНС осталось заполнить: {applicantValidation.missingFields.join(", ")}.
+                {isOnlineLight ? "Для предварительной заявки осталось заполнить" : "Для отправки в ФНС осталось заполнить"}: {applicantValidation.missingFields.join(", ")}.
               </div>
             )}
 

@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from "react";
 
 export type ProductType = "ip" | "ooo" | "help";
-export type FlowType = "online" | "manager";
+export type FlowType = "online_light" | "assisted" | "office_crm";
+export type ApplicationStatus =
+  | "draft"
+  | "online_light_submitted"
+  | "assisted_submitted"
+  | "office_crm_completed"
+  | "fns_ready"
+  | "submitted_to_fns";
 export type FounderCount = "one" | "multiple";
 export type FounderCitizenship = "ru" | "foreign";
 export type CharterType = "generated" | "custom";
@@ -62,7 +69,8 @@ export interface PassportData {
 
 export interface AppState {
   productType?: ProductType;
-  flowType?: FlowType;
+  flowType: FlowType;
+  applicationStatus: ApplicationStatus;
   phone?: string;
   email?: string;
   paperDocuments: boolean;
@@ -75,7 +83,8 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-  flowType: "online",
+  flowType: "online_light",
+  applicationStatus: "draft",
   email: "client@email.com",
   paperDocuments: false,
   smsVerified: false,
@@ -85,13 +94,6 @@ const initialState: AppState = {
     registrationResultEmail: "client@email.com",
     charterCapital: "10000",
     capitalType: "charter",
-    founderDocumentType: "passport_rf",
-    founderSharePercent: "100",
-    directorPosition: "Генеральный директор",
-    charterType: "generated",
-    typicalCharterNumber: "36",
-    applicantRole: "founder_individual",
-    hasSeal: false,
   },
   passport: {},
   submitted: false,
@@ -100,6 +102,7 @@ const initialState: AppState = {
 type Action =
   | { type: "SET_PRODUCT"; payload: ProductType }
   | { type: "SET_FLOW"; payload: FlowType }
+  | { type: "SET_APPLICATION_STATUS"; payload: ApplicationStatus }
   | { type: "SET_PHONE"; payload: string }
   | { type: "SET_EMAIL"; payload: string }
   | { type: "SET_PAPER_DOCUMENTS"; payload: boolean }
@@ -110,6 +113,23 @@ type Action =
   | { type: "SUBMIT" }
   | { type: "LOAD_DRAFT"; payload: AppState }
   | { type: "RESET" };
+
+function normalizeFlowType(flowType?: FlowType | "online" | "manager"): FlowType {
+  if (flowType === "online") return "online_light";
+  if (flowType === "manager") return "assisted";
+  return flowType || "online_light";
+}
+
+function normalizeDraft(payload: AppState): AppState {
+  return {
+    ...initialState,
+    ...payload,
+    flowType: normalizeFlowType(payload.flowType),
+    applicationStatus: payload.applicationStatus || "draft",
+    business: { ...initialState.business, ...payload.business },
+    passport: { ...initialState.passport, ...payload.passport },
+  };
+}
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -132,6 +152,7 @@ function reducer(state: AppState, action: Action): AppState {
       };
     }
     case "SET_FLOW": return { ...state, flowType: action.payload };
+    case "SET_APPLICATION_STATUS": return { ...state, applicationStatus: action.payload };
     case "SET_PHONE": return { ...state, phone: action.payload };
     case "SET_EMAIL": return { ...state, email: action.payload };
     case "SET_PAPER_DOCUMENTS": return { ...state, paperDocuments: action.payload };
@@ -140,7 +161,7 @@ function reducer(state: AppState, action: Action): AppState {
     case "UPDATE_BUSINESS": return { ...state, business: { ...state.business, ...action.payload } };
     case "UPDATE_PASSPORT": return { ...state, passport: { ...state.passport, ...action.payload } };
     case "SUBMIT": return { ...state, submitted: true };
-    case "LOAD_DRAFT": return { ...initialState, ...action.payload };
+    case "LOAD_DRAFT": return normalizeDraft(action.payload);
     case "RESET": return initialState;
     default: return state;
   }

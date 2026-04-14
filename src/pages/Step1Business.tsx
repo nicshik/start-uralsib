@@ -17,6 +17,7 @@ import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles,
 import { AppHeader } from "@/components/AppHeader";
 import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
 import { getBusinessValidation, getCompanyFullName } from "@/lib/applicationValidation";
+import type { ValidationTarget } from "@/lib/applicationValidation";
 import type { BusinessData } from "@/context/AppContext";
 
 type SubStep = "tax" | "okved" | "ooo";
@@ -39,6 +40,8 @@ export default function Step1Business() {
   const [sectionFilter, setSectionFilter] = useState<string | null>(null);
   const [showAiSuggest, setShowAiSuggest] = useState(false);
   const isOoo = state.productType === "ooo";
+  const isOnlineLight = state.flowType === "online_light";
+  const businessValidationTarget: ValidationTarget = isOnlineLight ? "online_light_submit" : "assisted_submit";
 
   const getSubStep = (): SubStep => {
     if (!state.business.taxRegime) return "tax";
@@ -58,24 +61,29 @@ export default function Step1Business() {
     const defaults: Partial<BusinessData> = {};
     if (!state.business.charterCapital) defaults.charterCapital = "10000";
     if (!state.business.capitalType) defaults.capitalType = "charter";
-    if (!state.business.founderDocumentType) defaults.founderDocumentType = "passport_rf";
-    if (!state.business.founderSharePercent) defaults.founderSharePercent = "100";
-    if (!state.business.directorPosition) defaults.directorPosition = "Генеральный директор";
-    if (!state.business.charterType) defaults.charterType = "generated";
-    if (!state.business.typicalCharterNumber) defaults.typicalCharterNumber = "36";
-    if (!state.business.applicantRole) defaults.applicantRole = "founder_individual";
-    if (state.business.hasSeal === undefined) defaults.hasSeal = false;
+    if (!isOnlineLight) {
+      if (!state.business.founderDocumentType) defaults.founderDocumentType = "passport_rf";
+      if (!state.business.founderSharePercent) defaults.founderSharePercent = "100";
+      if (!state.business.directorPosition) defaults.directorPosition = "Генеральный директор";
+      if (!state.business.charterType) defaults.charterType = "generated";
+      if (!state.business.typicalCharterNumber) defaults.typicalCharterNumber = "36";
+      if (!state.business.applicantRole) defaults.applicantRole = "founder_individual";
+      if (state.business.hasSeal === undefined) defaults.hasSeal = false;
+    }
 
     if (Object.keys(defaults).length > 0) {
       dispatch({ type: "UPDATE_BUSINESS", payload: defaults });
     }
-  }, [dispatch, isOoo, state.business]);
+  }, [dispatch, isOnlineLight, isOoo, state.business]);
 
   const businessValidation = useMemo(
-    () => getBusinessValidation(state.productType, state.business),
-    [state.productType, state.business],
+    () => getBusinessValidation(state.productType, state.business, {
+      flowType: state.flowType,
+      target: businessValidationTarget,
+    }),
+    [businessValidationTarget, state.flowType, state.productType, state.business],
   );
-  const showManagerPrompt = isOoo && businessValidation.managerReasons.length > 0;
+  const showManagerPrompt = isOoo && !isOnlineLight && businessValidation.managerReasons.length > 0;
 
   const filteredCodes = useMemo(() => {
     let codes = OKVED_CODES;
@@ -94,7 +102,7 @@ export default function Step1Business() {
 
   const updateBusiness = (payload: Partial<BusinessData>) => {
     const nextBusiness = { ...state.business, ...payload };
-    const managerReasons = getBusinessValidation("ooo", nextBusiness).managerReasons;
+    const managerReasons = getBusinessValidation("ooo", nextBusiness, { target: "fns_ready" }).managerReasons;
     dispatch({
       type: "UPDATE_BUSINESS",
       payload: {
@@ -169,8 +177,8 @@ export default function Step1Business() {
       primaryOkved: state.business.primaryOkvedCode,
       flowType: state.flowType,
     });
-    if (state.flowType === "manager") {
-      trackEvent("assisted_step_completed", { step: 1, flowType: "manager" });
+    if (state.flowType === "assisted") {
+      trackEvent("assisted_step_completed", { step: 1, flowType: "assisted" });
     }
     navigate("/step/2");
   };
@@ -393,8 +401,14 @@ export default function Step1Business() {
         {subStep === "ooo" && isOoo && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div>
-              <h2 className="text-xl font-bold tracking-tight">Данные компании</h2>
-              <p className="text-sm text-muted-foreground mt-1">Заполните данные для Р11001 и банковского пакета документов</p>
+              <h2 className="text-xl font-bold tracking-tight">
+                {isOnlineLight ? "Параметры компании" : "Данные компании"}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {isOnlineLight
+                  ? "Оставьте основные данные. Остальное проверим и дозаполним в офисе."
+                  : "Заполните данные для Р11001 и банковского пакета документов"}
+              </p>
             </div>
             <Card>
               <CardContent className="p-5 space-y-6">
@@ -425,7 +439,7 @@ export default function Step1Business() {
                 </div>
 
                 <div className="space-y-2 pt-2 border-t">
-                  <Label className="text-sm">Уставной капитал, ₽ *</Label>
+                  <Label className="text-sm">Уставной капитал, ₽{isOnlineLight ? "" : " *"}</Label>
                   <Input
                     type="number"
                     placeholder="10 000"
@@ -434,21 +448,27 @@ export default function Step1Business() {
                     onChange={(e) => updateBusiness({ charterCapital: e.target.value })}
                     className="h-11 text-base"
                   />
-                  <p className="text-xs text-muted-foreground">Минимум 10 000 ₽. Вносится в течение 4 месяцев после регистрации.</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isOnlineLight
+                      ? "Можно оставить 10 000 ₽ или уточнить сумму в офисе."
+                      : "Минимум 10 000 ₽. Вносится в течение 4 месяцев после регистрации."}
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label className="text-sm">Вид капитала</Label>
-                    <Input value="Уставный капитал" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
+                {!isOnlineLight && (
+                  <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label className="text-sm">Вид капитала</Label>
+                      <Input value="Уставный капитал" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm">Доля единственного учредителя</Label>
+                      <Input value="100%" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm">Доля единственного учредителя</Label>
-                    <Input value="100%" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
-                  </div>
-                </div>
+                )}
 
-                <div className="space-y-4 pt-2 border-t">
+                {!isOnlineLight && <div className="space-y-4 pt-2 border-t">
                   <div className="space-y-1">
                     <p className="text-sm font-semibold">Учредитель</p>
                     <p className="text-xs text-muted-foreground">Быстрее всего оформляем онлайн, когда учредитель один и он гражданин РФ.</p>
@@ -523,9 +543,9 @@ export default function Step1Business() {
                     <Label className="text-sm">Роль заявителя</Label>
                     <Input value="Учредитель-физическое лицо" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
                   </div>
-                </div>
+                </div>}
 
-                <div className="space-y-3 pt-2 border-t">
+                {!isOnlineLight && <div className="space-y-3 pt-2 border-t">
                   <div className="space-y-2">
                     <Label className="text-sm">Место нахождения юридического лица *</Label>
                     <Input
@@ -559,9 +579,9 @@ export default function Step1Business() {
                       <p className="text-xs text-muted-foreground">Отдельный юридический адрес проверит менеджер.</p>
                     </div>
                   )}
-                </div>
+                </div>}
 
-                <div className="space-y-4 pt-2 border-t">
+                {!isOnlineLight && <div className="space-y-4 pt-2 border-t">
                   <div className="space-y-2">
                     <Label className="text-sm">Руководитель является учредителем *</Label>
                     <RadioGroup
@@ -606,9 +626,9 @@ export default function Step1Business() {
                       </Select>
                     </div>
                   </div>
-                </div>
+                </div>}
 
-                <div className="space-y-4 pt-2 border-t">
+                {!isOnlineLight && <div className="space-y-4 pt-2 border-t">
                   <div className="space-y-2">
                     <Label className="text-sm">Устав *</Label>
                     <RadioGroup
@@ -656,13 +676,13 @@ export default function Step1Business() {
                       </Label>
                     </RadioGroup>
                   </div>
-                </div>
+                </div>}
 
                 {businessValidation.missingFields.length > 0 && !showManagerPrompt && (
                   <div className="rounded-card border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                     <div className="mb-2 flex items-center gap-2 font-medium">
                       <AlertCircle className="h-4 w-4" />
-                      Для отправки в ФНС осталось заполнить
+                      {isOnlineLight ? "Для предварительной заявки осталось заполнить" : "Для отправки в ФНС осталось заполнить"}
                     </div>
                     <p>{businessValidation.missingFields.join(", ")}.</p>
                   </div>

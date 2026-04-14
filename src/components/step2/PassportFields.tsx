@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Check, User, CreditCard } from "lucide-react";
-import type { PassportData, ProductType } from "@/context/AppContext";
+import type { FlowType, PassportData, ProductType } from "@/context/AppContext";
 
 interface FieldDef {
   key: string;
@@ -41,13 +41,26 @@ const baseSections: { title: string; icon: React.ElementType; fields: FieldDef[]
 interface Props {
   passport: PassportData;
   productType?: ProductType;
+  flowType: FlowType;
   ocrDone: boolean;
   onUpdate: (payload: Partial<PassportData>) => void;
 }
 
-export default function PassportFields({ passport, productType, ocrDone, onUpdate }: Props) {
+export default function PassportFields({ passport, productType, flowType, ocrDone, onUpdate }: Props) {
   const data = passport as Record<string, string>;
-  const sections = productType === "ip"
+  const onlineLightSections = [
+    {
+      ...baseSections[0],
+      fields: baseSections[0].fields.filter((field) => ["lastName", "firstName", "middleName", "birthDate"].includes(field.key)),
+    },
+    {
+      ...baseSections[1],
+      fields: baseSections[1].fields.filter((field) => ["passportSeries", "passportNumber", "issuedBy", "issueDate"].includes(field.key)),
+    },
+  ];
+  const sections = flowType === "online_light"
+    ? onlineLightSections
+    : productType === "ip"
     ? baseSections.map((section) => {
       if (section.title === "Личные данные") {
         return {

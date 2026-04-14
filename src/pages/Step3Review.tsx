@@ -91,6 +91,7 @@ export default function Step3Review() {
   const primaryOkved = OKVED_CODES.find((c) => c.code === state.business.primaryOkvedCode);
   const secondaryOkveds = selectedOkveds.filter((c) => c.code !== state.business.primaryOkvedCode);
   const isOoo = state.productType === "ooo";
+  const isOnlineLight = state.flowType === "online_light";
   const fullName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
   const companyFullName = getCompanyFullName(state.business);
   const businessEmail = getBusinessEmail(state.productType, state.business, state.email);
@@ -114,11 +115,28 @@ export default function Step3Review() {
 
   const handleSubmit = () => {
     setSubmitting(true);
-    trackEvent("application_submitted", { flowType: state.flowType, paperDocuments: state.paperDocuments });
-    if (state.flowType === "manager") {
-      trackEvent("assisted_step_completed", { step: 3, flowType: "manager" });
+    const applicationStatus = isOnlineLight
+      ? "online_light_submitted"
+      : state.flowType === "assisted"
+        ? "assisted_submitted"
+        : "office_crm_completed";
+
+    trackEvent("application_submitted", {
+      flowType: state.flowType,
+      productType: state.productType,
+      applicationStatus,
+      paperDocuments: state.paperDocuments,
+    });
+    trackEvent(applicationStatus, {
+      flowType: state.flowType,
+      productType: state.productType,
+      applicationStatus,
+    });
+    if (state.flowType === "assisted") {
+      trackEvent("assisted_step_completed", { step: 3, flowType: "assisted" });
     }
     setTimeout(() => {
+      dispatch({ type: "SET_APPLICATION_STATUS", payload: applicationStatus });
       dispatch({ type: "SUBMIT" });
       navigate("/success");
     }, 1500);
@@ -137,9 +155,13 @@ export default function Step3Review() {
 
       <main className="mx-auto max-w-2xl space-y-4 px-4 py-6">
         <div className="space-y-2">
-          <h2 className="text-xl font-bold tracking-tight">Проверьте заявку</h2>
+          <h2 className="text-xl font-bold tracking-tight">
+            {isOnlineLight ? "Проверьте предварительную заявку" : "Проверьте заявку"}
+          </h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            После отправки изменить данные можно будет только через менеджера.
+            {isOnlineLight
+              ? "Эти данные передадим сотруднику банка. Остальное проверим и дозаполним в офисе."
+              : "После отправки изменить данные можно будет только через менеджера."}
           </p>
           <div className="flex flex-wrap gap-2 pt-1">
             <ValuePill>{isOoo ? "ООО" : "ИП"}</ValuePill>
@@ -154,12 +176,18 @@ export default function Step3Review() {
             <SummaryItem label="Налоги" value={tax?.name} />
             {isOoo && <SummaryItem label="Краткое название" value={state.business.companyName} wide />}
             {isOoo && <SummaryItem label="Полное название" value={companyFullName} wide />}
-            {isOoo && <SummaryItem label="Место нахождения" value={state.business.legalLocation} wide />}
-            {isOoo && <SummaryItem label="Юридический адрес" value={legalAddress} wide />}
+            {isOoo && state.business.charterCapital && (
+              <SummaryItem
+                label="Предварительный капитал"
+                value={`${Number(state.business.charterCapital).toLocaleString("ru-RU")} ₽`}
+              />
+            )}
+            {!isOnlineLight && isOoo && <SummaryItem label="Место нахождения" value={state.business.legalLocation} wide />}
+            {!isOnlineLight && isOoo && <SummaryItem label="Юридический адрес" value={legalAddress} wide />}
           </SummaryGrid>
         </SummarySection>
 
-        {isOoo && (
+        {!isOnlineLight && isOoo && (
           <SummarySection title="Компания и документы" icon={<Building2 className="h-4 w-4" />} onEdit={() => navigate("/step/1")}>
             <SummaryGrid>
               <SummaryItem
@@ -190,18 +218,18 @@ export default function Step3Review() {
           <SummaryGrid>
             <SummaryItem label="ФИО" value={fullName} wide />
             <SummaryItem label="Дата рождения" value={state.passport.birthDate} />
-            <SummaryItem label="Место рождения" value={state.passport.birthPlace} wide />
-            {!isOoo && <SummaryItem label="Гражданство" value={state.passport.citizenship ? citizenshipLabel : undefined} />}
-            {!isOoo && <SummaryItem label="Документ" value={state.passport.documentType ? documentTypeLabel : undefined} />}
+            {!isOnlineLight && <SummaryItem label="Место рождения" value={state.passport.birthPlace} wide />}
+            {!isOnlineLight && !isOoo && <SummaryItem label="Гражданство" value={state.passport.citizenship ? citizenshipLabel : undefined} />}
+            {!isOnlineLight && !isOoo && <SummaryItem label="Документ" value={state.passport.documentType ? documentTypeLabel : undefined} />}
             <SummaryItem label="Паспорт" value={`${state.passport.passportSeries || ""} ${state.passport.passportNumber || ""}`.trim()} />
             <SummaryItem label="Дата выдачи" value={state.passport.issueDate} />
             <SummaryItem label="Кем выдан" value={state.passport.issuedBy} wide />
-            <SummaryItem label="Код подразделения" value={state.passport.divisionCode} />
-            <SummaryItem label="ИНН" value={state.passport.inn} />
-            <SummaryItem label="СНИЛС" value={state.passport.snils} />
-            <SummaryItem label={isOoo ? "Адрес регистрации учредителя" : "Адрес регистрации"} value={registrationAddress} wide />
+            {!isOnlineLight && <SummaryItem label="Код подразделения" value={state.passport.divisionCode} />}
+            {!isOnlineLight && <SummaryItem label="ИНН" value={state.passport.inn} />}
+            {!isOnlineLight && <SummaryItem label="СНИЛС" value={state.passport.snils} />}
+            {!isOnlineLight && <SummaryItem label={isOoo ? "Адрес регистрации учредителя" : "Адрес регистрации"} value={registrationAddress} wide />}
             <SummaryItem label="Телефон" value={state.phone} />
-            <SummaryItem label={isOoo ? "Email юрлица" : "Email ИП"} value={businessEmail} />
+            <SummaryItem label={isOnlineLight ? "Email" : isOoo ? "Email юрлица" : "Email ИП"} value={businessEmail} />
           </SummaryGrid>
         </SummarySection>
 
@@ -229,7 +257,7 @@ export default function Step3Review() {
           </div>
         </SummarySection>
 
-        <SummarySection title="Получение документов" icon={<FileCheck2 className="h-4 w-4" />} onEdit={() => navigate("/step/2")}>
+        {!isOnlineLight && <SummarySection title="Получение документов" icon={<FileCheck2 className="h-4 w-4" />} onEdit={() => navigate("/step/2")}>
           <div className="space-y-4">
             <div className="rounded-lg border border-[#E5E0EB] bg-brand-light p-3">
               <div className="flex items-center gap-2 text-sm">
@@ -260,13 +288,30 @@ export default function Step3Review() {
               </div>
             </label>
           </div>
-        </SummarySection>
+        </SummarySection>}
+
+        {isOnlineLight && (
+          <SummarySection title="Что уточним в офисе" icon={<FileCheck2 className="h-4 w-4" />}>
+            <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+              <li>Адрес регистрации и структурированный адрес по ФИАС/ГАР.</li>
+              <li>ИНН, СНИЛС и отдельный email для документов ФНС, если он отличается.</li>
+              {isOoo && (
+                <>
+                  <li>Данные учредителя, руководителя, роль заявителя и срок полномочий.</li>
+                  <li>Вид капитала, устав, печать и юридический адрес для Р11001.</li>
+                </>
+              )}
+              {!isOoo && <li>Гражданство, вид документа и недостающие поля для Р21001.</li>}
+            </ul>
+          </SummarySection>
+        )}
 
         <div className="flex items-start gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs text-emerald-900">
           <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
           <p className="leading-relaxed">
-            После отправки менеджер свяжется для уточнения деталей и назначит встречу в офисе — проверка документов,
-            подписание заявления, открытие счёта.
+            {isOnlineLight
+              ? "После отправки сотрудник банка свяжется с вами, назначит визит и дозаполнит данные для регистрационного пакета."
+              : "После отправки менеджер свяжется для уточнения деталей и назначит встречу в офисе — проверка документов, подписание заявления, открытие счёта."}
           </p>
         </div>
       </main>
@@ -274,7 +319,7 @@ export default function Step3Review() {
       <div className="fixed bottom-0 left-0 right-0 border-t bg-card/95 p-4 backdrop-blur-sm">
         <div className="mx-auto max-w-2xl px-4">
           <Button className="h-12 w-full" onClick={handleSubmit} disabled={submitting}>
-            {submitting ? "Отправляем..." : "Отправить заявку"}
+            {submitting ? "Отправляем..." : isOnlineLight ? "Отправить предварительную заявку" : "Отправить заявку"}
           </Button>
         </div>
       </div>

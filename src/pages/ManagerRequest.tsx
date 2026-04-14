@@ -34,8 +34,11 @@ export default function ManagerRequest() {
   const secondaryOkveds = OKVED_CODES.filter(
     (item) => state.business.okvedCodes.includes(item.code) && item.code !== state.business.primaryOkvedCode,
   );
-  const businessValidation = getBusinessValidation(state.productType, state.business);
-  const applicantValidation = getApplicantValidation(state.productType, state.passport, state.email, state.phone, state.business);
+  const businessValidation = getBusinessValidation(state.productType, state.business, { flowType: state.flowType, target: "fns_ready" });
+  const applicantValidation = getApplicantValidation(state.productType, state.passport, state.email, state.phone, state.business, {
+    flowType: state.flowType,
+    target: "fns_ready",
+  });
   const reasons = [...businessValidation.managerReasons, ...applicantValidation.managerReasons];
   const companyFullName = getCompanyFullName(state.business);
   const businessEmail = getBusinessEmail(state.productType, state.business, state.email);
@@ -66,13 +69,23 @@ export default function ManagerRequest() {
   }, [reasons.length, state.flowType, state.productType]);
 
   const submitRequest = () => {
+    const applicationStatus = state.flowType === "assisted" ? "assisted_submitted" : "online_light_submitted";
+    dispatch({ type: "SET_APPLICATION_STATUS", payload: applicationStatus });
     dispatch({ type: "SUBMIT" });
     setSubmitted(true);
+    trackEvent(applicationStatus, {
+      appNumber,
+      product: state.productType,
+      reasonCount: reasons.length,
+      flowType: state.flowType,
+      applicationStatus,
+    });
     trackEvent("manager_request_submitted", {
       appNumber,
       product: state.productType,
       reasonCount: reasons.length,
       flowType: state.flowType,
+      applicationStatus,
     });
   };
 
@@ -98,7 +111,7 @@ export default function ManagerRequest() {
             <p className="mx-auto max-w-md text-sm text-muted-foreground">
               {submitted
                 ? "Менеджер свяжется с вами по телефону, уточнит детали и поможет завершить оформление."
-                : "Мы сохраним уже введённые данные. Менеджер позвонит и подскажет, какие документы нужны для этого сценария."}
+                : "Мы сохраним уже введённые данные. Менеджер позвонит и подскажет, какие документы нужны для этого сценария. Это ещё не отправка в ФНС."}
             </p>
           </div>
         </div>
