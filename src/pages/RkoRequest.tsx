@@ -159,9 +159,9 @@ export default function RkoRequest() {
             1 месяц обслуживания бесплатно
           </div>
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight">Открытие счёта</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта</h1>
             <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-              Оставьте заявку на расчётный счёт. Менеджер подготовит её вместе с документами для регистрации {productLabel}.
+              {"\n"}
             </p>
           </div>
         </div>
