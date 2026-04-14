@@ -90,7 +90,7 @@ export default function AdditionalFields({
       <CardContent className="p-4 space-y-4">
         <div className="flex items-center gap-2">
           <Mail className="h-4 w-4 text-muted-foreground" />
-          <p className="font-semibold text-sm">Контакты и реквизиты</p>
+          <p className="font-semibold text-sm">Контакты</p>
         </div>
 
         <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
@@ -184,7 +184,7 @@ export default function AdditionalFields({
 
         {isOnlineLight && (
           <p className="text-xs text-muted-foreground">
-            Этот email используем для связи и предварительно укажем для документов. Если потребуется отдельный адрес, менеджер уточнит его в офисе.
+            Эти контакты используем для связи и предварительно укажем для оформления пакета документов.
           </p>
         )}
       </CardContent>
