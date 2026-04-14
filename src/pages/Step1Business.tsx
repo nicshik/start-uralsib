@@ -59,6 +59,11 @@ export default function Step1Business() {
     if (!isOoo) return;
 
     const defaults: Partial<BusinessData> = {};
+    if (!state.business.companyName && state.passport.lastName) {
+      const lastName = state.passport.lastName.trim();
+      defaults.companyName = `ООО "${lastName}"`;
+      defaults.companyNameFull = getGeneratedFullName({ ...state.business, companyName: defaults.companyName }, defaults.companyName);
+    }
     if (!state.business.charterCapital) defaults.charterCapital = "10000";
     if (!state.business.capitalType) defaults.capitalType = "charter";
     if (!isOnlineLight) {
@@ -74,7 +79,7 @@ export default function Step1Business() {
     if (Object.keys(defaults).length > 0) {
       dispatch({ type: "UPDATE_BUSINESS", payload: defaults });
     }
-  }, [dispatch, isOnlineLight, isOoo, state.business]);
+  }, [dispatch, isOnlineLight, isOoo, state.business, state.passport.lastName]);
 
   const businessValidation = useMemo(
     () => getBusinessValidation(state.productType, state.business, {
