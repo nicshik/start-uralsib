@@ -81,6 +81,13 @@ export default function Step2Passport() {
               ocrDone={ocrPhase === "done"}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
             />
+
+            {ocrPhase === "done" && (
+              <p className="text-xs text-muted-foreground text-center">
+                Данные заполнены автоматически — проверьте перед отправкой
+              </p>
+            )}
+
             <AdditionalFields
               passport={state.passport}
               email={state.email}
@@ -89,12 +96,6 @@ export default function Step2Passport() {
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
               onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
             />
-
-            {ocrPhase === "done" && (
-              <p className="text-xs text-muted-foreground text-center">
-                Данные заполнены автоматически — проверьте перед отправкой
-              </p>
-            )}
 
             <SupportBlock compact />
           </>
