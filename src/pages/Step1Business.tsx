@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
-import { MicroReinforcement } from "@/components/MicroReinforcement";
 import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles, Building2, AlertCircle } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
@@ -36,7 +35,6 @@ export default function Step1Business() {
   const navigate = useNavigate();
   const { state, dispatch } = useApp();
   const [search, setSearch] = useState("");
-  const [showComplete, setShowComplete] = useState(false);
   const [showAllCodes, setShowAllCodes] = useState(false);
   const [sectionFilter, setSectionFilter] = useState<string | null>(null);
   const [showAiSuggest, setShowAiSuggest] = useState(false);
@@ -174,8 +172,7 @@ export default function Step1Business() {
     if (state.flowType === "manager") {
       trackEvent("assisted_step_completed", { step: 1, flowType: "manager" });
     }
-    setShowComplete(true);
-    setTimeout(() => navigate("/step/2"), 1500);
+    navigate("/step/2");
   };
 
   const productLabel = isOoo ? "ООО" : "ИП";
@@ -194,10 +191,6 @@ export default function Step1Business() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {showComplete && (
-          <MicroReinforcement message="Шаг 1 готов. Осталось подтвердить паспорт" />
-        )}
-
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <button
             onClick={() => setSubStep("tax")}
