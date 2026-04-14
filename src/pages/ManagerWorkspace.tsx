@@ -24,6 +24,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 type AgentProduct = "ip" | "ooo";
 
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
 export default function ManagerWorkspace() {
   const navigate = useNavigate();
   const { state } = useApp();
@@ -31,7 +33,8 @@ export default function ManagerWorkspace() {
   const initialProduct: AgentProduct = state.productType === "ooo" ? "ooo" : "ip";
   const initialName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
   const hasOnlineData = Boolean(
-    state.phone ||
+      state.phone ||
+      state.email ||
       state.passport.lastName ||
       state.business.okvedCodes.length ||
       state.business.companyName ||
@@ -41,6 +44,7 @@ export default function ManagerWorkspace() {
   const [agentProduct, setAgentProduct] = useState<AgentProduct>(initialProduct);
   const [clientName, setClientName] = useState(initialName || "");
   const [clientPhone, setClientPhone] = useState(state.phone || "");
+  const [clientEmail, setClientEmail] = useState(state.email || "");
   const [clientInn, setClientInn] = useState(state.passport.inn || "");
   const [companyName, setCompanyName] = useState(state.business.companyName || "");
   const [tax, setTax] = useState(state.business.taxRegime || "usn6");
@@ -86,6 +90,7 @@ export default function ManagerWorkspace() {
   const canComplete =
     clientName.trim().length > 3 &&
     clientPhone.replace(/\D/g, "").length >= 10 &&
+    isValidEmail(clientEmail) &&
     okvedText.trim().length > 5 &&
     address.trim().length >= 5 &&
     (agentProduct === "ip" || companyName.trim().length > 2);
@@ -97,6 +102,7 @@ export default function ManagerWorkspace() {
       product: agentProduct,
       tariff,
       tax,
+      emailProvided: true,
     });
     trackEvent("manager_workspace_completed", { flowType: state.flowType });
     setCompleted(true);
@@ -230,6 +236,17 @@ export default function ManagerWorkspace() {
                         onChange={(event) => setClientPhone(event.target.value)}
                         placeholder="+7 (___) ___-__-__"
                         className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-email">Email</Label>
+                      <Input
+                        id="agent-email"
+                        type="email"
+                        value={clientEmail}
+                        onChange={(event) => setClientEmail(event.target.value)}
+                        placeholder="example@mail.ru"
+                        className={`h-10 bg-white ${clientEmail && !isValidEmail(clientEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     </div>
                     <div className="space-y-2">

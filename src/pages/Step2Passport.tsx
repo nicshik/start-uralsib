@@ -16,6 +16,8 @@ import AdditionalFields from "@/components/step2/AdditionalFields";
 
 type OcrPhase = "idle" | "scanning" | "checking" | "done";
 
+const isValidEmail = (email?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() || "");
+
 export default function Step2Passport() {
   const navigate = useNavigate();
   const { state, dispatch } = useApp();
@@ -40,11 +42,12 @@ export default function Step2Passport() {
     }, 2000);
   };
 
-  const canProceed = state.passport.ocrCompleted || manualMode;
+  const emailValid = isValidEmail(state.email);
+  const canProceed = (state.passport.ocrCompleted || manualMode) && emailValid;
 
   const handleNext = () => {
     dispatch({ type: "SET_STEP", payload: 3 });
-    trackEvent("step2_completed", { flowType: state.flowType });
+    trackEvent("step2_completed", { flowType: state.flowType, emailProvided: true });
     if (state.flowType === "manager") {
       trackEvent("assisted_step_completed", { step: 2, flowType: "manager" });
     }
@@ -80,7 +83,10 @@ export default function Step2Passport() {
             />
             <AdditionalFields
               passport={state.passport}
+              email={state.email}
+              emailValid={emailValid}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
+              onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
             />
 
             {ocrPhase === "done" && (

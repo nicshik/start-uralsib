@@ -161,6 +161,12 @@ export default function Step3Review() {
                   <span className="font-medium">{state.passport.snils}</span>
                 </div>
               )}
+              {state.email && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Email: </span>
+                  <span className="font-medium">{state.email}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

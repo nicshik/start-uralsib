@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
@@ -12,8 +11,6 @@ import { CheckCircle2, Building, Phone, Clock, Copy, Mail, Check, FileText } fro
 export default function Success() {
   const navigate = useNavigate();
   const { clearDraft, state } = useApp();
-  const [email, setEmail] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Generate stable application number
@@ -32,12 +29,6 @@ export default function Success() {
     setCopied(true);
     trackEvent("app_number_copied", { flowType: state.flowType });
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleSendEmail = () => {
-    if (!email.trim() || !email.includes("@")) return;
-    setEmailSent(true);
-    trackEvent("success_email_sent", { email: email.replace(/(.{2}).*(@.*)/, "$1***$2"), flowType: state.flowType });
   };
 
   const steps = [
@@ -119,33 +110,18 @@ export default function Success() {
           <CardContent className="p-5 space-y-3">
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-muted-foreground" />
-              <p className="font-semibold text-sm">Получить копию на email</p>
+              <p className="font-semibold text-sm">Копия заявки на email</p>
             </div>
-            {!emailSent ? (
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="email@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendEmail()}
-                  className="h-10 flex-1 bg-white border-gray-200"
-                />
-                <Button
-                  size="sm"
-                  className="h-10 px-4 bg-[#6440BF] hover:bg-[#5535a6]"
-                  disabled={!email.trim() || !email.includes("@")}
-                  onClick={handleSendEmail}
-                >
-                  Отправить
-                </Button>
-              </div>
-            ) : (
+            {state.email ? (
               <div className="rounded-lg bg-green-50 border border-green-200 p-3 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
                 <p className="text-sm text-green-800">
-                  Копия заявки <span className="font-mono font-medium">{appNumber}</span> отправлена на {email}
+                  Копия заявки <span className="font-mono font-medium">{appNumber}</span> будет отправлена на {state.email}
                 </p>
+              </div>
+            ) : (
+              <div className="rounded-lg bg-muted p-3">
+                <p className="text-sm text-muted-foreground">Email можно добавить на шаге с паспортными данными.</p>
               </div>
             )}
             <p className="text-xs text-muted-foreground">

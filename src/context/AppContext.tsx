@@ -35,6 +35,7 @@ export interface AppState {
   productType?: ProductType;
   flowType?: FlowType;
   phone?: string;
+  email?: string;
   smsVerified: boolean;
   currentStep: number;
   business: BusinessData;
@@ -56,6 +57,7 @@ type Action =
   | { type: "SET_PRODUCT"; payload: ProductType }
   | { type: "SET_FLOW"; payload: FlowType }
   | { type: "SET_PHONE"; payload: string }
+  | { type: "SET_EMAIL"; payload: string }
   | { type: "SET_SMS_VERIFIED" }
   | { type: "SET_STEP"; payload: number }
   | { type: "UPDATE_BUSINESS"; payload: Partial<BusinessData> }
@@ -69,6 +71,7 @@ function reducer(state: AppState, action: Action): AppState {
     case "SET_PRODUCT": return { ...state, productType: action.payload };
     case "SET_FLOW": return { ...state, flowType: action.payload };
     case "SET_PHONE": return { ...state, phone: action.payload };
+    case "SET_EMAIL": return { ...state, email: action.payload };
     case "SET_SMS_VERIFIED": return { ...state, smsVerified: true };
     case "SET_STEP": return { ...state, currentStep: action.payload };
     case "UPDATE_BUSINESS": return { ...state, business: { ...state.business, ...action.payload } };

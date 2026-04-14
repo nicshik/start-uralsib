@@ -1,22 +1,42 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileDigit } from "lucide-react";
+import { Mail } from "lucide-react";
 import type { PassportData } from "@/context/AppContext";
 
 interface Props {
   passport: PassportData;
+  email?: string;
+  emailValid: boolean;
   onUpdate: (payload: Partial<PassportData>) => void;
+  onEmailUpdate: (email: string) => void;
 }
 
-export default function AdditionalFields({ passport, onUpdate }: Props) {
+export default function AdditionalFields({ passport, email, emailValid, onUpdate, onEmailUpdate }: Props) {
   return (
     <Card>
-      <CardContent className="p-4 space-y-3">
+      <CardContent className="p-4 space-y-4">
         <div className="flex items-center gap-2">
-          <FileDigit className="h-4 w-4 text-muted-foreground" />
-          <p className="font-semibold text-sm">ИНН и СНИЛС</p>
+          <Mail className="h-4 w-4 text-muted-foreground" />
+          <p className="font-semibold text-sm">Контакты и реквизиты</p>
         </div>
+
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground">Email</Label>
+          <Input
+            type="email"
+            placeholder="example@mail.ru"
+            value={email || ""}
+            onChange={(e) => onEmailUpdate(e.target.value)}
+            className={`text-sm h-10 ${email && !emailValid ? "border-destructive focus-visible:ring-destructive" : ""}`}
+          />
+          <p className={`text-xs ${email && !emailValid ? "text-destructive" : "text-muted-foreground"}`}>
+            {email && !emailValid
+              ? "Введите корректный email"
+              : "На этот email придут уведомления по заявке и документы сервиса."}
+          </p>
+        </div>
+
         <div className="grid grid-cols-2 gap-x-3 gap-y-3">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground">ИНН</Label>
