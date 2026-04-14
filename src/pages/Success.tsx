@@ -139,7 +139,7 @@ export default function Success() {
           <div className="space-y-2">
             <h2 className="text-lg font-semibold tracking-tight">Откройте счёт вместе с регистрацией</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Счёт будет нужен, чтобы принимать платежи и подключить РКО. Менеджер подготовит заявку и обсудит её вместе с документами.
+              Он потребуется для приема платежей и подключения РКО. Менеджер подготовит все необходимые документы.
             </p>
           </div>
           <Button className="mt-4 h-12 w-full" onClick={handleRkoClick}>
