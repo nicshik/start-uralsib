@@ -8,16 +8,24 @@ const validOooBusiness: BusinessData = {
   taxRegime: "usn6",
   companyName: 'ООО "Ромашка"',
   companyNameFull: 'Общество с ограниченной ответственностью "Ромашка"',
+  legalEntityEmail: "ooo@example.ru",
+  registrationResultEmail: "fns@example.ru",
   charterCapital: "10000",
+  capitalType: "charter",
+  legalLocation: "г. Москва",
   founderCount: "one",
   founderCitizenship: "ru",
+  founderDocumentType: "passport_rf",
   founderRegistrationAddress: "г. Москва, ул. Тверская, д. 1, кв. 12",
+  founderSharePercent: "100",
   legalAddress: "г. Москва, ул. Тверская, д. 1, кв. 12",
   directorIsFounder: true,
   addressIsFounder: true,
   directorPosition: "Генеральный директор",
   directorTerm: "5 лет",
   charterType: "generated",
+  typicalCharterNumber: "36",
+  applicantRole: "founder_individual",
   hasSeal: false,
 };
 
@@ -48,24 +56,36 @@ describe("application validation", () => {
     const result = getBusinessValidation("ooo", {
       ...validOooBusiness,
       companyName: "",
+      legalLocation: "",
       charterCapital: "5000",
+      capitalType: undefined,
       primaryOkvedCode: undefined,
       founderCount: undefined,
       founderCitizenship: undefined,
+      founderDocumentType: undefined,
       founderRegistrationAddress: "",
+      founderSharePercent: undefined,
       directorIsFounder: undefined,
       directorTerm: "",
+      typicalCharterNumber: "",
+      applicantRole: undefined,
     });
 
     expect(result.isComplete).toBe(false);
     expect(result.missingFields).toContain("Краткое наименование ООО");
     expect(result.missingFields).toContain("Уставной капитал от 10 000 ₽");
+    expect(result.missingFields).toContain("Вид капитала");
+    expect(result.missingFields).toContain("Место нахождения юридического лица");
     expect(result.missingFields).toContain("Основной ОКВЭД");
     expect(result.missingFields).toContain("Количество учредителей");
     expect(result.missingFields).toContain("Гражданство учредителя");
+    expect(result.missingFields).toContain("Вид документа учредителя");
     expect(result.missingFields).toContain("Подтверждение: руководитель является учредителем");
     expect(result.missingFields).toContain("Адрес регистрации учредителя");
+    expect(result.missingFields).toContain("Доля учредителя 100%");
     expect(result.missingFields).toContain("Срок избрания руководителя");
+    expect(result.missingFields).toContain("Номер типового устава");
+    expect(result.missingFields).toContain("Роль заявителя");
   });
 
   it("routes unsupported ООО scenarios to manager", () => {
@@ -101,7 +121,8 @@ describe("application validation", () => {
     }, "", "+7 985 999 99 99");
 
     expect(result.isComplete).toBe(false);
-    expect(result.missingFields).toContain("Email");
+    expect(result.missingFields).toContain("Email ИП");
+    expect(result.missingFields).toContain("Email для документов ФНС");
     expect(result.missingFields).toContain("Адрес регистрации");
   });
 

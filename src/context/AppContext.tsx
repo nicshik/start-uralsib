@@ -7,23 +7,34 @@ export type FounderCitizenship = "ru" | "foreign";
 export type CharterType = "generated" | "custom";
 export type ApplicantCitizenship = "ru" | "foreign" | "stateless";
 export type IdentityDocumentType = "passport_rf" | "other";
+export type CapitalType = "charter";
+export type ApplicantRole = "founder_individual";
 
 export interface BusinessData {
   okvedCodes: string[];
   primaryOkvedCode?: string;
   taxRegime?: string;
+  entrepreneurEmail?: string;
+  legalEntityEmail?: string;
+  registrationResultEmail?: string;
   companyName?: string;
   companyNameFull?: string;
   charterCapital?: string;
+  capitalType?: CapitalType;
+  legalLocation?: string;
   legalAddress?: string;
   founderCount?: FounderCount;
   founderCitizenship?: FounderCitizenship;
+  founderDocumentType?: IdentityDocumentType;
   founderRegistrationAddress?: string;
+  founderSharePercent?: string;
   directorIsFounder?: boolean;
   addressIsFounder?: boolean;
   directorPosition?: string;
   directorTerm?: string;
   charterType?: CharterType;
+  typicalCharterNumber?: string;
+  applicantRole?: ApplicantRole;
   hasSeal?: boolean;
   requiresManager?: boolean;
   managerReason?: string;
@@ -71,9 +82,15 @@ const initialState: AppState = {
   currentStep: 0,
   business: {
     okvedCodes: [],
+    registrationResultEmail: "client@email.com",
     charterCapital: "10000",
+    capitalType: "charter",
+    founderDocumentType: "passport_rf",
+    founderSharePercent: "100",
     directorPosition: "Генеральный директор",
     charterType: "generated",
+    typicalCharterNumber: "36",
+    applicantRole: "founder_individual",
     hasSeal: false,
   },
   passport: {},
@@ -96,7 +113,24 @@ type Action =
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
-    case "SET_PRODUCT": return { ...state, productType: action.payload };
+    case "SET_PRODUCT": {
+      const emailDefaults: Partial<BusinessData> = {};
+      if (action.payload === "ip" && !state.business.entrepreneurEmail) {
+        emailDefaults.entrepreneurEmail = state.email;
+      }
+      if (action.payload === "ooo" && !state.business.legalEntityEmail) {
+        emailDefaults.legalEntityEmail = state.email;
+      }
+      if (!state.business.registrationResultEmail) {
+        emailDefaults.registrationResultEmail = state.email;
+      }
+
+      return {
+        ...state,
+        productType: action.payload,
+        business: { ...state.business, ...emailDefaults },
+      };
+    }
     case "SET_FLOW": return { ...state, flowType: action.payload };
     case "SET_PHONE": return { ...state, phone: action.payload };
     case "SET_EMAIL": return { ...state, email: action.payload };

@@ -49,7 +49,6 @@ export default function Step2Passport() {
     state.phone,
     state.business,
   );
-  const emailValid = !applicantValidation.missingFields.includes("Email");
   const showManagerPrompt = applicantValidation.managerReasons.length > 0;
   const canProceed = (state.passport.ocrCompleted || manualMode) && applicantValidation.isComplete;
 
@@ -103,7 +102,6 @@ export default function Step2Passport() {
               business={state.business}
               email={state.email}
               phone={state.phone}
-              emailValid={emailValid}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
               onBusinessUpdate={(payload) => dispatch({ type: "UPDATE_BUSINESS", payload })}
               onPhoneUpdate={(phone) => dispatch({ type: "SET_PHONE", payload: phone })}

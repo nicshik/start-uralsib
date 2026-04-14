@@ -6,7 +6,13 @@ import { SupportBlock } from "@/components/SupportBlock";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useApp } from "@/context/AppContext";
-import { getApplicantValidation, getBusinessValidation, getCompanyFullName } from "@/lib/applicationValidation";
+import {
+  getApplicantValidation,
+  getBusinessEmail,
+  getBusinessValidation,
+  getCompanyFullName,
+  getRegistrationResultEmail,
+} from "@/lib/applicationValidation";
 import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { trackEvent } from "@/lib/analytics";
 import { CheckCircle2, Clock, FileText, Phone, UserCheck } from "lucide-react";
@@ -32,8 +38,23 @@ export default function ManagerRequest() {
   const applicantValidation = getApplicantValidation(state.productType, state.passport, state.email, state.phone, state.business);
   const reasons = [...businessValidation.managerReasons, ...applicantValidation.managerReasons];
   const companyFullName = getCompanyFullName(state.business);
+  const businessEmail = getBusinessEmail(state.productType, state.business, state.email);
+  const registrationResultEmail = getRegistrationResultEmail(state.business, state.email);
   const legalAddress = state.business.addressIsFounder === false ? state.business.legalAddress : state.business.founderRegistrationAddress;
   const fullName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
+  const citizenshipLabel = {
+    ru: "Гражданин РФ",
+    foreign: "Иностранный гражданин",
+    stateless: "Лицо без гражданства",
+  }[state.passport.citizenship || "ru"];
+  const documentTypeLabel = {
+    passport_rf: "Паспорт гражданина РФ",
+    other: "Иной документ",
+  }[state.passport.documentType || "passport_rf"];
+  const founderDocumentTypeLabel = {
+    passport_rf: "Паспорт гражданина РФ",
+    other: "Иной документ",
+  }[state.business.founderDocumentType || "passport_rf"];
 
   useEffect(() => {
     trackEvent("page_view", {
@@ -124,10 +145,22 @@ export default function ManagerRequest() {
                   <span className="font-medium">{companyFullName}</span>
                 </div>
               )}
+              {isOoo && state.business.legalLocation && (
+                <div className="sm:col-span-2">
+                  <span className="text-muted-foreground">Место нахождения: </span>
+                  <span className="font-medium">{state.business.legalLocation}</span>
+                </div>
+              )}
               {isOoo && state.business.charterCapital && (
                 <div>
                   <span className="text-muted-foreground">Уставной капитал: </span>
                   <span className="font-medium">{Number(state.business.charterCapital).toLocaleString("ru-RU")} ₽</span>
+                </div>
+              )}
+              {isOoo && (
+                <div>
+                  <span className="text-muted-foreground">Вид капитала: </span>
+                  <span className="font-medium">Уставный капитал</span>
                 </div>
               )}
               {isOoo && legalAddress && (
@@ -142,10 +175,88 @@ export default function ManagerRequest() {
                   <span className="font-medium">{state.business.founderRegistrationAddress}</span>
                 </div>
               )}
+              {isOoo && (
+                <>
+                  <div>
+                    <span className="text-muted-foreground">Учредители: </span>
+                    <span className="font-medium">{state.business.founderCount === "multiple" ? "Несколько" : "Один"}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Гражданство учредителя: </span>
+                    <span className="font-medium">{state.business.founderCitizenship === "foreign" ? "Иностранный гражданин" : "Гражданин РФ"}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Документ учредителя: </span>
+                    <span className="font-medium">{founderDocumentTypeLabel}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Доля: </span>
+                    <span className="font-medium">{state.business.founderSharePercent || "100"}%</span>
+                  </div>
+                  {state.business.directorPosition && (
+                    <div>
+                      <span className="text-muted-foreground">Руководитель: </span>
+                      <span className="font-medium">{state.business.directorPosition}</span>
+                    </div>
+                  )}
+                  {state.business.directorTerm && (
+                    <div>
+                      <span className="text-muted-foreground">Срок: </span>
+                      <span className="font-medium">{state.business.directorTerm}</span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-muted-foreground">Устав: </span>
+                    <span className="font-medium">
+                      {state.business.charterType === "custom" ? "Свой устав / документы" : `Типовой устав №${state.business.typicalCharterNumber || "36"}`}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Печать: </span>
+                    <span className="font-medium">{state.business.hasSeal ? "С печатью" : "Без печати"}</span>
+                  </div>
+                </>
+              )}
               {fullName && (
                 <div className="sm:col-span-2">
                   <span className="text-muted-foreground">Клиент: </span>
                   <span className="font-medium">{fullName}</span>
+                </div>
+              )}
+              {!isOoo && state.passport.citizenship && (
+                <div>
+                  <span className="text-muted-foreground">Гражданство: </span>
+                  <span className="font-medium">{citizenshipLabel}</span>
+                </div>
+              )}
+              {!isOoo && state.passport.documentType && (
+                <div>
+                  <span className="text-muted-foreground">Документ: </span>
+                  <span className="font-medium">{documentTypeLabel}</span>
+                </div>
+              )}
+              {state.passport.passportSeries && state.passport.passportNumber && (
+                <div>
+                  <span className="text-muted-foreground">Паспорт: </span>
+                  <span className="font-medium">{state.passport.passportSeries} {state.passport.passportNumber}</span>
+                </div>
+              )}
+              {state.passport.inn && (
+                <div>
+                  <span className="text-muted-foreground">ИНН: </span>
+                  <span className="font-medium">{state.passport.inn}</span>
+                </div>
+              )}
+              {state.passport.snils && (
+                <div>
+                  <span className="text-muted-foreground">СНИЛС: </span>
+                  <span className="font-medium">{state.passport.snils}</span>
+                </div>
+              )}
+              {!isOoo && state.passport.registrationAddress && (
+                <div className="sm:col-span-2">
+                  <span className="text-muted-foreground">Адрес регистрации: </span>
+                  <span className="font-medium">{state.passport.registrationAddress}</span>
                 </div>
               )}
               {state.phone && (
@@ -154,10 +265,16 @@ export default function ManagerRequest() {
                   <span className="font-medium">{state.phone}</span>
                 </div>
               )}
-              {state.email && (
+              {businessEmail && (
                 <div>
-                  <span className="text-muted-foreground">Email: </span>
-                  <span className="font-medium">{state.email}</span>
+                  <span className="text-muted-foreground">{isOoo ? "Email юрлица: " : "Email ИП: "}</span>
+                  <span className="font-medium">{businessEmail}</span>
+                </div>
+              )}
+              {registrationResultEmail && (
+                <div className="sm:col-span-2">
+                  <span className="text-muted-foreground">Email для документов ФНС: </span>
+                  <span className="font-medium">{registrationResultEmail}</span>
                 </div>
               )}
               {primaryOkved && (

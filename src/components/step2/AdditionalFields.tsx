@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail } from "lucide-react";
 import type { BusinessData, PassportData, ProductType } from "@/context/AppContext";
+import { isValidEmail } from "@/lib/applicationValidation";
 
 interface Props {
   passport: PassportData;
@@ -10,7 +11,6 @@ interface Props {
   business?: BusinessData;
   email?: string;
   phone?: string;
-  emailValid: boolean;
   onUpdate: (payload: Partial<PassportData>) => void;
   onBusinessUpdate?: (payload: Partial<BusinessData>) => void;
   onPhoneUpdate?: (phone: string) => void;
@@ -23,7 +23,6 @@ export default function AdditionalFields({
   business,
   email,
   phone,
-  emailValid,
   onUpdate,
   onBusinessUpdate,
   onPhoneUpdate,
@@ -34,6 +33,42 @@ export default function AdditionalFields({
     ? business?.founderRegistrationAddress || passport.registrationAddress || ""
     : passport.registrationAddress || "";
   const registrationAddressLabel = isOoo ? "Адрес регистрации учредителя" : "Адрес регистрации";
+  const businessEmail =
+    productType === "ooo"
+      ? business?.legalEntityEmail || email || ""
+      : productType === "ip"
+        ? business?.entrepreneurEmail || email || ""
+        : email || "";
+  const registrationResultEmail = business?.registrationResultEmail || businessEmail;
+  const businessEmailLabel =
+    productType === "ooo"
+      ? "Email юридического лица"
+      : productType === "ip"
+        ? "Email ИП"
+        : "Email";
+
+  const handleBusinessEmailChange = (value: string) => {
+    const currentResultEmail = business?.registrationResultEmail || email || "";
+    const shouldSyncResultEmail = !currentResultEmail || currentResultEmail === businessEmail;
+
+    onEmailUpdate(value);
+    if (productType === "ooo") {
+      onBusinessUpdate?.({
+        legalEntityEmail: value,
+        registrationResultEmail: shouldSyncResultEmail ? value : currentResultEmail,
+      });
+    } else if (productType === "ip") {
+      onBusinessUpdate?.({
+        entrepreneurEmail: value,
+        registrationResultEmail: shouldSyncResultEmail ? value : currentResultEmail,
+      });
+    }
+  };
+
+  const handleRegistrationResultEmailChange = (value: string) => {
+    onBusinessUpdate?.({ registrationResultEmail: value });
+  };
+
   const handleRegistrationAddressChange = (value: string) => {
     if (isOoo && onBusinessUpdate) {
       onBusinessUpdate({
@@ -55,13 +90,13 @@ export default function AdditionalFields({
 
         <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">Email</Label>
+            <Label className="text-xs text-muted-foreground">{businessEmailLabel}</Label>
             <Input
               type="email"
               placeholder="example@mail.ru"
-              value={email || ""}
-              onChange={(e) => onEmailUpdate(e.target.value)}
-              className={`text-sm h-10 ${email && !emailValid ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              value={businessEmail}
+              onChange={(e) => handleBusinessEmailChange(e.target.value)}
+              className={`text-sm h-10 ${businessEmail && !isValidEmail(businessEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
           <div className="space-y-1">
@@ -73,10 +108,27 @@ export default function AdditionalFields({
               className={`h-10 text-sm ${onPhoneUpdate ? "" : "bg-muted text-muted-foreground"}`}
             />
           </div>
-          {email && !emailValid && (
+          {businessEmail && !isValidEmail(businessEmail) && (
             <p className="text-xs sm:col-span-2 text-destructive">
               Введите корректный email
             </p>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground">Email для документов ФНС</Label>
+          <Input
+            type="email"
+            placeholder="example@mail.ru"
+            value={registrationResultEmail}
+            onChange={(e) => handleRegistrationResultEmailChange(e.target.value)}
+            className={`text-sm h-10 ${registrationResultEmail && !isValidEmail(registrationResultEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+          />
+          <p className="text-xs text-muted-foreground">
+            ФНС направит результат регистрации на этот адрес. Можно оставить тот же email.
+          </p>
+          {registrationResultEmail && !isValidEmail(registrationResultEmail) && (
+            <p className="text-xs text-destructive">Введите корректный email для документов ФНС</p>
           )}
         </div>
 

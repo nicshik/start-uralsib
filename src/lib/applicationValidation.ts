@@ -10,6 +10,16 @@ const isFilled = (value?: string) => Boolean(value?.trim());
 
 export const isValidEmail = (email?: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email?.trim() || "");
 
+export function getBusinessEmail(productType: ProductType | undefined, business: BusinessData, fallbackEmail?: string): string {
+  if (productType === "ooo") return business.legalEntityEmail || fallbackEmail || "";
+  if (productType === "ip") return business.entrepreneurEmail || fallbackEmail || "";
+  return fallbackEmail || "";
+}
+
+export function getRegistrationResultEmail(business: BusinessData, fallbackEmail?: string): string {
+  return business.registrationResultEmail || fallbackEmail || "";
+}
+
 export function getCompanyFullName(business: BusinessData): string {
   if (isFilled(business.companyNameFull)) return business.companyNameFull!.trim();
 
@@ -29,6 +39,9 @@ export function getManagerReasons(business: BusinessData): string[] {
   }
   if (business.founderCitizenship === "foreign") {
     reasons.push("Для учредителя с иностранным гражданством потребуется дополнительная проверка документов");
+  }
+  if (business.founderDocumentType === "other") {
+    reasons.push("Иной документ учредителя проверит менеджер");
   }
   if (business.directorIsFounder === false) {
     reasons.push("Если руководитель не является учредителем, менеджер уточнит данные для документов");
@@ -62,17 +75,25 @@ export function getBusinessValidation(productType: ProductType | undefined, busi
     if (!business.charterCapital || Number(business.charterCapital) < 10000) {
       missingFields.push("Уставной капитал от 10 000 ₽");
     }
+    if (business.capitalType !== "charter") missingFields.push("Вид капитала");
+    if (!isFilled(business.legalLocation)) missingFields.push("Место нахождения юридического лица");
     if (!business.founderCount) missingFields.push("Количество учредителей");
     if (!business.founderCitizenship) missingFields.push("Гражданство учредителя");
+    if (!business.founderDocumentType) missingFields.push("Вид документа учредителя");
     if (business.directorIsFounder === undefined) {
       missingFields.push("Подтверждение: руководитель является учредителем");
     }
     if (!isFilled(business.founderRegistrationAddress)) {
       missingFields.push("Адрес регистрации учредителя");
     }
+    if (business.founderSharePercent !== "100") missingFields.push("Доля учредителя 100%");
     if (!isFilled(business.directorPosition)) missingFields.push("Должность руководителя");
     if (!isFilled(business.directorTerm)) missingFields.push("Срок избрания руководителя");
     if (!business.charterType) missingFields.push("Тип устава");
+    if (business.charterType === "generated" && !isFilled(business.typicalCharterNumber)) {
+      missingFields.push("Номер типового устава");
+    }
+    if (business.applicantRole !== "founder_individual") missingFields.push("Роль заявителя");
     if (business.hasSeal === undefined) missingFields.push("Печать организации");
   }
 
@@ -117,7 +138,17 @@ export function getApplicantValidation(
   if (!isFilled(passport.divisionCode)) missingFields.push("Код подразделения");
   if (!isFilled(passport.snils)) missingFields.push("СНИЛС");
   if (productType === "ip" && !isFilled(passport.inn)) missingFields.push("ИНН");
-  if (!isValidEmail(email)) missingFields.push("Email");
+  const businessEmail = getBusinessEmail(productType, business || { okvedCodes: [] }, email);
+  const registrationResultEmail = getRegistrationResultEmail(business || { okvedCodes: [] }, email);
+
+  if (productType === "ip") {
+    if (!isValidEmail(businessEmail)) missingFields.push("Email ИП");
+  } else if (productType === "ooo") {
+    if (!isValidEmail(businessEmail)) missingFields.push("Email юридического лица");
+  } else if (!isValidEmail(email)) {
+    missingFields.push("Email");
+  }
+  if (!isValidEmail(registrationResultEmail)) missingFields.push("Email для документов ФНС");
   if ((phone || "").replace(/\D/g, "").length < 10) missingFields.push("Телефон");
 
   const registrationAddress =

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
-import { getCompanyFullName } from "@/lib/applicationValidation";
+import { getBusinessEmail, getCompanyFullName, getRegistrationResultEmail } from "@/lib/applicationValidation";
 import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,6 +27,8 @@ export default function Step3Review() {
   const isOoo = state.productType === "ooo";
   const fullName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
   const companyFullName = getCompanyFullName(state.business);
+  const businessEmail = getBusinessEmail(state.productType, state.business, state.email);
+  const registrationResultEmail = getRegistrationResultEmail(state.business, state.email);
   const legalAddress = state.business.addressIsFounder === false ? state.business.legalAddress : state.business.founderRegistrationAddress;
   const registrationAddress = isOoo ? state.business.founderRegistrationAddress : state.passport.registrationAddress;
   const charterLabel = state.business.charterType === "custom" ? "Свой устав / документы" : "Сгенерировать по шаблону";
@@ -39,6 +41,10 @@ export default function Step3Review() {
     passport_rf: "Паспорт гражданина РФ",
     other: "Иной документ",
   }[state.passport.documentType || "passport_rf"];
+  const founderDocumentTypeLabel = {
+    passport_rf: "Паспорт гражданина РФ",
+    other: "Иной документ",
+  }[state.business.founderDocumentType || "passport_rf"];
 
   const handleSubmit = () => {
     setSubmitting(true);
@@ -102,10 +108,22 @@ export default function Step3Review() {
                   <span className="font-medium">{companyFullName}</span>
                 </div>
               )}
+              {isOoo && state.business.legalLocation && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">Место нахождения: </span>
+                  <span className="font-medium">{state.business.legalLocation}</span>
+                </div>
+              )}
               {state.business.charterCapital && (
                 <div>
                   <span className="text-muted-foreground">Уст. капитал: </span>
                   <span className="font-medium">{Number(state.business.charterCapital).toLocaleString("ru-RU")} ₽</span>
+                </div>
+              )}
+              {isOoo && (
+                <div>
+                  <span className="text-muted-foreground">Вид капитала: </span>
+                  <span className="font-medium">Уставный капитал</span>
                 </div>
               )}
               {legalAddress && (
@@ -124,6 +142,18 @@ export default function Step3Review() {
                     <span className="text-muted-foreground">Гражданство: </span>
                     <span className="font-medium">{state.business.founderCitizenship === "foreign" ? "Иностранный гражданин" : "Гражданин РФ"}</span>
                   </div>
+                  <div>
+                    <span className="text-muted-foreground">Документ учредителя: </span>
+                    <span className="font-medium">{founderDocumentTypeLabel}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Доля: </span>
+                    <span className="font-medium">{state.business.founderSharePercent || "100"}%</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Заявитель: </span>
+                    <span className="font-medium">Учредитель-физлицо</span>
+                  </div>
                   {state.business.directorPosition && (
                     <div>
                       <span className="text-muted-foreground">Руководитель: </span>
@@ -140,6 +170,12 @@ export default function Step3Review() {
                     <span className="text-muted-foreground">Устав: </span>
                     <span className="font-medium">{charterLabel}</span>
                   </div>
+                  {state.business.charterType === "generated" && state.business.typicalCharterNumber && (
+                    <div>
+                      <span className="text-muted-foreground">Типовой устав №: </span>
+                      <span className="font-medium">{state.business.typicalCharterNumber}</span>
+                    </div>
+                  )}
                   <div>
                     <span className="text-muted-foreground">Печать: </span>
                     <span className="font-medium">{state.business.hasSeal ? "С печатью" : "Без печати"}</span>
@@ -240,10 +276,16 @@ export default function Step3Review() {
                   <span className="font-medium">{registrationAddress}</span>
                 </div>
               )}
-              {state.email && (
+              {state.phone && (
                 <div className="col-span-2">
-                  <span className="text-muted-foreground">Email: </span>
-                  <span className="font-medium">{state.email}</span>
+                  <span className="text-muted-foreground">Телефон: </span>
+                  <span className="font-medium">{state.phone}</span>
+                </div>
+              )}
+              {businessEmail && (
+                <div className="col-span-2">
+                  <span className="text-muted-foreground">{isOoo ? "Email юрлица: " : "Email ИП: "}</span>
+                  <span className="font-medium">{businessEmail}</span>
                 </div>
               )}
             </div>
@@ -257,7 +299,7 @@ export default function Step3Review() {
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Email для уведомлений ФНС:</span>
-                <span className="font-medium">{state.email}</span>
+                <span className="font-medium">{registrationResultEmail}</span>
               </div>
               <p className="text-xs text-muted-foreground">
                 Используем email, указанный на предыдущем шаге. Документы придут на бумаге только при выбранной отметке ниже.

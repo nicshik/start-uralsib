@@ -59,8 +59,13 @@ export default function Step1Business() {
 
     const defaults: Partial<BusinessData> = {};
     if (!state.business.charterCapital) defaults.charterCapital = "10000";
+    if (!state.business.capitalType) defaults.capitalType = "charter";
+    if (!state.business.founderDocumentType) defaults.founderDocumentType = "passport_rf";
+    if (!state.business.founderSharePercent) defaults.founderSharePercent = "100";
     if (!state.business.directorPosition) defaults.directorPosition = "Генеральный директор";
     if (!state.business.charterType) defaults.charterType = "generated";
+    if (!state.business.typicalCharterNumber) defaults.typicalCharterNumber = "36";
+    if (!state.business.applicantRole) defaults.applicantRole = "founder_individual";
     if (state.business.hasSeal === undefined) defaults.hasSeal = false;
 
     if (Object.keys(defaults).length > 0) {
@@ -439,6 +444,17 @@ export default function Step1Business() {
                   <p className="text-xs text-muted-foreground">Минимум 10 000 ₽. Вносится в течение 4 месяцев после регистрации.</p>
                 </div>
 
+                <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Вид капитала</Label>
+                    <Input value="Уставный капитал" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Доля единственного учредителя</Label>
+                    <Input value="100%" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
+                  </div>
+                </div>
+
                 <div className="space-y-4 pt-2 border-t">
                   <div className="space-y-1">
                     <p className="text-sm font-semibold">Учредитель</p>
@@ -482,6 +498,22 @@ export default function Step1Business() {
                   </div>
 
                   <div className="space-y-2">
+                    <Label className="text-sm">Документ учредителя *</Label>
+                    <Select
+                      value={state.business.founderDocumentType || ""}
+                      onValueChange={(value) => updateBusiness({ founderDocumentType: value as BusinessData["founderDocumentType"] })}
+                    >
+                      <SelectTrigger className="h-11 bg-white">
+                        <SelectValue placeholder="Выберите документ" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="passport_rf">Паспорт гражданина РФ</SelectItem>
+                        <SelectItem value="other">Иной документ</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label className="text-sm">Адрес регистрации учредителя в РФ *</Label>
                     <Input
                       placeholder="г. Москва, ул. Тверская, д. 1, кв. 12"
@@ -493,9 +525,25 @@ export default function Step1Business() {
                       className="h-11 text-sm"
                     />
                   </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">Роль заявителя</Label>
+                    <Input value="Учредитель-физическое лицо" readOnly className="h-11 bg-muted text-sm text-muted-foreground" />
+                  </div>
                 </div>
 
                 <div className="space-y-3 pt-2 border-t">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Место нахождения юридического лица *</Label>
+                    <Input
+                      placeholder="г. Москва"
+                      value={state.business.legalLocation || ""}
+                      onChange={(e) => updateBusiness({ legalLocation: e.target.value })}
+                      className="h-11 text-sm"
+                    />
+                    <p className="text-xs text-muted-foreground">Например, субъект РФ и город. Полный адрес укажем ниже.</p>
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <Label className="text-sm">Юр. адрес = адрес учредителя</Label>
                     <Switch
@@ -585,6 +633,18 @@ export default function Step1Business() {
                       </Label>
                     </RadioGroup>
                   </div>
+
+                  {state.business.charterType === "generated" && (
+                    <div className="space-y-2">
+                      <Label className="text-sm">Номер типового устава *</Label>
+                      <Input
+                        placeholder="36"
+                        value={state.business.typicalCharterNumber || ""}
+                        onChange={(e) => updateBusiness({ typicalCharterNumber: e.target.value })}
+                        className="h-11 text-sm"
+                      />
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <Label className="text-sm">Печать организации *</Label>
