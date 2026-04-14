@@ -257,14 +257,6 @@ export default function RkoRequest() {
               </Select>
             </div>
 
-            <div className="rounded-[12px] border border-[#E5E0EB] bg-brand-light p-4">
-              <div className="flex items-start gap-3">
-                <FileText className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  Заявка на счёт не меняет данные регистрации. Менеджер обсудит её отдельно во время звонка.
-                </p>
-              </div>
-            </div>
 
             <Button className="h-12 w-full" disabled={!canSubmit} onClick={submitRequest}>
               Отправить заявку на счёт
