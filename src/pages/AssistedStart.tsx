@@ -62,9 +62,6 @@ export default function AssistedStart() {
                 <Briefcase className="h-5 w-5 text-primary" />
               </div>
               <p className="font-semibold">Открыть ИП</p>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                Быстрый сценарий для одного владельца бизнеса.
-              </p>
             </button>
 
             <button
@@ -75,9 +72,6 @@ export default function AssistedStart() {
                 <Building2 className="h-5 w-5 text-primary" />
               </div>
               <p className="font-semibold">Открыть ООО</p>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                Для компании с названием, уставным капиталом и юр. адресом.
-              </p>
             </button>
 
           </div>
