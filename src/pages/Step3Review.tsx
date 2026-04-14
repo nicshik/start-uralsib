@@ -4,9 +4,10 @@ import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
-import { Pencil, CheckCircle2 } from "lucide-react";
+import { Pencil, CheckCircle2, FileText, Mail } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 
 export default function Step3Review() {
@@ -25,7 +26,7 @@ export default function Step3Review() {
 
   const handleSubmit = () => {
     setSubmitting(true);
-    trackEvent("application_submitted", { flowType: state.flowType });
+    trackEvent("application_submitted", { flowType: state.flowType, paperDocuments: state.paperDocuments });
     if (state.flowType === "manager") {
       trackEvent("assisted_step_completed", { step: 3, flowType: "manager" });
     }
@@ -169,6 +170,46 @@ export default function Step3Review() {
               )}
             </div>
           </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#E5E0EB] bg-white p-4 space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Получение документов</p>
+              <div className="flex items-center gap-2 text-sm">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Email для уведомлений ФНС:</span>
+                <span className="font-medium">{state.email}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Используем email, указанный на предыдущем шаге. На него придут уведомления и документы по заявке.
+              </p>
+            </div>
+            <button onClick={() => navigate("/step/2")} className="text-xs text-primary flex items-center gap-1 hover:underline shrink-0">
+              <Pencil className="h-3 w-3" /> Изменить
+            </button>
+          </div>
+
+          <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-brand-light p-3">
+            <Checkbox
+              checked={state.paperDocuments}
+              onCheckedChange={(checked) => {
+                const enabled = checked === true;
+                dispatch({ type: "SET_PAPER_DOCUMENTS", payload: enabled });
+                trackEvent("paper_documents_toggled", { enabled, flowType: state.flowType });
+              }}
+              className="mt-0.5"
+            />
+            <div className="space-y-1">
+              <p className="text-sm font-medium flex items-center gap-2">
+                <FileText className="h-4 w-4 text-muted-foreground" />
+                Получить документы из ФНС на бумажном носителе
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Если не отмечать, ФНС направит документы только на электронную почту.
+              </p>
+            </div>
+          </label>
         </div>
 
         {/* Meeting note */}

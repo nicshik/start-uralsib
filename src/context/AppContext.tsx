@@ -36,6 +36,7 @@ export interface AppState {
   flowType?: FlowType;
   phone?: string;
   email?: string;
+  paperDocuments: boolean;
   smsVerified: boolean;
   currentStep: number;
   business: BusinessData;
@@ -46,6 +47,7 @@ export interface AppState {
 
 const initialState: AppState = {
   flowType: "online",
+  paperDocuments: false,
   smsVerified: false,
   currentStep: 0,
   business: { okvedCodes: [], directorIsFounder: true, addressIsFounder: true },
@@ -58,6 +60,7 @@ type Action =
   | { type: "SET_FLOW"; payload: FlowType }
   | { type: "SET_PHONE"; payload: string }
   | { type: "SET_EMAIL"; payload: string }
+  | { type: "SET_PAPER_DOCUMENTS"; payload: boolean }
   | { type: "SET_SMS_VERIFIED" }
   | { type: "SET_STEP"; payload: number }
   | { type: "UPDATE_BUSINESS"; payload: Partial<BusinessData> }
@@ -72,12 +75,13 @@ function reducer(state: AppState, action: Action): AppState {
     case "SET_FLOW": return { ...state, flowType: action.payload };
     case "SET_PHONE": return { ...state, phone: action.payload };
     case "SET_EMAIL": return { ...state, email: action.payload };
+    case "SET_PAPER_DOCUMENTS": return { ...state, paperDocuments: action.payload };
     case "SET_SMS_VERIFIED": return { ...state, smsVerified: true };
     case "SET_STEP": return { ...state, currentStep: action.payload };
     case "UPDATE_BUSINESS": return { ...state, business: { ...state.business, ...action.payload } };
     case "UPDATE_PASSPORT": return { ...state, passport: { ...state.passport, ...action.payload } };
     case "SUBMIT": return { ...state, submitted: true };
-    case "LOAD_DRAFT": return action.payload;
+    case "LOAD_DRAFT": return { ...initialState, ...action.payload };
     case "RESET": return initialState;
     default: return state;
   }
