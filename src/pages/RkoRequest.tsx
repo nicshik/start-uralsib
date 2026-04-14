@@ -118,9 +118,9 @@ export default function RkoRequest() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-[16px] bg-[#F0ECFA]">
               <CheckCircle2 className="h-7 w-7 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">Заявка на счёт отправлена</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта отправлена</h1>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Менеджер обсудит открытие счёта вместе с документами для регистрации.
+              Менеджер рассмотрит ее вместе с документами для регистрации ИП / ООО
             </p>
           </section>
 
