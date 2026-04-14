@@ -5,9 +5,14 @@ import { openChat } from "@/components/ChatWidget";
 export function SupportBlock({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <MessageCircle className="h-4 w-4" />
-        <span>Нужна помощь? <button className="underline text-primary" onClick={() => openChat()}>Напишите нам</button></span>
+      <div className="text-center py-2">
+        <span className="text-[13px] text-muted-foreground">Нужна помощь?</span>{" "}
+        <button
+          className="text-[13px] text-foreground/60 border-b border-border hover:text-foreground hover:border-foreground/40 transition-all"
+          onClick={() => openChat()}
+        >
+          Напишите нам
+        </button>
       </div>
     );
   }
