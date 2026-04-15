@@ -233,6 +233,80 @@ const DetailedTable = () => (
   </Card>
 );
 
+const NAV_SECTIONS = [
+  { id: "scenarios", label: "Сценарии" },
+  { id: "coverage", label: "Покрытие" },
+  { id: "manager-gap", label: "Менеджер" },
+  { id: "matrix", label: "Матрица" },
+  { id: "sources", label: "Источники" },
+];
+
+const SectionNav = () => {
+  const [active, setActive] = useState("scenarios");
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) {
+          setActive(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
+    );
+
+    NAV_SECTIONS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observerRef.current?.observe(el);
+    });
+
+    return () => observerRef.current?.disconnect();
+  }, []);
+
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <nav className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b border-border">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-10 flex gap-1 overflow-x-auto scrollbar-hide py-2">
+        {NAV_SECTIONS.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => scrollTo(id)}
+            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+              active === id
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+};
+
+const StatusLegend = () => (
+  <div className="flex flex-wrap items-center gap-6 p-4 rounded-2xl bg-muted/50 border border-border mb-6">
+    <span className="text-sm font-medium text-muted-foreground mr-2">Легенда:</span>
+    <div className="inline-flex items-center gap-1.5 text-success">
+      <CheckCircle2 className="w-4 h-4" /> <span className="text-sm">Да — клиент заполняет</span>
+    </div>
+    <div className="inline-flex items-center gap-1.5 text-muted-foreground">
+      <Lock className="w-4 h-4" /> <span className="text-sm">Авто — заполняется автоматически</span>
+    </div>
+    <div className="inline-flex items-center gap-1.5 text-primary">
+      <ArrowRight className="w-4 h-4" /> <span className="text-sm">В CRM — дозаполняет менеджер</span>
+    </div>
+    <div className="inline-flex items-center gap-1.5 text-muted-foreground/60">
+      <Minus className="w-4 h-4" /> <span className="text-sm">Нет — не применимо</span>
+    </div>
+  </div>
+
+
 export default function FieldCoverage() {
   const missingIP = [
     "Пол", "Место рождения", "Гражданство", "Вид документа",
