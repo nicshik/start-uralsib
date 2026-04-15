@@ -23,6 +23,7 @@ import NotFound from "./pages/NotFound";
 import ManagerWorkspace from "./pages/ManagerWorkspace";
 import MyApplications from "./pages/MyApplications";
 import Coverage from "./pages/Coverage";
+import FieldCoverage from "./pages/FieldCoverage";
 import uralsibLogoClean from "@/assets/uralsib-logo-clean.webp";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
 
@@ -79,6 +80,7 @@ const App = () => (
             <Route path="/my-applications" element={<RouteGuard requireSms><MyApplications /></RouteGuard>} />
             <Route path="/office-agent" element={<ManagerWorkspace />} />
             <Route path="/design" element={<Coverage />} />
+            <Route path="/coverage" element={<FieldCoverage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
