@@ -16,6 +16,7 @@ import {
   FileCheck2,
   FileText,
   Mail,
+  MapPin,
   Pencil,
   ShieldCheck,
   UserRound,
@@ -112,6 +113,11 @@ export default function Step3Review() {
     passport_rf: "Паспорт гражданина РФ",
     other: "Иной документ",
   }[state.business.founderDocumentType || "passport_rf"];
+  const visitLabel = state.visitPreference === "office"
+    ? state.visitOffice
+    : state.visitRegion && state.visitCity
+      ? "Менеджер подберёт отделение"
+      : undefined;
 
   const handleSubmit = () => {
     setSubmitting(true);
@@ -256,6 +262,16 @@ export default function Step3Review() {
             )}
           </div>
         </SummarySection>
+
+        {isOnlineLight && (
+          <SummarySection title="Визит" icon={<MapPin className="h-4 w-4" />} onEdit={() => navigate("/step/2")}>
+            <SummaryGrid>
+              <SummaryItem label="Регион" value={state.visitRegion} />
+              <SummaryItem label="Город" value={state.visitCity} />
+              <SummaryItem label="Формат" value={visitLabel} wide />
+            </SummaryGrid>
+          </SummarySection>
+        )}
 
         {!isOnlineLight && <SummarySection title="Получение документов" icon={<FileCheck2 className="h-4 w-4" />} onEdit={() => navigate("/step/2")}>
           <div className="space-y-4">

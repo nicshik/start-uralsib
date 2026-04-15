@@ -51,7 +51,14 @@ export default function Step2Passport() {
     state.email,
     state.phone,
     state.business,
-    { flowType: state.flowType, target: applicantValidationTarget },
+    {
+      flowType: state.flowType,
+      target: applicantValidationTarget,
+      visitPreference: state.visitPreference,
+      visitRegion: state.visitRegion,
+      visitCity: state.visitCity,
+      visitOffice: state.visitOffice,
+    },
   );
   const showManagerPrompt = !isOnlineLight && applicantValidation.managerReasons.length > 0;
   const canProceed = (state.passport.ocrCompleted || manualMode) && applicantValidation.isComplete;
@@ -108,10 +115,15 @@ export default function Step2Passport() {
               business={state.business}
               email={state.email}
               phone={state.phone}
+              visitPreference={state.visitPreference}
+              visitRegion={state.visitRegion}
+              visitCity={state.visitCity}
+              visitOffice={state.visitOffice}
               onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
               onBusinessUpdate={(payload) => dispatch({ type: "UPDATE_BUSINESS", payload })}
               onPhoneUpdate={(phone) => dispatch({ type: "SET_PHONE", payload: phone })}
               onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
+              onVisitUpdate={(payload) => dispatch({ type: "SET_VISIT", payload })}
             />
 
             {applicantValidation.missingFields.length > 0 && (

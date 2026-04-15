@@ -9,52 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { getBusinessEmail, isValidEmail } from "@/lib/applicationValidation";
+import { OFFICES, getDefaultVisitCity, getDefaultVisitOffice, getOffices } from "@/lib/offices";
+import type { VisitRegion } from "@/lib/offices";
 import { Building2, CheckCircle2, FileText, Gift, Phone } from "lucide-react";
-
-const OFFICES = {
-  "Москва": {
-    cities: {
-      "Москва": ["ДО «Петровский», ул. Тверская, д. 22", "ДО «Арбат», ул. Новый Арбат, д. 12"],
-    },
-  },
-  "Санкт-Петербург": {
-    cities: {
-      "Санкт-Петербург": ["ДО «Невский», Невский проспект, д. 55", "ДО «Петроградский», Каменноостровский проспект, д. 26"],
-    },
-  },
-  "Калужская область": {
-    cities: {
-      "Калуга": ["ДО «Калуга», ул. Кирова, д. 33"],
-    },
-  },
-  "Свердловская область": {
-    cities: {
-      "Екатеринбург": ["ДО «Екатеринбург», ул. Малышева, д. 51"],
-    },
-  },
-  "Новосибирская область": {
-    cities: {
-      "Новосибирск": ["ДО «Новосибирск», Красный проспект, д. 29"],
-    },
-  },
-  "Нижегородская область": {
-    cities: {
-      "Нижний Новгород": ["ДО «Нижегородский», ул. Большая Покровская, д. 18"],
-    },
-  },
-  "Ставропольский край": {
-    cities: {
-      "Ставрополь": ["ДО «Ставрополь», ул. Ленина, д. 251"],
-    },
-  },
-  "Волгоградская область": {
-    cities: {
-      "Волгоград": ["ДО «Волгоград», проспект Ленина, д. 15"],
-    },
-  },
-};
-
-type Region = keyof typeof OFFICES;
 
 export default function RkoRequest() {
   const navigate = useNavigate();
@@ -64,29 +21,29 @@ export default function RkoRequest() {
   const [clientName, setClientName] = useState(fullName);
   const [phone, setPhone] = useState(state.phone || "");
   const [email, setEmail] = useState(businessEmail);
-  const [region, setRegion] = useState<Region>("Москва");
+  const [region, setRegion] = useState<VisitRegion>("Москва");
   const [city, setCity] = useState("Москва");
-  const [office, setOffice] = useState(OFFICES["Москва"].cities["Москва"][0]);
+  const [office, setOffice] = useState(getDefaultVisitOffice("Москва", "Москва"));
   const [submitted, setSubmitted] = useState(false);
 
   const cities = useMemo(() => Object.keys(OFFICES[region].cities), [region]);
-  const offices = useMemo((): string[] => OFFICES[region].cities[city as keyof (typeof OFFICES)[Region]["cities"]] || [], [city, region]);
+  const offices = useMemo(() => getOffices(region, city), [city, region]);
   const productLabel = state.productType === "ooo" ? "ООО" : "ИП";
 
   useEffect(() => {
     trackEvent("page_view", { page: "rko_request", product: state.productType, flowType: state.flowType });
   }, [state.flowType, state.productType]);
 
-  const handleRegionChange = (value: Region) => {
-    const nextCity = Object.keys(OFFICES[value].cities)[0];
-    const nextOffice = OFFICES[value].cities[nextCity as keyof (typeof OFFICES)[typeof value]["cities"]][0];
+  const handleRegionChange = (value: VisitRegion) => {
+    const nextCity = getDefaultVisitCity(value);
+    const nextOffice = getDefaultVisitOffice(value, nextCity);
     setRegion(value);
     setCity(nextCity);
     setOffice(nextOffice);
   };
 
   const handleCityChange = (value: string) => {
-    const nextOffice = OFFICES[region].cities[value as keyof (typeof OFFICES)[Region]["cities"]]?.[0] || "";
+    const nextOffice = getDefaultVisitOffice(region, value);
     setCity(value);
     setOffice(nextOffice);
   };
@@ -234,7 +191,7 @@ export default function RkoRequest() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Регион</Label>
-                <Select value={region} onValueChange={(value) => handleRegionChange(value as Region)}>
+                <Select value={region} onValueChange={(value) => handleRegionChange(value as VisitRegion)}>
                   <SelectTrigger className="h-12 bg-[#F5F5F5]">
                     <SelectValue />
                   </SelectTrigger>

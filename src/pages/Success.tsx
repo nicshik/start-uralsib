@@ -59,6 +59,11 @@ export default function Success() {
 
   const businessEmail = getBusinessEmail(state.productType, state.business, state.email);
   const productLabel = state.productType === "ooo" ? "ООО" : "ИП";
+  const visitValue = state.visitPreference === "office"
+    ? state.visitOffice
+    : state.visitRegion && state.visitCity
+      ? `${state.visitRegion}, ${state.visitCity}. Менеджер подберёт отделение`
+      : undefined;
   const steps = [
     { icon: CheckCircle2, title: "Заявка принята", desc: "Только что", done: true },
     { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня", done: false },
@@ -100,6 +105,7 @@ export default function Success() {
 
           <div className="p-5">
             <DetailRow label="Форма бизнеса" value={productLabel} />
+            <DetailRow label="Визит" value={visitValue} />
             <DetailRow label="Копия заявки" value={businessEmail ? businessEmail : "Email можно добавить через менеджера"} />
             <DetailRow
               label="Что передадим менеджеру"

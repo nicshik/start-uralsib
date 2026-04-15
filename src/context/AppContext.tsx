@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from "react";
+import type { VisitPreference } from "@/lib/offices";
 
 export type ProductType = "ip" | "ooo" | "help";
 export type FlowType = "online_light" | "assisted" | "office_crm";
@@ -74,6 +75,10 @@ export interface AppState {
   phone?: string;
   email?: string;
   paperDocuments: boolean;
+  visitPreference?: VisitPreference;
+  visitRegion?: string;
+  visitCity?: string;
+  visitOffice?: string;
   smsVerified: boolean;
   currentStep: number;
   business: BusinessData;
@@ -106,6 +111,7 @@ type Action =
   | { type: "SET_PHONE"; payload: string }
   | { type: "SET_EMAIL"; payload: string }
   | { type: "SET_PAPER_DOCUMENTS"; payload: boolean }
+  | { type: "SET_VISIT"; payload: Partial<Pick<AppState, "visitPreference" | "visitRegion" | "visitCity" | "visitOffice">> }
   | { type: "SET_SMS_VERIFIED" }
   | { type: "SET_STEP"; payload: number }
   | { type: "UPDATE_BUSINESS"; payload: Partial<BusinessData> }
@@ -158,6 +164,7 @@ function reducer(state: AppState, action: Action): AppState {
     case "SET_PHONE": return { ...state, phone: action.payload };
     case "SET_EMAIL": return { ...state, email: action.payload };
     case "SET_PAPER_DOCUMENTS": return { ...state, paperDocuments: action.payload };
+    case "SET_VISIT": return { ...state, ...action.payload };
     case "SET_SMS_VERIFIED": return { ...state, smsVerified: true };
     case "SET_STEP": return { ...state, currentStep: action.payload };
     case "UPDATE_BUSINESS": return { ...state, business: { ...state.business, ...action.payload } };

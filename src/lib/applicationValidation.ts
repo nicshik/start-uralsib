@@ -1,4 +1,5 @@
 import type { BusinessData, FlowType, PassportData, ProductType } from "@/context/AppContext";
+import type { VisitPreference } from "@/lib/offices";
 
 export interface ValidationResult {
   isComplete: boolean;
@@ -15,6 +16,10 @@ export type ValidationTarget =
 export interface ValidationOptions {
   flowType?: FlowType;
   target?: ValidationTarget;
+  visitPreference?: VisitPreference;
+  visitRegion?: string;
+  visitCity?: string;
+  visitOffice?: string;
 }
 
 const isFilled = (value?: string) => Boolean(value?.trim());
@@ -175,6 +180,12 @@ export function getApplicantValidation(
     if (!isFilled(passport.issueDate)) missingFields.push("Дата выдачи паспорта");
     if (!isValidEmail(email)) missingFields.push("Email");
     if ((phone || "").replace(/\D/g, "").length < 10) missingFields.push("Телефон");
+    if (!options.visitPreference) missingFields.push("Способ записи на визит");
+    if (!isFilled(options.visitRegion)) missingFields.push("Регион визита");
+    if (!isFilled(options.visitCity)) missingFields.push("Город визита");
+    if (options.visitPreference === "office" && !isFilled(options.visitOffice)) {
+      missingFields.push("Отделение для визита");
+    }
 
     return {
       isComplete: isCompleteForTarget(target, missingFields, managerReasons),

@@ -1,9 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Mail, MapPin } from "lucide-react";
 import type { BusinessData, FlowType, PassportData, ProductType } from "@/context/AppContext";
 import { isValidEmail } from "@/lib/applicationValidation";
+import { OFFICES, getDefaultVisitCity, getDefaultVisitOffice, getOffices } from "@/lib/offices";
+import type { VisitPreference, VisitRegion } from "@/lib/offices";
 
 interface Props {
   passport: PassportData;
@@ -12,10 +16,20 @@ interface Props {
   business?: BusinessData;
   email?: string;
   phone?: string;
+  visitPreference?: VisitPreference;
+  visitRegion?: string;
+  visitCity?: string;
+  visitOffice?: string;
   onUpdate: (payload: Partial<PassportData>) => void;
   onBusinessUpdate?: (payload: Partial<BusinessData>) => void;
   onPhoneUpdate?: (phone: string) => void;
   onEmailUpdate: (email: string) => void;
+  onVisitUpdate?: (payload: {
+    visitPreference?: VisitPreference;
+    visitRegion?: string;
+    visitCity?: string;
+    visitOffice?: string;
+  }) => void;
 }
 
 export default function AdditionalFields({
@@ -25,10 +39,15 @@ export default function AdditionalFields({
   business,
   email,
   phone,
+  visitPreference,
+  visitRegion,
+  visitCity,
+  visitOffice,
   onUpdate,
   onBusinessUpdate,
   onPhoneUpdate,
   onEmailUpdate,
+  onVisitUpdate,
 }: Props) {
   const isOnlineLight = flowType === "online_light";
   const isOoo = productType === "ooo";
@@ -51,6 +70,38 @@ export default function AdditionalFields({
       : productType === "ip"
         ? "Email ИП"
         : "Email";
+  const selectedVisitRegion = (visitRegion || "Москва") as VisitRegion;
+  const visitCities = Object.keys(OFFICES[selectedVisitRegion].cities);
+  const selectedVisitCity = visitCity || getDefaultVisitCity(selectedVisitRegion);
+  const visitOffices = getOffices(selectedVisitRegion, selectedVisitCity);
+
+  const handleVisitPreferenceChange = (value: VisitPreference) => {
+    onVisitUpdate?.({
+      visitPreference: value,
+      visitRegion: visitRegion || selectedVisitRegion,
+      visitCity: visitCity || selectedVisitCity,
+      visitOffice: value === "office" ? visitOffice || getDefaultVisitOffice(selectedVisitRegion, selectedVisitCity) : undefined,
+    });
+  };
+
+  const handleVisitRegionChange = (value: VisitRegion) => {
+    const nextCity = getDefaultVisitCity(value);
+    onVisitUpdate?.({
+      visitPreference: visitPreference || "manager_pick",
+      visitRegion: value,
+      visitCity: nextCity,
+      visitOffice: visitPreference === "office" ? getDefaultVisitOffice(value, nextCity) : undefined,
+    });
+  };
+
+  const handleVisitCityChange = (value: string) => {
+    onVisitUpdate?.({
+      visitPreference: visitPreference || "manager_pick",
+      visitRegion: selectedVisitRegion,
+      visitCity: value,
+      visitOffice: visitPreference === "office" ? getDefaultVisitOffice(selectedVisitRegion, value) : undefined,
+    });
+  };
 
   const handleBusinessEmailChange = (value: string) => {
     const currentResultEmail = business?.registrationResultEmail || email || "";
@@ -183,9 +234,92 @@ export default function AdditionalFields({
         )}
 
         {isOnlineLight && (
-          <p className="text-xs text-muted-foreground">
-            Эти контакты используем для связи и предварительно укажем для оформления пакета документов.
-          </p>
+          <div className="space-y-4 rounded-lg border border-[#E5E0EB] bg-brand-light p-4">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-primary" />
+              <p className="text-sm font-semibold">Визит в отделение</p>
+            </div>
+
+            <RadioGroup
+              value={visitPreference || ""}
+              onValueChange={(value) => handleVisitPreferenceChange(value as VisitPreference)}
+              className="grid gap-2 sm:grid-cols-2"
+            >
+              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                <RadioGroupItem value="manager_pick" className="mt-0.5" />
+                <span>
+                  <span className="block font-medium">Менеджер подберёт отделение</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Укажите регион, а время согласуем по телефону.</span>
+                </span>
+              </Label>
+              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                <RadioGroupItem value="office" className="mt-0.5" />
+                <span>
+                  <span className="block font-medium">Выбрать отделение сейчас</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Передадим выбранный офис сотруднику банка.</span>
+                </span>
+              </Label>
+            </RadioGroup>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Регион</Label>
+                <Select value={visitRegion || ""} onValueChange={(value) => handleVisitRegionChange(value as VisitRegion)}>
+                  <SelectTrigger className="h-10 bg-white">
+                    <SelectValue placeholder="Выберите регион" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.keys(OFFICES).map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Город</Label>
+                <Select value={visitCity || ""} onValueChange={handleVisitCityChange} disabled={!visitRegion}>
+                  <SelectTrigger className="h-10 bg-white">
+                    <SelectValue placeholder="Выберите город" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {visitCities.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {visitPreference === "office" && (
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Отделение</Label>
+                <Select
+                  value={visitOffice || ""}
+                  onValueChange={(value) => onVisitUpdate?.({ visitOffice: value })}
+                  disabled={!visitRegion || !visitCity}
+                >
+                  <SelectTrigger className="h-10 bg-white">
+                    <SelectValue placeholder="Выберите отделение" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {visitOffices.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Эти контакты и предпочтение по визиту используем для связи и предварительно укажем для оформления пакета документов.
+            </p>
+          </div>
         )}
       </CardContent>
     </Card>

@@ -12,6 +12,7 @@ import {
   Briefcase,
   CheckCircle2,
   FileText,
+  MapPin,
   MonitorUp,
   PenTool,
   Search,
@@ -85,6 +86,11 @@ export default function ManagerWorkspace() {
         ? "Assisted-заявка"
         : "Клиент начал онлайн"
     : "Новая заявка в офисе";
+  const visitSummary = state.visitPreference === "office"
+    ? state.visitOffice
+    : state.visitRegion && state.visitCity
+      ? `${state.visitRegion}, ${state.visitCity}. Менеджер подбирает отделение`
+      : "";
 
   const selectedTax = useMemo(() => TAX_REGIMES.find((item) => item.id === tax), [tax]);
   const availableRegimes = useMemo(
@@ -359,6 +365,16 @@ export default function ManagerWorkspace() {
                   <CardDescription>Данные можно собрать здесь или продолжить assisted-заявку с сайта.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5 pt-4">
+                  {visitSummary && (
+                    <div className="flex items-start gap-3 rounded-md border border-violet-100 bg-violet-50 p-3 text-sm text-violet-950">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#6440BF]" />
+                      <div>
+                        <p className="font-semibold">Предпочтение по визиту</p>
+                        <p className="mt-1 text-violet-900">{visitSummary}</p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="space-y-3">
                     <Label className="text-sm font-semibold">Форма бизнеса</Label>
                     <RadioGroup value={agentProduct} onValueChange={(value) => setAgentProduct(value as AgentProduct)} className="grid grid-cols-2 gap-3">

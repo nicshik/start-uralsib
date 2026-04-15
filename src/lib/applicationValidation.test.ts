@@ -223,10 +223,33 @@ describe("application validation", () => {
     }, "client@example.ru", "+7 985 999 99 99", undefined, {
       flowType: "online_light",
       target: "online_light_submit",
+      visitPreference: "manager_pick",
+      visitRegion: "Москва",
+      visitCity: "Москва",
     });
 
     expect(result.isComplete).toBe(true);
     expect(result.missingFields).toEqual([]);
+  });
+
+  it("requires visit preferences for lightweight online submit", () => {
+    const result = getApplicantValidation("ip", {
+      lastName: "Иванов",
+      firstName: "Иван",
+      birthDate: "01.01.1990",
+      passportSeries: "45 12",
+      passportNumber: "123456",
+      issuedBy: "ОВД Тверской",
+      issueDate: "01.01.2010",
+    }, "client@example.ru", "+7 985 999 99 99", undefined, {
+      flowType: "online_light",
+      target: "online_light_submit",
+    });
+
+    expect(result.isComplete).toBe(false);
+    expect(result.missingFields).toContain("Способ записи на визит");
+    expect(result.missingFields).toContain("Регион визита");
+    expect(result.missingFields).toContain("Город визита");
   });
 
   it("does not treat the lightweight ИП applicant profile as FNS-ready", () => {
