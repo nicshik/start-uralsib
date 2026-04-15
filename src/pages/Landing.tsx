@@ -388,7 +388,7 @@ export default function Landing() {
                 <Handshake className="h-5 w-5 text-primary shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-foreground">Оформление с менеджером</p>
-                  <p className="text-xs text-muted-foreground">Assisted-сценарий подачи заявки</p>
+                  <p className="text-xs text-muted-foreground">Ассистированный сценарий подачи заявки</p>
                 </div>
               </button>
               <button
