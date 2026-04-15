@@ -1,10 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck } from "lucide-react";
+import { UserMenu } from "@/components/UserMenu";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.webp";
 import uralsibLogo from "@/assets/uralsib-logo-clean.webp";
@@ -16,12 +17,14 @@ import { openChat } from "@/components/ChatWidget";
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { dispatch, hasDraft, loadDraft, clearDraft } = useApp();
+  const location = useLocation();
+  const { state, dispatch, hasDraft, loadDraft, clearDraft } = useApp();
   const [showDraftWarning, setShowDraftWarning] = useState(false);
   const [pendingProduct, setPendingProduct] = useState<"ip" | "ooo" | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isSmsOpen, setIsSmsOpen] = useState(false);
+  const [isLoginSmsOpen, setIsLoginSmsOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -32,6 +35,13 @@ export default function Landing() {
   useEffect(() => {
     trackEvent("page_view", { page: "landing", flowType: "online_light" });
   }, []);
+
+  useEffect(() => {
+    if ((location.state as { scrollToCta?: boolean } | null)?.scrollToCta) {
+      const el = document.getElementById("cta-cards");
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
+    }
+  }, [location.state]);
 
   const handleChoice = (type: "ip" | "ooo") => {
     if (hasDraft()) {
@@ -47,7 +57,12 @@ export default function Landing() {
     dispatch({ type: "SET_PRODUCT", payload: type });
     trackEvent("online_light_started", { product: type, flowType: "online_light" });
     trackEvent("product_selected", { product: type, flowType: "online_light" });
-    setIsSmsOpen(true);
+    if (state.smsVerified) {
+      dispatch({ type: "SET_STEP", payload: 1 });
+      navigate("/step/1");
+    } else {
+      setIsSmsOpen(true);
+    }
   };
 
   const resumeDraft = () => {
@@ -97,17 +112,21 @@ export default function Landing() {
               className="h-8 w-[136px] object-contain transition-opacity duration-300"
             />
           </div>
-          <button
-            onClick={() => {
-              dispatch({ type: "SET_FLOW", payload: "online_light" });
-              trackEvent("header_login_click", { flowType: "online_light" });
-              setIsSmsOpen(true);
-            }}
-            className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] flex items-center gap-1.5 ${scrolled ? 'text-primary border-primary hover:bg-primary/5' : 'text-white border-white hover:bg-white/10'}`}
-          >
-            <LogIn className="h-4 w-4" />
-            Войти
-          </button>
+          {state.smsVerified ? (
+            <UserMenu variant={scrolled ? "light" : "dark"} />
+          ) : (
+            <button
+              onClick={() => {
+                dispatch({ type: "SET_FLOW", payload: "online_light" });
+                trackEvent("header_login_click", { flowType: "online_light" });
+                setIsLoginSmsOpen(true);
+              }}
+              className={`text-sm font-medium px-5 py-2 rounded-[8px] transition-colors border-[1.5px] flex items-center gap-1.5 ${scrolled ? 'text-primary border-primary hover:bg-primary/5' : 'text-white border-white hover:bg-white/10'}`}
+            >
+              <LogIn className="h-4 w-4" />
+              Войти
+            </button>
+          )}
         </div>
       </header>
 
@@ -366,6 +385,7 @@ export default function Landing() {
 
       <ProductQuiz open={isQuizOpen} onOpenChange={setIsQuizOpen} onResultChoice={handleQuizChoice} />
       <SmsAuthDialog open={isSmsOpen} onOpenChange={setIsSmsOpen} />
+      <SmsAuthDialog open={isLoginSmsOpen} onOpenChange={setIsLoginSmsOpen} onSuccess={() => {}} />
     </div>
   );
 }

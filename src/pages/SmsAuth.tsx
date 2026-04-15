@@ -11,9 +11,10 @@ import { Sparkles, Headset } from "lucide-react";
 interface SmsAuthProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
-export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
+export function SmsAuthDialog({ open, onOpenChange, onSuccess }: SmsAuthProps) {
   const navigate = useNavigate();
   const { state, dispatch } = useApp();
   const [phone, setPhone] = useState(state.phone || "+7 985 999 99 99");
@@ -64,12 +65,16 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
   const verifySms = useCallback(() => {
     if (otp === "0000" || otp.length === 4) {
       dispatch({ type: "SET_SMS_VERIFIED" });
-      dispatch({ type: "SET_STEP", payload: 1 });
       trackEvent("sms_verified", { flowType: state.flowType });
       onOpenChange(false);
-      setTimeout(() => navigate("/step/1"), 150);
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        dispatch({ type: "SET_STEP", payload: 1 });
+        setTimeout(() => navigate("/step/1"), 150);
+      }
     }
-  }, [otp, dispatch, navigate, onOpenChange, state.flowType]);
+  }, [otp, dispatch, navigate, onOpenChange, onSuccess, state.flowType]);
 
   useEffect(() => {
     if (otp.length === 4) verifySms();

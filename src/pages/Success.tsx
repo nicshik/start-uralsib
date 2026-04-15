@@ -65,7 +65,7 @@ export default function Success() {
       ? `${state.visitRegion}, ${state.visitCity}. Менеджер подберёт отделение`
       : undefined;
   const steps = [
-    { icon: CheckCircle2, title: "Заявка принята", desc: "Только что", done: true },
+    { icon: CheckCircle2, title: "Заявка принята", desc: "Только что", done: true, link: "/my-applications", linkLabel: "Мои заявки" },
     { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня", done: false },
     { icon: Clock, title: "Назначение встречи", desc: "В удобное для вас время", done: false },
     { icon: Building2, title: "Визит в офис", desc: "Подписание и открытие счёта", done: false },
@@ -132,6 +132,11 @@ export default function Success() {
                 <div className="pt-1">
                   <p className={`text-sm font-medium ${step.done ? "text-foreground" : "text-muted-foreground"}`}>{step.title}</p>
                   <p className="text-xs text-muted-foreground">{step.desc}</p>
+                  {'link' in step && step.link && (
+                    <a href={step.link} className="mt-0.5 inline-block text-xs font-medium text-primary hover:underline">
+                      {step.linkLabel}
+                    </a>
+                  )}
                 </div>
               </div>
             ))}

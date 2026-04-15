@@ -21,6 +21,7 @@ import ManagerRequest from "./pages/ManagerRequest";
 import RkoRequest from "./pages/RkoRequest";
 import NotFound from "./pages/NotFound";
 import ManagerWorkspace from "./pages/ManagerWorkspace";
+import MyApplications from "./pages/MyApplications";
 import uralsibLogoClean from "@/assets/uralsib-logo-clean.webp";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
 
@@ -74,6 +75,7 @@ const App = () => (
             <Route path="/manager-request" element={<RouteGuard requireSms><ManagerRequest /></RouteGuard>} />
             <Route path="/success" element={<RouteGuard requireSms><Success /></RouteGuard>} />
             <Route path="/rko-request" element={<RouteGuard requireSms><RkoRequest /></RouteGuard>} />
+            <Route path="/my-applications" element={<RouteGuard requireSms><MyApplications /></RouteGuard>} />
             <Route path="/office-agent" element={<ManagerWorkspace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
