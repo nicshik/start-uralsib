@@ -10,14 +10,19 @@ import {
   BadgeCheck,
   Building2,
   Briefcase,
+  CalendarDays,
   CheckCircle2,
   FileText,
+  Hash,
+  Inbox,
   MapPin,
   MonitorUp,
   PenTool,
   Search,
   User,
 } from "lucide-react";
+import { MOCK_INCOMING_APPLICATIONS } from "@/lib/mockApplications";
+import type { MockIncomingApplication } from "@/lib/mockApplications";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -79,6 +84,19 @@ export default function ManagerWorkspace() {
   const [tariff, setTariff] = useState("start");
   const [completionStatus, setCompletionStatus] = useState<"office_crm_completed" | "submitted_to_fns" | null>(null);
 
+  const [activeTab, setActiveTab] = useState<"current" | "inbox">("current");
+  const [entrepreneurEmail, setEntrepreneurEmail] = useState(state.business.entrepreneurEmail || state.email || "");
+  const [registrationEmail, setRegistrationEmail] = useState(state.business.registrationResultEmail || state.email || "");
+  const [companyNameFull, setCompanyNameFull] = useState(state.business.companyNameFull || "");
+  const [paperDocuments, setPaperDocuments] = useState(state.paperDocuments || false);
+  const [founderSharePercent, setFounderSharePercent] = useState(state.business.founderSharePercent || "100");
+  const [directorIsFounderState, setDirectorIsFounderState] = useState(state.business.directorIsFounder ?? true);
+  const [applicantRole, setApplicantRole] = useState<string>(state.business.applicantRole || "founder_individual");
+  const [registrationAddress, setRegistrationAddress] = useState(state.passport.registrationAddress || "");
+  const [legalLocation, setLegalLocation] = useState(state.business.legalLocation || "");
+  const [typicalCharterNumber, setTypicalCharterNumber] = useState(state.business.typicalCharterNumber || "36");
+  const [confirmAccuracy, setConfirmAccuracy] = useState(false);
+
   const sourceLabel = hasOnlineData
     ? state.applicationStatus === "online_light_submitted"
       ? "Предзаявка Online Light"
@@ -125,33 +143,34 @@ export default function ManagerWorkspace() {
     divisionCode,
     inn: clientInn,
     snils,
-    registrationAddress: agentProduct === "ip" ? address : founderAddress,
+    registrationAddress: agentProduct === "ip" ? (registrationAddress || address) : founderAddress,
   };
   const draftBusiness: BusinessData = {
     ...state.business,
     companyName,
+    companyNameFull: agentProduct === "ooo" ? companyNameFull : state.business.companyNameFull,
     legalEntityEmail: agentProduct === "ooo" ? clientEmail : state.business.legalEntityEmail,
-    entrepreneurEmail: agentProduct === "ip" ? clientEmail : state.business.entrepreneurEmail,
-    registrationResultEmail: clientEmail,
+    entrepreneurEmail: agentProduct === "ip" ? entrepreneurEmail : state.business.entrepreneurEmail,
+    registrationResultEmail: registrationEmail,
     taxRegime: tax,
     okvedCodes,
     primaryOkvedCode,
     charterCapital,
     capitalType: "charter",
-    legalLocation: address.split(",")[0]?.trim() || address,
+    legalLocation: legalLocation || address.split(",")[0]?.trim() || address,
     founderCount: state.business.founderCount || "one",
     founderCitizenship: state.business.founderCitizenship || "ru",
     founderDocumentType: "passport_rf",
     founderRegistrationAddress: founderAddress,
-    founderSharePercent: "100",
+    founderSharePercent,
     legalAddress: address,
-    directorIsFounder: state.business.directorIsFounder ?? true,
+    directorIsFounder: directorIsFounderState,
     addressIsFounder: founderAddress.trim() === address.trim(),
     directorPosition,
     directorTerm,
     charterType: charterType as "generated" | "custom",
-    typicalCharterNumber: state.business.typicalCharterNumber || "36",
-    applicantRole: "founder_individual",
+    typicalCharterNumber,
+    applicantRole: applicantRole as "founder_individual",
     hasSeal: hasSeal === "yes",
     managerReason: managerNotes || state.business.managerReason,
   };
@@ -279,6 +298,52 @@ export default function ManagerWorkspace() {
     setCompletionStatus(nextStatus);
   };
 
+  const loadApplicationToForm = (app: MockIncomingApplication) => {
+    const p = app.passport;
+    const b = app.business;
+    setAgentProduct(app.type);
+    const fullName = [p.lastName, p.firstName, p.middleName].filter(Boolean).join(" ");
+    setClientName(fullName);
+    setClientPhone(app.phone);
+    setClientEmail(app.email);
+    setClientInn(p.inn || "");
+    setBirthDate(p.birthDate || "");
+    setGender(p.gender || "");
+    setBirthPlace(p.birthPlace || "");
+    setCitizenship(p.citizenship || "ru");
+    setDocumentType(p.documentType || "passport_rf");
+    setPassportSeries(p.passportSeries || "");
+    setPassportNumber(p.passportNumber || "");
+    setIssuedBy(p.issuedBy || "");
+    setIssueDate(p.issueDate || "");
+    setDivisionCode(p.divisionCode || "");
+    setSnils(p.snils || "");
+    setRegistrationAddress(p.registrationAddress || "");
+    setCompanyName(b.companyName || "");
+    setCompanyNameFull(b.companyNameFull || "");
+    setCharterCapital(b.charterCapital || "10000");
+    setTax(b.taxRegime || "usn6");
+    setOkvedText(b.okvedCodes.join("\n"));
+    setFounderAddress(b.founderRegistrationAddress || p.registrationAddress || "");
+    setAddress(b.legalAddress || b.founderRegistrationAddress || p.registrationAddress || "");
+    setDirectorPosition(b.directorPosition || "Генеральный директор");
+    setDirectorTerm(b.directorTerm || "");
+    setCharterType(b.charterType || "generated");
+    setHasSeal(b.hasSeal ? "yes" : "no");
+    setEntrepreneurEmail(b.entrepreneurEmail || app.email);
+    setRegistrationEmail(b.registrationResultEmail || app.email);
+    setFounderSharePercent(b.founderSharePercent || "100");
+    setDirectorIsFounderState(b.directorIsFounder ?? true);
+    setApplicantRole(b.applicantRole || "founder_individual");
+    setPaperDocuments(app.paperDocuments);
+    setLegalLocation(b.legalLocation || "");
+    setTypicalCharterNumber(b.typicalCharterNumber || "36");
+    setConfirmAccuracy(false);
+    setManagerNotes("");
+    setCompletionStatus(null);
+    setActiveTab("current");
+  };
+
   return (
     <div className="flex min-h-screen bg-[#F8F9FA] font-sans text-slate-800">
       <aside className="fixed left-0 top-0 z-10 flex h-full w-64 flex-col bg-[#1E293B] text-slate-200">
@@ -297,8 +362,20 @@ export default function ManagerWorkspace() {
           </div>
 
           <nav className="space-y-1">
-            <button className="flex w-full items-center gap-3 rounded-md bg-[#6440BF] px-3 py-2 text-sm font-medium text-white">
+            <button
+              onClick={() => setActiveTab("current")}
+              className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${activeTab === "current" ? "bg-[#6440BF] text-white" : "text-slate-300 hover:bg-slate-800"}`}
+            >
               <CheckCircle2 className="h-4 w-4" /> Текущая заявка
+            </button>
+            <button
+              onClick={() => setActiveTab("inbox")}
+              className={`flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${activeTab === "inbox" ? "bg-[#6440BF] text-white" : "text-slate-300 hover:bg-slate-800"}`}
+            >
+              <span className="flex items-center gap-3"><Inbox className="h-4 w-4" /> Входящие заявки</span>
+              <span className={`rounded-full px-1.5 py-0.5 text-xs font-bold ${activeTab === "inbox" ? "bg-white/20 text-white" : "bg-amber-500 text-white"}`}>
+                {MOCK_INCOMING_APPLICATIONS.length}
+              </span>
             </button>
             <button
               onClick={() => navigate("/assisted-start")}
@@ -320,6 +397,58 @@ export default function ManagerWorkspace() {
       </aside>
 
       <main className="ml-64 flex-1 p-8">
+        {activeTab === "inbox" ? (
+          <div className="space-y-6">
+            <div className="border-b border-gray-200 pb-4">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900">Входящие заявки</h1>
+              <p className="mt-1 text-sm text-slate-500">Заявки клиентов, поступившие через онлайн-форму</p>
+            </div>
+            <div className="space-y-3">
+              {MOCK_INCOMING_APPLICATIONS.map((app) => {
+                const Icon = app.type === "ip" ? Briefcase : Building2;
+                const isSubmitted = app.status === "submitted_to_fns" || app.status === "online_light_submitted" || app.status === "assisted_submitted";
+                return (
+                  <Card key={app.id} className="border-0 shadow-sm ring-1 ring-gray-200 transition-shadow hover:shadow-md">
+                    <CardContent className="p-0">
+                      <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                          <Icon className="h-5 w-5 text-[#6440BF]" />
+                        </div>
+                        <div className="min-w-0 flex-1 space-y-1.5">
+                          <p className="font-semibold text-slate-900">{app.title}</p>
+                          <p className="text-sm text-slate-500">{app.subtitle}</p>
+                          <div className="flex flex-wrap items-center gap-3 pt-0.5 text-xs text-slate-400">
+                            <span className="inline-flex items-center gap-1">
+                              <Hash className="h-3 w-3" />{app.applicationNumber}
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <CalendarDays className="h-3 w-3" />{app.date}
+                            </span>
+                            <span>{app.phone}</span>
+                          </div>
+                        </div>
+                        <div className="flex shrink-0 flex-col gap-2 sm:items-end">
+                          <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${isSubmitted ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20" : "bg-amber-50 text-amber-700 ring-amber-600/20"}`}>
+                            {isSubmitted ? <CheckCircle2 className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
+                            {app.statusLabel}
+                          </span>
+                          <Button
+                            size="sm"
+                            className="bg-[#6440BF] hover:bg-[#503399]"
+                            onClick={() => loadApplicationToForm(app)}
+                          >
+                            Открыть в CRM
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+        <>
         <header className="mb-8 flex items-end justify-between border-b border-gray-200 pb-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">Рабочее место сотрудника</h1>
@@ -445,38 +574,79 @@ export default function ManagerWorkspace() {
                       />
                     </div>
                     {agentProduct === "ip" && (
-                      <>
-                        <div className="space-y-2">
-                          <Label>Гражданство</Label>
-                          <Select value={citizenship} onValueChange={(value) => setCitizenship(value as ApplicantCitizenship)}>
-                            <SelectTrigger className="h-10 bg-white">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ru">Гражданин РФ</SelectItem>
-                              <SelectItem value="foreign">Иностранный гражданин</SelectItem>
-                              <SelectItem value="stateless">Лицо без гражданства</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Документ</Label>
-                          <Select value={documentType} onValueChange={(value) => setDocumentType(value as IdentityDocumentType)}>
-                            <SelectTrigger className="h-10 bg-white">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="passport_rf">Паспорт гражданина РФ</SelectItem>
-                              <SelectItem value="other">Иной документ</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </>
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="agent-entrepreneur-email">Email ИП <span className="text-xs font-normal text-slate-400">(Р21001, раздел 9)</span></Label>
+                        <Input
+                          id="agent-entrepreneur-email"
+                          type="email"
+                          value={entrepreneurEmail}
+                          onChange={(event) => setEntrepreneurEmail(event.target.value)}
+                          placeholder="email-ip@mail.ru"
+                          className="h-10 bg-white"
+                        />
+                      </div>
                     )}
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label htmlFor="agent-reg-email">Email для направления результата из ФНС <span className="text-xs font-normal text-slate-400">(лист Б/заявителя)</span></Label>
+                      <Input
+                        id="agent-reg-email"
+                        type="email"
+                        value={registrationEmail}
+                        onChange={(event) => setRegistrationEmail(event.target.value)}
+                        placeholder="result@mail.ru"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label className="text-sm font-semibold">Способ получения документов</Label>
+                      <RadioGroup
+                        value={paperDocuments ? "paper" : "electronic"}
+                        onValueChange={(v) => setPaperDocuments(v === "paper")}
+                        className="grid grid-cols-2 gap-3"
+                      >
+                        <div>
+                          <RadioGroupItem value="electronic" id="doc-electronic" className="peer sr-only" />
+                          <Label htmlFor="doc-electronic" className="flex cursor-pointer items-center gap-2 rounded-md border-2 border-muted bg-white p-3 text-sm hover:bg-slate-50 peer-data-[state=checked]:border-[#6440BF]">
+                            Электронно (по email)
+                          </Label>
+                        </div>
+                        <div>
+                          <RadioGroupItem value="paper" id="doc-paper" className="peer sr-only" />
+                          <Label htmlFor="doc-paper" className="flex cursor-pointer items-center gap-2 rounded-md border-2 border-muted bg-white p-3 text-sm hover:bg-slate-50 peer-data-[state=checked]:border-[#6440BF]">
+                            На бумажном носителе
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{agentProduct === "ooo" ? "Гражданство учредителя" : "Гражданство"} <span className="text-xs font-normal text-slate-400">({agentProduct === "ooo" ? "Р11001, лист физлица" : "Р21001, раздел 5"})</span></Label>
+                      <Select value={citizenship} onValueChange={(value) => setCitizenship(value as ApplicantCitizenship)}>
+                        <SelectTrigger className="h-10 bg-white">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ru">Гражданин РФ</SelectItem>
+                          <SelectItem value="foreign">Иностранный гражданин</SelectItem>
+                          <SelectItem value="stateless">Лицо без гражданства</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{agentProduct === "ooo" ? "Документ учредителя" : "Документ"} <span className="text-xs font-normal text-slate-400">(вид документа, раздел 6)</span></Label>
+                      <Select value={documentType} onValueChange={(value) => setDocumentType(value as IdentityDocumentType)}>
+                        <SelectTrigger className="h-10 bg-white">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="passport_rf">Паспорт гражданина РФ</SelectItem>
+                          <SelectItem value="other">Иной документ</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     {agentProduct === "ooo" && (
                       <>
                         <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="agent-company">Наименование ООО</Label>
+                          <Label htmlFor="agent-company">Краткое наименование ООО</Label>
                           <Input
                             id="agent-company"
                             value={companyName}
@@ -486,7 +656,17 @@ export default function ManagerWorkspace() {
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="agent-capital">Уставный капитал</Label>
+                          <Label htmlFor="agent-company-full">Полное наименование ООО <span className="text-xs font-normal text-slate-400">(Р11001)</span></Label>
+                          <Input
+                            id="agent-company-full"
+                            value={companyNameFull}
+                            onChange={(event) => setCompanyNameFull(event.target.value)}
+                            placeholder='Общество с ограниченной ответственностью "Альфа"'
+                            className="h-10 bg-white"
+                          />
+                        </div>
+                        <div className="space-y-2 sm:col-span-2">
+                          <Label htmlFor="agent-capital">Уставный капитал (мин. 10 000 ₽)</Label>
                           <Input
                             id="agent-capital"
                             type="number"
@@ -496,6 +676,30 @@ export default function ManagerWorkspace() {
                             placeholder="10000"
                             className="h-10 bg-white"
                           />
+                        </div>
+                        <div className="space-y-2 sm:col-span-2">
+                          <Label>Роль заявителя <span className="text-xs font-normal text-slate-400">(лист заявителя Р11001)</span></Label>
+                          <Select value={applicantRole} onValueChange={setApplicantRole}>
+                            <SelectTrigger className="h-10 bg-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="founder_individual">Учредитель — физическое лицо</SelectItem>
+                              <SelectItem value="founder_org_head">Руководитель юрлица-учредителя</SelectItem>
+                              <SelectItem value="authorized">Уполномоченное лицо</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2 sm:col-span-2">
+                          <Label htmlFor="agent-legal-location">Место нахождения юридического лица <span className="text-xs font-normal text-slate-400">(Р11001, раздел 3)</span></Label>
+                          <Input
+                            id="agent-legal-location"
+                            value={legalLocation}
+                            onChange={(event) => setLegalLocation(event.target.value)}
+                            placeholder="г. Санкт-Петербург"
+                            className="h-10 bg-white"
+                          />
+                          <p className="text-xs text-slate-500">Субъект РФ/муниципальный округ. Отличается от полного адреса (раздел 4).</p>
                         </div>
                       </>
                     )}
@@ -596,7 +800,7 @@ export default function ManagerWorkspace() {
                       />
                     </div>
                     <div className="space-y-2 sm:col-span-2">
-                      <Label htmlFor="agent-snils">СНИЛС</Label>
+                      <Label htmlFor="agent-snils">СНИЛС <span className="text-xs font-normal text-slate-400">(банковский пакет)</span></Label>
                       <Input
                         id="agent-snils"
                         value={snils}
@@ -605,6 +809,18 @@ export default function ManagerWorkspace() {
                         className="h-10 bg-white"
                       />
                     </div>
+                    {agentProduct === "ip" && (
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="agent-reg-address">Адрес регистрации по месту жительства <span className="text-xs font-normal text-slate-400">(Р21001, раздел 7)</span></Label>
+                        <Input
+                          id="agent-reg-address"
+                          value={registrationAddress}
+                          onChange={(event) => setRegistrationAddress(event.target.value)}
+                          placeholder="г. Москва, ул. Тверская, д. 1, кв. 12"
+                          className="h-10 bg-white"
+                        />
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -695,7 +911,7 @@ export default function ManagerWorkspace() {
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div className="space-y-2 sm:col-span-2">
-                        <Label htmlFor="agent-founder-address">Адрес регистрации учредителя</Label>
+                        <Label htmlFor="agent-founder-address">Адрес регистрации учредителя <span className="text-xs font-normal text-slate-400">(для юрадреса и банковского пакета)</span></Label>
                         <Input
                           id="agent-founder-address"
                           value={founderAddress}
@@ -703,6 +919,33 @@ export default function ManagerWorkspace() {
                           placeholder="Адрес по паспорту"
                           className="h-10 bg-white"
                         />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="agent-founder-share">Доля учредителя <span className="text-xs font-normal text-slate-400">(Р11001, лист учредителя)</span></Label>
+                        <Input
+                          id="agent-founder-share"
+                          value={founderSharePercent}
+                          onChange={(event) => setFounderSharePercent(event.target.value)}
+                          placeholder="100"
+                          className="h-10 bg-white"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="block">Руководитель является учредителем <span className="text-xs font-normal text-slate-400">(Р11001)</span></Label>
+                        <RadioGroup
+                          value={directorIsFounderState ? "yes" : "no"}
+                          onValueChange={(v) => setDirectorIsFounderState(v === "yes")}
+                          className="grid grid-cols-2 gap-2"
+                        >
+                          <Label className="flex cursor-pointer items-center gap-2 rounded-md border bg-white p-3 text-sm [&:has([data-state=checked])]:border-[#6440BF]">
+                            <RadioGroupItem value="yes" />
+                            Да
+                          </Label>
+                          <Label className="flex cursor-pointer items-center gap-2 rounded-md border bg-white p-3 text-sm [&:has([data-state=checked])]:border-[#6440BF]">
+                            <RadioGroupItem value="no" />
+                            Нет
+                          </Label>
+                        </RadioGroup>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="agent-director-position">Должность руководителя</Label>
@@ -715,7 +958,7 @@ export default function ManagerWorkspace() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="agent-director-term">Срок избрания</Label>
+                        <Label htmlFor="agent-director-term">Срок избрания руководителя <span className="text-xs font-normal text-slate-400">(решение/устав)</span></Label>
                         <Input
                           id="agent-director-term"
                           value={directorTerm}
@@ -739,6 +982,18 @@ export default function ManagerWorkspace() {
                             Свой устав / документы
                           </Label>
                         </RadioGroup>
+                        {charterType === "generated" && (
+                          <div className="mt-2 space-y-1">
+                            <Label htmlFor="agent-charter-num" className="text-xs">Номер типового устава <span className="font-normal text-slate-400">(Р11001, раздел 8)</span></Label>
+                            <Input
+                              id="agent-charter-num"
+                              value={typicalCharterNumber}
+                              onChange={(event) => setTypicalCharterNumber(event.target.value)}
+                              placeholder="36"
+                              className="h-9 bg-white text-sm"
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <Label>Печать</Label>
@@ -858,6 +1113,21 @@ export default function ManagerWorkspace() {
                     )}
                   </div>
 
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                    <input
+                      type="checkbox"
+                      checked={confirmAccuracy}
+                      onChange={(e) => setConfirmAccuracy(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-[#6440BF]"
+                    />
+                    <span className="text-sm text-slate-700">
+                      <span className="font-semibold">5. Подтверждение достоверности сведений</span>
+                      <span className="ml-1 text-slate-500">(Р21001/Р11001, лист заявителя)</span>
+                      <br />
+                      Клиент подтверждает, что все указанные сведения достоверны и он несёт ответственность за их правильность.
+                    </span>
+                  </label>
+
                   <div className="flex items-center justify-between border-t border-slate-100 pt-4">
                     <div className="space-y-2 text-sm text-slate-500">
                       <div className="flex items-center gap-2">
@@ -874,7 +1144,7 @@ export default function ManagerWorkspace() {
                         </p>
                       )}
                     </div>
-                    <Button onClick={handleSign} disabled={!canComplete} className="bg-[#6440BF] px-8 hover:bg-[#503399]">
+                    <Button onClick={handleSign} disabled={!canComplete || !confirmAccuracy} className="bg-[#6440BF] px-8 hover:bg-[#503399]">
                       {isFnsReady
                         ? state.applicationStatus === "fns_ready"
                           ? "Передать пакет в ФНС"
@@ -886,6 +1156,8 @@ export default function ManagerWorkspace() {
               </Card>
             </div>
           </div>
+        )}
+        </>
         )}
       </main>
     </div>

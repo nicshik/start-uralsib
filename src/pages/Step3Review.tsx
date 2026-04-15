@@ -6,7 +6,7 @@ import { trackEvent } from "@/lib/analytics";
 import { getBusinessEmail, getCompanyFullName, getRegistrationResultEmail } from "@/lib/applicationValidation";
 import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ProgressHeader } from "@/components/ProgressHeader";
 import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import {
@@ -14,7 +14,6 @@ import {
   Building2,
   CheckCircle2,
   FileCheck2,
-  FileText,
   Mail,
   MapPin,
   Pencil,
@@ -283,26 +282,33 @@ export default function Step3Review() {
               <p className="mt-1 break-words text-sm font-semibold">{registrationResultEmail}</p>
             </div>
 
-            <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[#E5E0EB] p-3">
-              <Checkbox
-                checked={state.paperDocuments}
-                onCheckedChange={(checked) => {
-                  const enabled = checked === true;
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Способ получения документов ФНС</p>
+              <RadioGroup
+                value={state.paperDocuments ? "paper" : "electronic"}
+                onValueChange={(v) => {
+                  const enabled = v === "paper";
                   dispatch({ type: "SET_PAPER_DOCUMENTS", payload: enabled });
                   trackEvent("paper_documents_toggled", { enabled, flowType: state.flowType });
                 }}
-                className="mt-0.5"
-              />
-              <div className="space-y-1">
-                <p className="flex items-center gap-2 text-sm font-medium">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  Получить документы из ФНС на бумажном носителе
-                </p>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Если не отмечать, ФНС направит документы только на электронную почту.
-                </p>
-              </div>
-            </label>
+                className="grid grid-cols-2 gap-3"
+              >
+                <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
+                  <RadioGroupItem value="electronic" className="mt-0.5 shrink-0" />
+                  <span>
+                    <span className="block font-medium">Электронно</span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">На email из ФНС</span>
+                  </span>
+                </label>
+                <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
+                  <RadioGroupItem value="paper" className="mt-0.5 shrink-0" />
+                  <span>
+                    <span className="block font-medium">На бумаге</span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">Бумажный носитель из ФНС</span>
+                  </span>
+                </label>
+              </RadioGroup>
+            </div>
           </div>
         </SummarySection>}
 

@@ -6,43 +6,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Briefcase, Building2, CheckCircle2, Clock, Plus, ChevronRight, CalendarDays, Hash } from "lucide-react";
+import { MOCK_INCOMING_APPLICATIONS } from "@/lib/mockApplications";
 
-interface MockApplication {
+type MockApplication = {
   id: string;
   type: "ip" | "ooo";
   title: string;
   subtitle: string;
-  status: "submitted_to_fns" | "draft";
+  status: "submitted_to_fns" | "draft" | "online_light_submitted" | "assisted_submitted";
   statusLabel: string;
   date: string;
   applicationNumber: string;
-}
+};
 
-const MOCK_APPLICATIONS: MockApplication[] = [
-  {
-    id: "1",
-    type: "ip",
-    title: "ИП — Индивидуальный предприниматель",
-    subtitle: "Иванов Иван Иванович",
-    status: "submitted_to_fns",
-    statusLabel: "Отправлено в ФНС",
-    date: "10 апр 2025",
-    applicationNumber: "УС-2025-04-0842",
-  },
-  {
-    id: "2",
-    type: "ooo",
-    title: "ООО — Ромашка",
-    subtitle: "Регистрация общества",
-    status: "draft",
-    statusLabel: "Черновик — ожидает оформления",
-    date: "12 апр 2025",
-    applicationNumber: "УС-2025-04-0915",
-  },
-];
+const MOCK_APPLICATIONS: MockApplication[] = MOCK_INCOMING_APPLICATIONS;
 
 function StatusBadge({ status }: { status: MockApplication["status"] }) {
-  if (status === "submitted_to_fns") {
+  if (status === "submitted_to_fns" || status === "online_light_submitted" || status === "assisted_submitted") {
     return (
       <Badge className="gap-1.5 bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">
         <CheckCircle2 className="h-3 w-3" />
