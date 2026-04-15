@@ -120,7 +120,9 @@ function normalizeFlowType(flowType?: FlowType | "online" | "manager"): FlowType
   return flowType || "online_light";
 }
 
-function normalizeDraft(payload: AppState): AppState {
+// Exported for migration regression tests.
+// eslint-disable-next-line react-refresh/only-export-components
+export function normalizeDraft(payload: AppState): AppState {
   return {
     ...initialState,
     ...payload,

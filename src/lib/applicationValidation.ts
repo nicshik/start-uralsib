@@ -99,6 +99,24 @@ export function getBusinessValidation(
     };
   }
 
+  if (target === "office_crm_complete") {
+    if (productType === "ooo") {
+      if (!isFilled(business.companyName)) missingFields.push("Краткое наименование ООО");
+      if (!isFilled(business.founderRegistrationAddress)) missingFields.push("Адрес регистрации учредителя");
+      if (!isFilled(business.legalAddress) && !isFilled(business.legalLocation)) {
+        missingFields.push("Юридический адрес");
+      }
+      if (!isFilled(business.directorPosition)) missingFields.push("Должность руководителя");
+      if (!isFilled(business.directorTerm)) missingFields.push("Срок избрания руководителя");
+    }
+
+    return {
+      isComplete: isCompleteForTarget(target, missingFields, managerReasons),
+      missingFields,
+      managerReasons,
+    };
+  }
+
   if (productType === "ooo") {
     if (!isFilled(business.companyName)) missingFields.push("Краткое наименование ООО");
     if (!getCompanyFullName(business)) missingFields.push("Полное наименование ООО");
@@ -157,6 +175,26 @@ export function getApplicantValidation(
     if (!isFilled(passport.issueDate)) missingFields.push("Дата выдачи паспорта");
     if (!isValidEmail(email)) missingFields.push("Email");
     if ((phone || "").replace(/\D/g, "").length < 10) missingFields.push("Телефон");
+
+    return {
+      isComplete: isCompleteForTarget(target, missingFields, managerReasons),
+      missingFields,
+      managerReasons,
+    };
+  }
+
+  if (target === "office_crm_complete") {
+    if (!isFilled(passport.passportSeries)) missingFields.push("Серия паспорта");
+    if (!isFilled(passport.passportNumber)) missingFields.push("Номер паспорта");
+    if (!isFilled(passport.issuedBy)) missingFields.push("Кем выдан паспорт");
+    if (!isFilled(passport.issueDate)) missingFields.push("Дата выдачи паспорта");
+    if (!isValidEmail(email)) missingFields.push("Email");
+    if ((phone || "").replace(/\D/g, "").length < 10) missingFields.push("Телефон");
+
+    if (productType === "ip") {
+      if (!passport.citizenship) missingFields.push("Гражданство");
+      if (!passport.documentType) missingFields.push("Вид документа");
+    }
 
     return {
       isComplete: isCompleteForTarget(target, missingFields, managerReasons),

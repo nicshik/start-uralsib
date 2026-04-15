@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
-import type { ApplicantCitizenship, BusinessData, IdentityDocumentType, PassportData } from "@/context/AppContext";
+import type { ApplicantCitizenship, ApplicationStatus, BusinessData, IdentityDocumentType, PassportData } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { getApplicantValidation, getBusinessValidation } from "@/lib/applicationValidation";
 import { TAX_REGIMES } from "@/lib/mockData";
@@ -49,9 +49,19 @@ export default function ManagerWorkspace() {
   const [clientPhone, setClientPhone] = useState(state.phone || "");
   const [clientEmail, setClientEmail] = useState(state.email || "");
   const [clientInn, setClientInn] = useState(state.passport.inn || "");
+  const [birthDate, setBirthDate] = useState(state.passport.birthDate || "");
+  const [gender, setGender] = useState(state.passport.gender || "");
+  const [birthPlace, setBirthPlace] = useState(state.passport.birthPlace || "");
   const [citizenship, setCitizenship] = useState<ApplicantCitizenship>(state.passport.citizenship || "ru");
   const [documentType, setDocumentType] = useState<IdentityDocumentType>(state.passport.documentType || "passport_rf");
+  const [passportSeries, setPassportSeries] = useState(state.passport.passportSeries || "");
+  const [passportNumber, setPassportNumber] = useState(state.passport.passportNumber || "");
+  const [issuedBy, setIssuedBy] = useState(state.passport.issuedBy || "");
+  const [issueDate, setIssueDate] = useState(state.passport.issueDate || "");
+  const [divisionCode, setDivisionCode] = useState(state.passport.divisionCode || "");
+  const [snils, setSnils] = useState(state.passport.snils || "");
   const [companyName, setCompanyName] = useState(state.business.companyName || "");
+  const [charterCapital, setCharterCapital] = useState(state.business.charterCapital || "10000");
   const [tax, setTax] = useState(state.business.taxRegime || "usn6");
   const [okvedText, setOkvedText] = useState(
     state.business.okvedCodes.length
@@ -97,9 +107,18 @@ export default function ManagerWorkspace() {
     lastName: lastName || state.passport.lastName,
     firstName: firstName || state.passport.firstName,
     middleName: middleNameParts.join(" ") || state.passport.middleName,
+    birthDate,
+    gender,
+    birthPlace,
     citizenship,
     documentType,
+    passportSeries,
+    passportNumber,
+    issuedBy,
+    issueDate,
+    divisionCode,
     inn: clientInn,
+    snils,
     registrationAddress: agentProduct === "ip" ? address : founderAddress,
   };
   const draftBusiness: BusinessData = {
@@ -111,6 +130,7 @@ export default function ManagerWorkspace() {
     taxRegime: tax,
     okvedCodes,
     primaryOkvedCode,
+    charterCapital,
     capitalType: "charter",
     legalLocation: address.split(",")[0]?.trim() || address,
     founderCount: state.business.founderCount || "one",
@@ -144,6 +164,18 @@ export default function ManagerWorkspace() {
     flowType: "office_crm",
     target: "fns_ready",
   });
+  const officeCrmBusinessValidation = getBusinessValidation(agentProduct, draftBusiness, {
+    flowType: "office_crm",
+    target: "office_crm_complete",
+  });
+  const officeCrmApplicantValidation = getApplicantValidation(agentProduct, draftPassport, clientEmail, clientPhone, draftBusiness, {
+    flowType: "office_crm",
+    target: "office_crm_complete",
+  });
+  const officeCrmMissingFields = Array.from(new Set([
+    ...officeCrmBusinessValidation.missingFields,
+    ...officeCrmApplicantValidation.missingFields,
+  ]));
   const fnsMissingFields = Array.from(new Set([
     ...fnsBusinessValidation.missingFields,
     ...fnsApplicantValidation.missingFields,
@@ -178,36 +210,41 @@ export default function ManagerWorkspace() {
     });
   }, [hasOnlineData, state.flowType]);
 
-  const canComplete =
-    clientName.trim().length > 3 &&
-    clientPhone.replace(/\D/g, "").length >= 10 &&
-    isValidEmail(clientEmail) &&
-    okvedText.trim().length > 5 &&
-    address.trim().length >= 5 &&
-    (agentProduct === "ip"
-      ? Boolean(citizenship && documentType)
-      : companyName.trim().length > 2 &&
-        founderAddress.trim().length >= 5 &&
-        directorPosition.trim().length > 2 &&
-        directorTerm.trim().length > 0);
+  const canComplete = officeCrmBusinessValidation.isComplete && officeCrmApplicantValidation.isComplete;
 
   const handleSign = () => {
-    const nextStatus = isFnsReady ? "submitted_to_fns" : "office_crm_completed";
+    const persistApplication = (status: ApplicationStatus, markSubmitted: boolean) => {
+      dispatch({ type: "SET_PRODUCT", payload: agentProduct });
+      dispatch({ type: "SET_PHONE", payload: clientPhone });
+      dispatch({ type: "SET_EMAIL", payload: clientEmail });
+      dispatch({ type: "UPDATE_PASSPORT", payload: draftPassport });
+      dispatch({
+        type: "UPDATE_BUSINESS",
+        payload: {
+          ...draftBusiness,
+          requiresManager: agentProduct === "ooo" && managerReasons.length > 0,
+          managerReason: managerNotes || managerReasons[0],
+        },
+      });
+      dispatch({ type: "SET_APPLICATION_STATUS", payload: status });
+      if (markSubmitted) {
+        dispatch({ type: "SUBMIT" });
+      }
+    };
 
-    dispatch({ type: "SET_PRODUCT", payload: agentProduct });
-    dispatch({ type: "SET_PHONE", payload: clientPhone });
-    dispatch({ type: "SET_EMAIL", payload: clientEmail });
-    dispatch({ type: "UPDATE_PASSPORT", payload: draftPassport });
-    dispatch({
-      type: "UPDATE_BUSINESS",
-      payload: {
-        ...draftBusiness,
-        requiresManager: agentProduct === "ooo" && managerReasons.length > 0,
-        managerReason: managerNotes || managerReasons[0],
-      },
-    });
-    dispatch({ type: "SET_APPLICATION_STATUS", payload: nextStatus });
-    dispatch({ type: "SUBMIT" });
+    if (isFnsReady && state.applicationStatus !== "fns_ready") {
+      persistApplication("fns_ready", false);
+      trackEvent("application_ready_for_documents", {
+        flowType: "office_crm",
+        product: agentProduct,
+        applicationStatus: "fns_ready",
+      });
+      trackEvent("fns_ready", { flowType: "office_crm", product: agentProduct, applicationStatus: "fns_ready" });
+      return;
+    }
+
+    const nextStatus = isFnsReady ? "submitted_to_fns" : "office_crm_completed";
+    persistApplication(nextStatus, true);
 
     trackEvent("office_agent_completed", {
       flowType: "office_crm",
@@ -222,7 +259,6 @@ export default function ManagerWorkspace() {
     });
     trackEvent("office_crm_completed", { flowType: "office_crm", product: agentProduct, applicationStatus: nextStatus });
     if (isFnsReady) {
-      trackEvent("fns_ready", { flowType: "office_crm", product: agentProduct, applicationStatus: "fns_ready" });
       trackEvent("submitted_to_fns", { flowType: "office_crm", product: agentProduct, applicationStatus: nextStatus });
     } else {
       trackEvent("manager_completed_missing_fields", {
@@ -422,17 +458,137 @@ export default function ManagerWorkspace() {
                       </>
                     )}
                     {agentProduct === "ooo" && (
-                      <div className="space-y-2 sm:col-span-2">
-                        <Label htmlFor="agent-company">Наименование ООО</Label>
-                        <Input
-                          id="agent-company"
-                          value={companyName}
-                          onChange={(event) => setCompanyName(event.target.value)}
-                          placeholder='ООО "Альфа"'
-                          className="h-10 bg-white"
-                        />
-                      </div>
+                      <>
+                        <div className="space-y-2 sm:col-span-2">
+                          <Label htmlFor="agent-company">Наименование ООО</Label>
+                          <Input
+                            id="agent-company"
+                            value={companyName}
+                            onChange={(event) => setCompanyName(event.target.value)}
+                            placeholder='ООО "Альфа"'
+                            className="h-10 bg-white"
+                          />
+                        </div>
+                        <div className="space-y-2 sm:col-span-2">
+                          <Label htmlFor="agent-capital">Уставный капитал</Label>
+                          <Input
+                            id="agent-capital"
+                            type="number"
+                            min={10000}
+                            value={charterCapital}
+                            onChange={(event) => setCharterCapital(event.target.value)}
+                            placeholder="10000"
+                            className="h-10 bg-white"
+                          />
+                        </div>
+                      </>
                     )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-sm ring-1 ring-gray-200">
+                <CardHeader className="border-b border-gray-100 bg-slate-50/50 pb-4">
+                  <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                    <FileText className="h-4 w-4 text-slate-400" />
+                    Паспорт и проверка личности
+                  </CardTitle>
+                  <CardDescription>Поля нужны для финальной проверки Р21001/Р11001 и банковского пакета.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 pt-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-birth-date">Дата рождения</Label>
+                      <Input
+                        id="agent-birth-date"
+                        value={birthDate}
+                        onChange={(event) => setBirthDate(event.target.value)}
+                        placeholder="15.03.1990"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Пол</Label>
+                      <Select value={gender} onValueChange={setGender}>
+                        <SelectTrigger className="h-10 bg-white">
+                          <SelectValue placeholder="Выберите" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Мужской">Мужской</SelectItem>
+                          <SelectItem value="Женский">Женский</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label htmlFor="agent-birth-place">Место рождения</Label>
+                      <Input
+                        id="agent-birth-place"
+                        value={birthPlace}
+                        onChange={(event) => setBirthPlace(event.target.value)}
+                        placeholder="г. Москва"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-passport-series">Серия паспорта</Label>
+                      <Input
+                        id="agent-passport-series"
+                        value={passportSeries}
+                        onChange={(event) => setPassportSeries(event.target.value)}
+                        placeholder="45 12"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-passport-number">Номер паспорта</Label>
+                      <Input
+                        id="agent-passport-number"
+                        value={passportNumber}
+                        onChange={(event) => setPassportNumber(event.target.value)}
+                        placeholder="345678"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label htmlFor="agent-issued-by">Кем выдан</Label>
+                      <Input
+                        id="agent-issued-by"
+                        value={issuedBy}
+                        onChange={(event) => setIssuedBy(event.target.value)}
+                        placeholder="Отделом УФМС России..."
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-issue-date">Дата выдачи</Label>
+                      <Input
+                        id="agent-issue-date"
+                        value={issueDate}
+                        onChange={(event) => setIssueDate(event.target.value)}
+                        placeholder="20.05.2010"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="agent-division-code">Код подразделения</Label>
+                      <Input
+                        id="agent-division-code"
+                        value={divisionCode}
+                        onChange={(event) => setDivisionCode(event.target.value)}
+                        placeholder="770-045"
+                        className="h-10 bg-white"
+                      />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2">
+                      <Label htmlFor="agent-snils">СНИЛС</Label>
+                      <Input
+                        id="agent-snils"
+                        value={snils}
+                        onChange={(event) => setSnils(event.target.value)}
+                        placeholder="123-456-789 00"
+                        className="h-10 bg-white"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -687,12 +843,27 @@ export default function ManagerWorkspace() {
                   </div>
 
                   <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
-                      <FileText className="h-4 w-4" />
-                      {isFnsReady ? "Клиент получит SMS-код для подписания" : "Сохраните заявку и продолжите дозаполнение"}
+                    <div className="space-y-2 text-sm text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4" />
+                        {isFnsReady
+                          ? state.applicationStatus === "fns_ready"
+                            ? "Клиент получит SMS-код для подписания"
+                            : "Пакет заполнен. Подтвердите готовность перед отправкой"
+                          : "Сохраните заявку и продолжите дозаполнение"}
+                      </div>
+                      {!canComplete && officeCrmMissingFields.length > 0 && (
+                        <p className="max-w-xl text-xs text-amber-700">
+                          Для сохранения в CRM заполните: {officeCrmMissingFields.slice(0, 6).join(", ")}.
+                        </p>
+                      )}
                     </div>
                     <Button onClick={handleSign} disabled={!canComplete} className="bg-[#6440BF] px-8 hover:bg-[#503399]">
-                      {isFnsReady ? "Передать пакет в ФНС" : "Сохранить и отметить как дозаполнено"}
+                      {isFnsReady
+                        ? state.applicationStatus === "fns_ready"
+                          ? "Передать пакет в ФНС"
+                          : "Подтвердить готовность пакета"
+                        : "Сохранить и отметить как дозаполнено"}
                     </Button>
                   </div>
                 </CardContent>

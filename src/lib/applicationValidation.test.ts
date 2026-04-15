@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { BusinessData, PassportData } from "@/context/AppContext";
+import { normalizeDraft } from "@/context/AppContext";
+import type { AppState, BusinessData, PassportData } from "@/context/AppContext";
 import { getApplicantValidation, getBusinessValidation } from "./applicationValidation";
 
 const validOooBusiness: BusinessData = {
@@ -75,6 +76,54 @@ describe("application validation", () => {
     expect(result.isComplete).toBe(false);
     expect(result.missingFields).toContain("Срок избрания руководителя");
     expect(result.missingFields).toContain("Роль заявителя");
+  });
+
+  it("requires the full ООО package for assisted submit", () => {
+    const result = getBusinessValidation("ooo", {
+      okvedCodes: ["62.01"],
+      primaryOkvedCode: "62.01",
+      taxRegime: "usn6",
+      companyName: 'ООО "Ромашка"',
+    }, { flowType: "assisted", target: "assisted_submit" });
+
+    expect(result.isComplete).toBe(false);
+    expect(result.missingFields).toContain("Срок избрания руководителя");
+    expect(result.missingFields).toContain("Роль заявителя");
+  });
+
+  it("allows office CRM completion before the full FNS package is ready", () => {
+    const business = {
+      okvedCodes: ["62.01"],
+      primaryOkvedCode: "62.01",
+      taxRegime: "usn6",
+      companyName: 'ООО "Ромашка"',
+      founderRegistrationAddress: "г. Москва, ул. Тверская, д. 1",
+      legalAddress: "г. Москва, ул. Тверская, д. 1",
+      directorPosition: "Генеральный директор",
+      directorTerm: "5 лет",
+    };
+    const passport = {
+      lastName: "Иванов",
+      firstName: "Иван",
+      birthDate: "01.01.1990",
+      passportSeries: "45 12",
+      passportNumber: "123456",
+      issuedBy: "ОВД Тверской",
+      issueDate: "01.01.2010",
+    };
+
+    expect(getBusinessValidation("ooo", business, {
+      flowType: "office_crm",
+      target: "office_crm_complete",
+    }).isComplete).toBe(true);
+    expect(getApplicantValidation("ooo", passport, "client@example.ru", "+7 985 999 99 99", business, {
+      flowType: "office_crm",
+      target: "office_crm_complete",
+    }).isComplete).toBe(true);
+    expect(getApplicantValidation("ooo", passport, "client@example.ru", "+7 985 999 99 99", business, {
+      flowType: "office_crm",
+      target: "fns_ready",
+    }).isComplete).toBe(false);
   });
 
   it("requires ООО name, capital, primary OKVED, confirmations, founder address, and director term", () => {
@@ -229,5 +278,25 @@ describe("application validation", () => {
     const result = getApplicantValidation("ip", validPassport, "client@example.ru", "+7 985 999 99 99");
 
     expect(result.isComplete).toBe(true);
+  });
+
+  it("migrates legacy draft flow values", () => {
+    const baseDraft: AppState = {
+      flowType: "online_light",
+      applicationStatus: "draft",
+      productType: "ip",
+      phone: "+7 985 999 99 99",
+      email: "client@example.ru",
+      paperDocuments: false,
+      smsVerified: true,
+      currentStep: 1,
+      business: { okvedCodes: [] },
+      passport: {},
+      submitted: false,
+    };
+
+    expect(normalizeDraft({ ...baseDraft, flowType: "online" as AppState["flowType"] }).flowType).toBe("online_light");
+    expect(normalizeDraft({ ...baseDraft, flowType: "manager" as AppState["flowType"] }).flowType).toBe("assisted");
+    expect(normalizeDraft({ ...baseDraft, applicationStatus: undefined as unknown as AppState["applicationStatus"] }).applicationStatus).toBe("draft");
   });
 });
