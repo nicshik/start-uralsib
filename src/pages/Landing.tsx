@@ -359,7 +359,7 @@ export default function Landing() {
             Этот сайт выполнен в рамках учебного проекта, вся информация представлена в демонстрационных целях.<br />
             Введенные персональные данные не сохраняются на сервере и не передаются третьим лицам.
           </p>
-          <div className="text-center">
+          <div className="flex items-center justify-center gap-4">
             <button
               onClick={() => {
                 trackEvent("assisted_entry_link_click", { placement: "footer" });
@@ -367,7 +367,17 @@ export default function Landing() {
               }}
               className="text-xs text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
             >
-              Вход для сотрудника банка
+              Оформление с менеджером
+            </button>
+            <span className="text-xs text-muted-foreground/40">·</span>
+            <button
+              onClick={() => {
+                trackEvent("crm_entry_link_click", { placement: "footer" });
+                navigate("/office-agent");
+              }}
+              className="text-xs text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+            >
+              CRM менеджера
             </button>
           </div>
         </div>
