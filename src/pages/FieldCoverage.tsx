@@ -268,6 +268,43 @@ export default function FieldCoverage() {
           <p className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
             Анализ распределения нагрузки между клиентом и менеджером банка. Визуализация готовности анкет для ИП и ООО.
           </p>
+
+          <Collapsible className="mt-8 max-w-3xl mx-auto text-left">
+            <CollapsibleTrigger className="group flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium border border-white/20 transition-colors mx-auto">
+              <span>Продуктовая гипотеза в основе</span>
+              <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 md:p-8 space-y-6 text-sm leading-relaxed text-white/80">
+              <div>
+                <h3 className="text-base font-semibold text-white mb-2">Контекст</h3>
+                <p>
+                  После сверки клиентских форм с требованиями ФНС и банковским/AS-IS пакетом стало видно, что единая большая анкета перегружает публичный self-service сценарий. В ней появляются поля, которые нужны для полного пакета документов и корректной подготовки Р11001/Р21001, но для клиента на первом онлайн-этапе выглядят техническими и преждевременными.
+                </p>
+                <p className="mt-3">
+                  <span className="font-semibold text-white">Ключевое изменение подхода:</span> публичная онлайн-заявка не обязана собирать весь ФНС-ready пакет до визита клиента в офис. Если в процессе все равно есть очная верификация личности в отделении банка, часть данных можно корректно дозаполнить там. Сотрудник банка одновременно проверит уже введённые сведения, уточнит спорные поля и поможет избежать ошибок в регистрационных документах.
+                </p>
+                <p className="mt-3">
+                  Текущая большая анкета остаётся полезной, но меняет роль. Она должна жить в assisted-сценарии и в CRM, где рядом есть менеджер или сотрудник банка, который понимает смысл технических полей и может объяснить их клиенту.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-base font-semibold text-white mb-2">Главный принцип TO-BE</h3>
+                <p className="mb-3">Один конечный результат, три разных входа:</p>
+                <ol className="list-decimal list-inside space-y-1.5 pl-1">
+                  <li>Клиент сам оставляет лёгкую онлайн-заявку.</li>
+                  <li>Клиент сам заполняет полную анкету с сопровождением менеджера.</li>
+                  <li>Менеджер или сотрудник банка заполняет заявку за клиента в CRM.</li>
+                </ol>
+                <p className="mt-3">
+                  Все пути должны приводить к одной бизнес-цели: заявка на регистрацию ИП или ООО, подготовка регистрационного и банковского пакета, дальнейшая верификация и оформление. Отличается не результат, а момент сбора данных и ответственный за качество заполнения.
+                </p>
+                <p className="mt-3 text-white/60 italic">
+                  Требования из research/fns_required_fields_ip_ooo.md остаются актуальными. Меняется не перечень данных, которые в итоге понадобятся для ФНС и банка, а этап, на котором эти данные собираются.
+                </p>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </header>
 
