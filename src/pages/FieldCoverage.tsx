@@ -343,9 +343,11 @@ export default function FieldCoverage() {
         </div>
       </header>
 
+      <SectionNav />
+
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 space-y-16 -mt-8 relative z-10">
         {/* Scenarios */}
-        <Card>
+        <Card id="scenarios">
           <CardHeader>
             <CardTitle className="text-3xl">Сценарии регистрации</CardTitle>
           </CardHeader>
