@@ -379,6 +379,41 @@ export default function FieldCoverage() {
 
         {/* Detailed Table */}
         <DetailedTable />
+
+        {/* Sources */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Источники</CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">
+              Дата сверки: 2026-04-14
+            </p>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3 text-sm">
+              {[
+                { label: "ФНС: форма Р11001, заявление о государственной регистрации юридического лица при создании", url: "https://www.nalog.gov.ru/rn77/related_activities/registration_ip_yl/reg_yl/order/4162139/" },
+                { label: "PDF формы Р11001", url: "https://www.nalog.gov.ru/cdn/form/4162139.pdf" },
+                { label: "ФНС: порядок регистрации юридического лица", url: "https://www.nalog.gov.ru/rn77/related_activities/registration_ip_yl/reg_yl/order/" },
+                { label: "ФНС: форма Р21001, заявление о государственной регистрации физического лица в качестве ИП", url: "https://www.nalog.gov.ru/rn77/related_activities/registration_ip_yl/registration_ip/order/4162994/" },
+                { label: "PDF формы Р21001", url: "https://www.nalog.gov.ru/cdn/form/4162994.pdf" },
+                { label: "ФНС: порядок регистрации ИП", url: "https://www.nalog.gov.ru/rn77/related_activities/registration_ip_yl/registration_ip/order/" },
+                { label: "Базовый приказ по формам и требованиям: приказ ФНС России от 31.08.2020 N ЕД-7-14/617@" },
+                { label: "Изменения для Р21001: приказ ФНС России от 09.01.2024 N ЕД-7-14/4@" },
+              ].map((src, idx) => (
+                <li key={idx} className="flex items-start gap-3">
+                  <span className="text-primary font-bold select-none mt-0.5">•</span>
+                  {src.url ? (
+                    <a href={src.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline break-all leading-snug">
+                      {src.label}
+                    </a>
+                  ) : (
+                    <span className="text-foreground leading-snug">{src.label}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
