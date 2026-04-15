@@ -356,7 +356,7 @@ export default function Landing() {
 
           {/* Project docs */}
           <div className="rounded-xl border border-border bg-white p-5 space-y-3">
-            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Документация проекта</p>
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide"><p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Рабочая документация по проекту</p></p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 onClick={() => navigate("/coverage")}
