@@ -305,7 +305,7 @@ const StatusLegend = () => (
       <Minus className="w-4 h-4" /> <span className="text-sm">Нет — не применимо</span>
     </div>
   </div>
-
+);
 
 export default function FieldCoverage() {
   const missingIP = [
