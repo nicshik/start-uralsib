@@ -382,7 +382,7 @@ export default function FieldCoverage() {
         </Card>
 
         {/* Coverage Stats */}
-        <section>
+        <section id="coverage">
           <h2 className="text-3xl font-medium text-foreground mb-8">Уровень покрытия анкет</h2>
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
             <div className="bg-brand-light rounded-2xl p-8">
