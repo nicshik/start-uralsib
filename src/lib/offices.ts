@@ -44,6 +44,10 @@ export const OFFICES = {
 export type VisitRegion = keyof typeof OFFICES;
 export type VisitPreference = "manager_pick" | "office";
 
+export function isVisitRegion(region?: string): region is VisitRegion {
+  return Boolean(region && region in OFFICES);
+}
+
 export function getDefaultVisitCity(region: VisitRegion): string {
   return Object.keys(OFFICES[region].cities)[0] || "";
 }

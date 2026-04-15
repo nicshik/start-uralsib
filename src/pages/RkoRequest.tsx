@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
 import { getBusinessEmail, isValidEmail } from "@/lib/applicationValidation";
-import { OFFICES, getDefaultVisitCity, getDefaultVisitOffice, getOffices } from "@/lib/offices";
+import { OFFICES, getDefaultVisitCity, getDefaultVisitOffice, getOffices, isVisitRegion } from "@/lib/offices";
 import type { VisitRegion } from "@/lib/offices";
 import { Building2, CheckCircle2, FileText, Gift, Phone } from "lucide-react";
 
@@ -18,12 +18,20 @@ export default function RkoRequest() {
   const { clearDraft, state } = useApp();
   const fullName = [state.passport.lastName, state.passport.firstName, state.passport.middleName].filter(Boolean).join(" ");
   const businessEmail = getBusinessEmail(state.productType, state.business, state.email);
+  const initialRegion: VisitRegion = isVisitRegion(state.visitRegion) ? state.visitRegion : "Москва";
+  const initialCity = state.visitCity && Object.keys(OFFICES[initialRegion].cities).includes(state.visitCity)
+    ? state.visitCity
+    : getDefaultVisitCity(initialRegion);
+  const initialOffices = getOffices(initialRegion, initialCity);
+  const initialOffice = state.visitOffice && initialOffices.includes(state.visitOffice)
+    ? state.visitOffice
+    : getDefaultVisitOffice(initialRegion, initialCity);
   const [clientName, setClientName] = useState(fullName);
   const [phone, setPhone] = useState(state.phone || "");
   const [email, setEmail] = useState(businessEmail);
-  const [region, setRegion] = useState<VisitRegion>("Москва");
-  const [city, setCity] = useState("Москва");
-  const [office, setOffice] = useState(getDefaultVisitOffice("Москва", "Москва"));
+  const [region, setRegion] = useState<VisitRegion>(initialRegion);
+  const [city, setCity] = useState(initialCity);
+  const [office, setOffice] = useState(initialOffice);
   const [submitted, setSubmitted] = useState(false);
 
   const cities = useMemo(() => Object.keys(OFFICES[region].cities), [region]);
