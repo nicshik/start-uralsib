@@ -184,13 +184,15 @@ export default function Landing() {
               <button
                 key={item.type}
                 onClick={item.onClick}
-                className="text-left rounded-xl border border-border bg-white p-6 hover:border-primary hover:shadow-md transition-all duration-200 group flex flex-col"
+                className="group flex items-center gap-5 rounded-xl border border-border bg-white p-5 text-left transition-all duration-200 hover:border-primary hover:shadow-md sm:flex-col sm:items-start sm:p-6"
               >
-                <div className="w-12 h-12 rounded-lg bg-light-purple flex items-center justify-center mb-5">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-light-purple">
                   <item.icon className="h-5 w-5 text-primary" />
                 </div>
-                <p className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">{item.title}</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-2">{item.desc}</p>
+                <div className="min-w-0 sm:mt-5">
+                  <p className="text-base font-semibold text-foreground transition-colors group-hover:text-primary">{item.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:mt-2">{item.desc}</p>
+                </div>
               </button>
             ))}
           </div>
@@ -212,26 +214,32 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto space-y-6">
           <h2 className="text-xl font-bold tracking-tight text-center">Удобный и понятный сервис</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="rounded-xl border border-border bg-white p-6 space-y-4">
-              <div className="w-11 h-11 rounded-lg bg-light-purple flex items-center justify-center">
+            <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-5 sm:block sm:space-y-4 sm:p-6">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-light-purple">
                 <Clock className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-base font-medium">10 минут на предзаявку</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">Вы оставляете основные данные, а менеджер помогает довести регистрационный пакет до готовности</p>
+              <div className="min-w-0">
+                <p className="text-base font-medium">10 минут на предзаявку</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed sm:mt-0">Вы оставляете основные данные, а менеджер помогает довести регистрационный пакет до готовности</p>
+              </div>
             </div>
-            <div className="rounded-xl border border-border bg-white p-6 space-y-4">
-              <div className="w-11 h-11 rounded-lg bg-light-purple flex items-center justify-center">
+            <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-5 sm:block sm:space-y-4 sm:p-6">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-light-purple">
                 <UserCheck className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-base font-medium">Без дублирования</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">Данные из заявки сохраняются. В офисе сотрудник проверит их и дозаполнит недостающие поля</p>
+              <div className="min-w-0">
+                <p className="text-base font-medium">Без дублирования</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed sm:mt-0">Данные из заявки сохраняются. В офисе сотрудник проверит их и дозаполнит недостающие поля</p>
+              </div>
             </div>
-            <div className="rounded-xl border border-border bg-white p-6 space-y-4">
-              <div className="w-11 h-11 rounded-lg bg-light-purple flex items-center justify-center">
+            <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-5 sm:block sm:space-y-4 sm:p-6">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-light-purple">
                 <Shield className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-base font-medium">Актуальные формы</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">Финальный пакет готовится по актуальным формам Р11001 и Р21001 после проверки сотрудником банка</p>
+              <div className="min-w-0">
+                <p className="text-base font-medium">Актуальные формы</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed sm:mt-0">Финальный пакет готовится по актуальным формам Р11001 и Р21001 после проверки сотрудником банка</p>
+              </div>
             </div>
           </div>
         </div>
