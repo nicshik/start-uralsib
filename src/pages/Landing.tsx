@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck } from "lucide-react";
+import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette } from "lucide-react";
 import { UserMenu } from "@/components/UserMenu";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.webp";
