@@ -1,29 +1,30 @@
 
 
-## План: Новая страница `/coverage` — Матрица покрытия полей
+## План: Якорная навигация и легенда статусов на `/coverage`
 
-### Что делаем
-Создаём страницу `/coverage` на основе предоставленного React-кода. Адаптируем его под стилистику проекта: используем `AppHeader`, CSS-переменные Tailwind вместо хардкод-цветов, компоненты `Card` и `Table` из UI-библиотеки.
+### Что добавляем
 
-### Изменения
+**1. Sticky-навигация с якорями** — горизонтальная полоска под hero, фиксируется при скролле. Содержит ссылки на 4 секции:
+- Сценарии (`#scenarios`)
+- Покрытие (`#coverage`)
+- Менеджер (`#manager-gap`)
+- Матрица (`#matrix`)
+- Источники (`#sources`)
 
-**1. `src/pages/FieldCoverage.tsx`** — новый файл
-- Берём предоставленный код за основу
-- Заменяем inline `COLORS` на Tailwind-классы (`text-primary`, `bg-primary`, `text-muted-foreground`, `border-border` и т.д.)
-- Заменяем кастомный header на `AppHeader` с `showBack`
-- Заменяем raw `<table>` на компоненты `Table/TableHeader/TableBody/TableRow/TableHead/TableCell`
-- Оборачиваем секции в `Card`
-- Убираем `style={{ fontFamily }}` (уже задан глобально)
-- Сохраняем всю логику: `MATRIX_DATA`, `StatBar`, `ScenarioCard`, `StatusBadge`, `DetailedTable`, секции «Уровень покрытия» и «Заполняется менеджером»
+Активная секция подсвечивается через `IntersectionObserver`. На mobile — горизонтальный скролл.
 
-**2. `src/App.tsx`** — добавить маршрут
-- Импорт `FieldCoverage` 
-- Добавить `<Route path="/coverage" element={<FieldCoverage />} />`
-- Существующий `/design` → `Coverage` остаётся как есть
+**2. Легенда статусов** — компактная горизонтальная полоска с 4 бейджами, размещается перед детальной матрицей:
+- ✅ Да — клиент заполняет
+- 🔒 Авто — заполняется автоматически
+- → В CRM — дозаполняет менеджер
+- — Нет — не применимо
 
-### Стилистические правки
-- Hero-секция: оставляем gradient `#2D1B69 → #1A0E45` (совпадает с `AppHeader`)
-- Rounded corners: `rounded-2xl` (как `Card`)
-- Цвета бейджей: `text-primary` вместо `#6440BF`, `text-muted-foreground` вместо `#6B6B6B`
-- Ссылки в ScenarioCard — относительные пути (`/`, `/assisted-start`, `/office-agent`) вместо абсолютных URL
+### Технические детали
+
+**Файл:** `src/pages/FieldCoverage.tsx`
+
+- Добавить `id` к каждой секции (`id="scenarios"`, `id="coverage"`, и т.д.)
+- Добавить компонент `SectionNav` — sticky bar (`sticky top-0 z-20 bg-background/95 backdrop-blur border-b`) с горизонтальным списком кнопок-якорей. Использует `useEffect` + `IntersectionObserver` для отслеживания активной секции
+- Добавить компонент `StatusLegend` — `Card` с inline-flex бейджами, использующими те же `StatusBadge` компоненты. Размещается прямо перед `<DetailedTable />`
+- Smooth scroll: `scroll-behavior: smooth` или `element.scrollIntoView({ behavior: 'smooth' })`
 
