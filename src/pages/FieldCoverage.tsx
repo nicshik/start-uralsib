@@ -411,7 +411,7 @@ export default function FieldCoverage() {
         </section>
 
         {/* Gap Section */}
-        <section>
+        <section id="manager-gap">
           <div className="mb-8">
             <h2 className="text-3xl font-medium text-foreground flex items-start md:items-center gap-3">
               <AlertCircle className="w-8 h-8 text-primary shrink-0" />
