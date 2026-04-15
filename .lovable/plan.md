@@ -1,29 +1,22 @@
 
 
-## План: Новая страница `/coverage` — Матрица покрытия полей
+## План: Секция «Документация проекта» в футере Landing
 
 ### Что делаем
-Создаём страницу `/coverage` на основе предоставленного React-кода. Адаптируем его под стилистику проекта: используем `AppHeader`, CSS-переменные Tailwind вместо хардкод-цветов, компоненты `Card` и `Table` из UI-библиотеки.
+Добавляем отдельную карточку «Документация проекта» в футер лендинга (между юридическим аккордеоном и текстом копирайта) с двумя ссылками на `/coverage` и `/design`.
 
 ### Изменения
 
-**1. `src/pages/FieldCoverage.tsx`** — новый файл
-- Берём предоставленный код за основу
-- Заменяем inline `COLORS` на Tailwind-классы (`text-primary`, `bg-primary`, `text-muted-foreground`, `border-border` и т.д.)
-- Заменяем кастомный header на `AppHeader` с `showBack`
-- Заменяем raw `<table>` на компоненты `Table/TableHeader/TableBody/TableRow/TableHead/TableCell`
-- Оборачиваем секции в `Card`
-- Убираем `style={{ fontFamily }}` (уже задан глобально)
-- Сохраняем всю логику: `MATRIX_DATA`, `StatBar`, `ScenarioCard`, `StatusBadge`, `DetailedTable`, секции «Уровень покрытия» и «Заполняется менеджером»
+**`src/pages/Landing.tsx`**
 
-**2. `src/App.tsx`** — добавить маршрут
-- Импорт `FieldCoverage` 
-- Добавить `<Route path="/coverage" element={<FieldCoverage />} />`
-- Существующий `/design` → `Coverage` остаётся как есть
+Между строками 355 и 357 (после юридического аккордеона, перед копирайтом) вставляем новый блок:
 
-### Стилистические правки
-- Hero-секция: оставляем gradient `#2D1B69 → #1A0E45` (совпадает с `AppHeader`)
-- Rounded corners: `rounded-2xl` (как `Card`)
-- Цвета бейджей: `text-primary` вместо `#6440BF`, `text-muted-foreground` вместо `#6B6B6B`
-- Ссылки в ScenarioCard — относительные пути (`/`, `/assisted-start`, `/office-agent`) вместо абсолютных URL
+- Карточка `rounded-xl border border-border bg-white p-5` с заголовком «Документация проекта» (`text-sm font-semibold text-muted-foreground uppercase tracking-wide`)
+- Две кнопки-ссылки в `grid grid-cols-1 sm:grid-cols-2 gap-3`:
+  - 📊 **Матрица покрытия полей** → `navigate("/coverage")` — описание: «Какие данные собираются на каждом этапе»
+  - 🎨 **Дизайн-код** → `navigate("/design")` — описание: «Визуальные стандарты и компоненты»
+- Каждая ссылка — `flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors` с иконками `BarChart3` и `Palette` из lucide
+- Импортируем `Palette` из lucide-react (добавляем к существующему импорту)
+
+Стилистически повторяет существующие карточки в футере — аккуратно, не выпячивается, но заметно.
 
