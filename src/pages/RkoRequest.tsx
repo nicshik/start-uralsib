@@ -113,23 +113,39 @@ export default function RkoRequest() {
     return (
       <div className="min-h-screen bg-brand-light">
         <AppHeader />
-        <main className="mx-auto max-w-lg space-y-5 px-4 py-10">
-          <section className="rounded-[16px] border border-[#E5E0EB] bg-white p-6 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-[16px] bg-[#F0ECFA]">
-              <CheckCircle2 className="h-7 w-7 text-primary" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта отправлена</h1>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Менеджер рассмотрит ее вместе с документами для регистрации ИП / ООО
-            </p>
-          </section>
-
-          <section className="rounded-[16px] border border-[#E5E0EB] bg-white p-5">
-            <div className="flex items-start gap-3">
-              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                Держите телефон рядом. Если понадобится уточнить отделение или тариф, менеджер подскажет следующий шаг.
+        <main className="mx-auto max-w-lg space-y-4 px-4 py-10">
+          <section className="overflow-hidden rounded-[16px] border border-[#E5E0EB] bg-white">
+            <div className="bg-[#F7F5FB] px-5 py-6 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-[16px] bg-white text-primary ring-1 ring-[#E5E0EB]">
+                <CheckCircle2 className="h-7 w-7" />
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта отправлена</h1>
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                Менеджер рассмотрит её вместе с документами для регистрации {productLabel}
               </p>
+            </div>
+
+            <div className="space-y-4 p-5">
+              <div className="rounded-[12px] border border-[#E5E0EB] bg-white p-4">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Что дальше</p>
+                <div className="mt-3 flex items-start gap-3">
+                  <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    Держите телефон рядом. Если понадобится уточнить отделение или тариф, менеджер подскажет следующий шаг.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="rounded-[12px] bg-brand-light p-4">
+                  <p className="text-xs text-muted-foreground">Клиент</p>
+                  <p className="mt-1 break-words text-sm font-semibold">{clientName}</p>
+                </div>
+                <div className="rounded-[12px] bg-brand-light p-4">
+                  <p className="text-xs text-muted-foreground">Отделение</p>
+                  <p className="mt-1 break-words text-sm font-semibold">{office}</p>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -154,30 +170,37 @@ export default function RkoRequest() {
       </AppHeader>
 
       <main className="mx-auto max-w-2xl space-y-5 px-4 py-8">
-        <div className="space-y-3">
-          <div className="inline-flex rounded-[8px] bg-[#F0ECFA] px-2.5 py-1 text-xs font-medium text-primary">
-            1 месяц обслуживания бесплатно
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта</h1>
-            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-              {"\n"}
-            </p>
-          </div>
-        </div>
-
-        <section className="rounded-[16px] border border-[#E5E0EB] bg-white p-5">
-          <div className="mb-5 flex items-start gap-3 rounded-[12px] bg-brand-light p-4">
-            <Gift className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-            <div>
-              <p className="text-sm font-semibold">Для новых клиентов</p>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                Первый месяц обслуживания бесплатно при открытии счёта вместе с подачей документов.
-              </p>
+        <section className="overflow-hidden rounded-[16px] border border-[#E5E0EB] bg-white">
+          <div className="border-b border-[#E5E0EB] bg-[#F7F5FB] px-5 py-5">
+            <div className="flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[8px] bg-white text-primary ring-1 ring-[#E5E0EB]">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 space-y-3">
+                <div className="inline-flex rounded-[8px] bg-white px-2.5 py-1 text-xs font-medium text-primary ring-1 ring-[#E5E0EB]">
+                  1 месяц обслуживания бесплатно
+                </div>
+                <div className="space-y-1">
+                  <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта</h1>
+                  <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
+                    Первый месяц бесплатно при открытии счёта вместе с подачей документов.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 p-5">
+            <div className="flex items-start gap-3 rounded-[12px] bg-brand-light p-4">
+              <Gift className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <div>
+                <p className="text-sm font-semibold">Для новых клиентов</p>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  Менеджер подготовит заявку на счёт вместе с регистрационным пакетом.
+                </p>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="rko-name">ФИО</Label>
               <Input id="rko-name" value={clientName} onChange={(event) => setClientName(event.target.value)} className="h-12 bg-[#F5F5F5]" />

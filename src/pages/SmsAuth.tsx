@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
@@ -21,6 +21,7 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(60);
   const [error, setError] = useState("");
+  const otpInputRef = useRef<React.ElementRef<typeof InputOTP>>(null);
 
   useEffect(() => {
     if (open) {
@@ -37,6 +38,16 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
       return () => clearTimeout(t);
     }
   }, [smsSent, timer]);
+
+  useEffect(() => {
+    if (!smsSent) return;
+
+    const frame = requestAnimationFrame(() => {
+      otpInputRef.current?.focus();
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [smsSent]);
 
   const sendSms = () => {
     if (phone.replace(/\D/g, "").length < 10) {
@@ -103,7 +114,7 @@ export function SmsAuthDialog({ open, onOpenChange }: SmsAuthProps) {
           ) : (
             <div className="space-y-4">
               <div className="flex justify-center">
-                <InputOTP maxLength={4} value={otp} onChange={setOtp}>
+                <InputOTP ref={otpInputRef} maxLength={4} value={otp} onChange={setOtp}>
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />

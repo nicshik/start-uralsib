@@ -56,6 +56,12 @@ export default function Step1Business() {
   }, [state.flowType]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [subStep]);
+
+  useEffect(() => {
     if (!isOoo) return;
 
     const defaults: Partial<BusinessData> = {};

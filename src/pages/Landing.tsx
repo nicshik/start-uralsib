@@ -6,9 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
-import heroCard3d from "@/assets/hero-card-3d.png";
-import uralsibLogo from "@/assets/uralsib-logo-clean.png";
-import uralsibLogoDark from "@/assets/uralsib-logo-dark.png";
+import heroCard3d from "@/assets/hero-card-3d.webp";
+import uralsibLogo from "@/assets/uralsib-logo-clean.webp";
+import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
 import { ProductQuiz } from "@/components/ProductQuiz";
 import { SmsAuthDialog } from "@/pages/SmsAuth";
 import { openChat } from "@/components/ChatWidget";
@@ -232,20 +232,20 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto rounded-xl border border-border bg-white overflow-hidden">
           <Accordion type="single" collapsible>
             <AccordionItem value="1" className="border-b border-border last:border-0">
-              <AccordionTrigger className="text-base px-6 py-4">Это полностью онлайн?</AccordionTrigger>
+              <AccordionTrigger className="px-6 py-4 text-left text-base">Это полностью онлайн?</AccordionTrigger>
               <AccordionContent className="text-sm text-muted-foreground px-6 pb-4">
                 Онлайн-часть — заполнение заявки (~10 минут).<br />
                 После менеджер свяжется и назначит встречу в удобном для вас отделении банка.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="2" className="border-b border-border last:border-0">
-              <AccordionTrigger className="text-base px-6 py-4">Сколько стоит регистрация?</AccordionTrigger>
+              <AccordionTrigger className="px-6 py-4 text-left text-base">Сколько стоит регистрация?</AccordionTrigger>
               <AccordionContent className="text-sm text-muted-foreground px-6 pb-4">
                 Подача заявки бесплатна. Госпошлина при электронной подаче не взимается.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="3" className="border-b border-border last:border-0">
-              <AccordionTrigger className="text-base px-6 py-4">Какие документы будут подготовлены?</AccordionTrigger>
+              <AccordionTrigger className="px-6 py-4 text-left text-base">Какие документы будут подготовлены?</AccordionTrigger>
               <AccordionContent className="px-6 pb-5">
                 <div className="space-y-3 text-sm text-muted-foreground">
                   <p>После проверки и дозаполнения подготовим пакет под выбранную форму бизнеса.</p>
@@ -273,7 +273,7 @@ export default function Landing() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="4" className="border-b border-border last:border-0">
-              <AccordionTrigger className="text-base px-6 py-4">Нужно ли приходить в офис?</AccordionTrigger>
+              <AccordionTrigger className="px-6 py-4 text-left text-base">Нужно ли приходить в офис?</AccordionTrigger>
               <AccordionContent className="text-sm text-muted-foreground px-6 pb-4">
                 Да, один визит для подписания документов. Менеджер согласует удобное время.
               </AccordionContent>

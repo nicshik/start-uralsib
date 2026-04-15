@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import uralsibLogo from "@/assets/uralsib-logo-clean.png";
+import uralsibLogo from "@/assets/uralsib-logo-clean.webp";
 
 interface AppHeaderProps {
   showBack?: boolean;
