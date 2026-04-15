@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette } from "lucide-react";
+import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette, Handshake, LayoutDashboard } from "lucide-react";
 import { UserMenu } from "@/components/UserMenu";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.webp";
@@ -378,6 +378,32 @@ export default function Landing() {
                   <p className="text-xs text-muted-foreground">Визуальные стандарты и компоненты</p>
                 </div>
               </button>
+              <button
+                onClick={() => {
+                  trackEvent("assisted_entry_link_click", { placement: "footer" });
+                  navigate("/assisted-start");
+                }}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+              >
+                <Handshake className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Оформление с менеджером</p>
+                  <p className="text-xs text-muted-foreground">Assisted-сценарий подачи заявки</p>
+                </div>
+              </button>
+              <button
+                onClick={() => {
+                  trackEvent("crm_entry_link_click", { placement: "footer" });
+                  navigate("/office-agent");
+                }}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+              >
+                <LayoutDashboard className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">CRM менеджера</p>
+                  <p className="text-xs text-muted-foreground">Рабочее пространство сотрудника банка</p>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -386,27 +412,6 @@ export default function Landing() {
             Этот сайт выполнен в рамках учебного проекта, вся информация представлена в демонстрационных целях.<br />
             Введенные персональные данные не сохраняются на сервере и не передаются третьим лицам.
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={() => {
-                trackEvent("assisted_entry_link_click", { placement: "footer" });
-                navigate("/assisted-start");
-              }}
-              className="text-xs text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
-            >
-              Оформление с менеджером
-            </button>
-            <span className="text-xs text-muted-foreground/40">·</span>
-            <button
-              onClick={() => {
-                trackEvent("crm_entry_link_click", { placement: "footer" });
-                navigate("/office-agent");
-              }}
-              className="text-xs text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
-            >
-              CRM менеджера
-            </button>
-          </div>
         </div>
       </footer>
 
