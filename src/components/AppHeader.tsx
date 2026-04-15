@@ -29,7 +29,15 @@ export function AppHeader({ showBack = false, backTo = -1, children }: AppHeader
           </button>
         )}
         <button onClick={() => navigate("/")} className="shrink-0">
-          <img src={uralsibLogo} alt="Уралсиб" className="h-7 object-contain" />
+          <img
+            src={uralsibLogo}
+            alt="Уралсиб"
+            width={119}
+            height={28}
+            loading="eager"
+            decoding="sync"
+            className="h-7 w-[119px] object-contain"
+          />
         </button>
         {children && <div className="ml-auto flex items-center gap-3">{children}</div>}
       </div>

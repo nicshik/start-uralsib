@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +21,8 @@ import ManagerRequest from "./pages/ManagerRequest";
 import RkoRequest from "./pages/RkoRequest";
 import NotFound from "./pages/NotFound";
 import ManagerWorkspace from "./pages/ManagerWorkspace";
+import uralsibLogoClean from "@/assets/uralsib-logo-clean.webp";
+import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -29,6 +31,24 @@ function ScrollToTop() {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, [pathname]);
+  return null;
+}
+
+function PreloadCriticalAssets() {
+  useEffect(() => {
+    [uralsibLogoClean, uralsibLogoDark].forEach((href) => {
+      const preload = document.createElement("link");
+      preload.rel = "preload";
+      preload.as = "image";
+      preload.href = href;
+      document.head.appendChild(preload);
+
+      const image = new Image();
+      image.src = href;
+      image.decode?.().catch(() => undefined);
+    });
+  }, []);
+
   return null;
 }
 
@@ -41,6 +61,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <PreloadCriticalAssets />
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Landing />} />
