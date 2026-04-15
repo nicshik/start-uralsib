@@ -22,6 +22,7 @@ import RkoRequest from "./pages/RkoRequest";
 import NotFound from "./pages/NotFound";
 import ManagerWorkspace from "./pages/ManagerWorkspace";
 import MyApplications from "./pages/MyApplications";
+import Coverage from "./pages/Coverage";
 import uralsibLogoClean from "@/assets/uralsib-logo-clean.webp";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
 
