@@ -220,7 +220,7 @@ export default function Landing() {
               </div>
               <div className="min-w-0">
                 <p className="text-base font-medium">10 минут на предзаявку</p>
-                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">Вы оставляете основные данные, а менеджер помогает довести регистрационный пакет до готовности</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">Вы заполняете основные данные, а менеджер помогает собрать полный  регистрационный пакет</p>
               </div>
             </div>
             <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-5">
@@ -229,7 +229,7 @@ export default function Landing() {
               </div>
               <div className="min-w-0">
                 <p className="text-base font-medium">Без дублирования</p>
-                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">Данные из заявки сохраняются. В офисе сотрудник проверит их и дозаполнит недостающие поля</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">В офисе сотрудник проверит данные вашей заявки и дозаполнит недостающие поля</p>
               </div>
             </div>
             <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-5">
@@ -238,7 +238,7 @@ export default function Landing() {
               </div>
               <div className="min-w-0">
                 <p className="text-base font-medium">Актуальные формы</p>
-                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">Финальный пакет готовится по актуальным формам Р11001 и Р21001 после проверки сотрудником банка</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">Финальный пакет документов готовится по формам Р11001 и Р21001 после проверки данных</p>
               </div>
             </div>
           </div>
