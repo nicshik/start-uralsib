@@ -454,10 +454,13 @@ export default function FieldCoverage() {
         </section>
 
         {/* Detailed Table */}
-        <DetailedTable />
+        <section id="matrix">
+          <StatusLegend />
+          <DetailedTable />
+        </section>
 
         {/* Sources */}
-        <Card>
+        <Card id="sources">
           <CardHeader>
             <CardTitle className="text-2xl">Источники</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
