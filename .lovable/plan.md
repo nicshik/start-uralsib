@@ -1,26 +1,37 @@
 
 
-## Add Social Image and OG Meta Tags
+## План: Страница `/coverage` — Дизайн-код Уралсиб
 
-### What's missing
-The `index.html` has `og:title` and `og:description` but no `og:image` / `twitter:image`. The publish preview shows a broken image icon because there's no social image set.
+### Что делаем
+Создаём новую страницу `/coverage`, которая отображает содержимое загруженного файла «Матрица покрытия» (полная спецификация дизайн-кода Уралсиб) в стилистике сайта. Страница будет справочной/документационной.
 
-### Plan
+### Структура
 
-**1. Generate a social image (1200×630px)**
-- Create a branded OG image using a script — purple gradient background (#2D1B69 → #1A0E45) with "Регистрация ИП и ООО" text and Уралсиб logo
-- Save to `public/og-image.png`
+Страница будет использовать `AppHeader` с кнопкой «назад» и содержать 12 секций из документа, оформленных как карточки с таблицами и блоками кода:
 
-**2. Update `index.html` meta tags**
-- Add `og:image` pointing to the absolute URL: `https://start-uralsib.lovable.app/og-image.png`
-- Add `og:url` meta tag
-- Add `twitter:image` and change `twitter:card` from `summary` to `summary_large_image`
-- Add `og:site_name`
+1. Цветовая палитра (таблицы + цветные сэмплы)
+2. Типографика
+3. Компоненты (кнопки, header, карточки, tabs, inputs, footer, промо, чат, прогресс)
+4. Border-Radius шкала
+5. Spacing / Отступы
+6. Тени
+7. Иконография
+8. Адаптивность
+9. Анимации
+10. CSS-переменные
+11. Визуальные референсы (без картинок — только описания)
+12. Ключевые дизайн-принципы
 
-**3. Ensure favicon references are complete**
-- Already has `favicon.png` and `apple-touch-icon.png` — add `favicon-192.png` as a `rel="icon" sizes="192x192"` link
+### Технические детали
 
-### Files to modify
-- `index.html` — add missing meta tags
-- `public/og-image.png` — generate new social image
+**Файлы:**
+1. `src/pages/Coverage.tsx` — новая страница. Использует `AppHeader`, `Card`, таблицы из `ui/table`, Tailwind для стилизации. Цветовые сэмплы будут отображаться inline рядом с HEX-значениями. Блоки кода — в `<pre>` с фоном `bg-muted`.
+2. `src/App.tsx` — добавить маршрут `<Route path="/coverage" element={<Coverage />} />` (без RouteGuard, публичная страница).
+
+**Подход к контенту:**
+- Таблицы из markdown → компоненты `Table/TableHeader/TableBody/TableRow/TableHead/TableCell`
+- Блоки кода → `<pre className="bg-muted rounded-lg p-4 text-sm overflow-x-auto">`
+- Каждая секция (## уровень) → `Card` с заголовком
+- Подсекции (### уровень) — внутренние заголовки `<h3>`
+- Боковая навигация-оглавление для быстрого перехода между секциями (sticky sidebar на desktop, горизонтальный скролл на mobile)
 
