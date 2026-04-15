@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn } from "lucide-react";
+import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import heroCard3d from "@/assets/hero-card-3d.webp";
 import uralsibLogo from "@/assets/uralsib-logo-clean.webp";
@@ -220,12 +220,12 @@ export default function Landing() {
               </div>
               <div className="min-w-0">
                 <p className="text-base font-medium">10 минут на предзаявку</p>
-                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">Вы заполняете основные данные, а менеджер помогает собрать полный  регистрационный пакет</p>
+                <p className="mt-1 text-sm text-muted-foreground leading-relaxed">Вы заполняете основные данные, а менеджер помогает собрать полный регистрационный пакет</p>
               </div>
             </div>
             <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-5">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-light-purple">
-                <UserCheck className="h-5 w-5 text-primary" />
+                <ClipboardCheck className="h-5 w-5 text-primary" />
               </div>
               <div className="min-w-0">
                 <p className="text-base font-medium">Без дублирования</p>
