@@ -354,6 +354,33 @@ export default function Landing() {
             </Accordion>
           </div>
 
+          {/* Project docs */}
+          <div className="rounded-xl border border-border bg-white p-5 space-y-3">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Документация проекта</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                onClick={() => navigate("/coverage")}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+              >
+                <BarChart3 className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Матрица покрытия полей</p>
+                  <p className="text-xs text-muted-foreground">Какие данные собираются на каждом этапе</p>
+                </div>
+              </button>
+              <button
+                onClick={() => navigate("/design")}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+              >
+                <Palette className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Дизайн-код</p>
+                  <p className="text-xs text-muted-foreground">Визуальные стандарты и компоненты</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
           {/* Copyright */}
           <p className="text-xs text-muted-foreground text-center max-w-2xl mx-auto">
             Этот сайт выполнен в рамках учебного проекта, вся информация представлена в демонстрационных целях.<br />
