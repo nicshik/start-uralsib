@@ -31,6 +31,12 @@ export default function Step2Passport() {
     trackEvent("page_view", { page: "step2_passport", flowType: state.flowType });
   }, [state.flowType]);
 
+  useEffect(() => {
+    if (isOnlineLight && !state.passport.documentType) {
+      dispatch({ type: "UPDATE_PASSPORT", payload: { documentType: "passport_rf" } });
+    }
+  }, [isOnlineLight]);
+
   const startOcr = () => {
     trackEvent("ocr_started", { flowType: state.flowType });
     setOcrPhase("scanning");
