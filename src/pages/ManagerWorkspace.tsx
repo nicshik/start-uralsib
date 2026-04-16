@@ -12,6 +12,7 @@ import {
   Briefcase,
   CalendarDays,
   CheckCircle2,
+  ChevronDown,
   ClipboardList,
   FileText,
   Hash,
@@ -98,6 +99,8 @@ export default function ManagerWorkspace() {
   const [legalLocation, setLegalLocation] = useState(state.business.legalLocation || "");
   const [typicalCharterNumber, setTypicalCharterNumber] = useState(state.business.typicalCharterNumber || "36");
   const [confirmAccuracy, setConfirmAccuracy] = useState(false);
+  const [passportOpen, setPassportOpen] = useState(false);
+  const [showEmailDetails, setShowEmailDetails] = useState(false);
 
   const sourceLabel = hasOnlineData
     ? state.applicationStatus === "online_light_submitted"
@@ -340,6 +343,8 @@ export default function ManagerWorkspace() {
     setConfirmAccuracy(false);
     setManagerNotes("");
     setCompletionStatus(null);
+    setPassportOpen(false);
+    setShowEmailDetails(false);
     setActiveTab("current");
   };
 
@@ -386,6 +391,8 @@ export default function ManagerWorkspace() {
     setConfirmAccuracy(false);
     setManagerNotes("");
     setCompletionStatus(null);
+    setPassportOpen(Boolean(p.passportSeries || p.passportNumber || p.birthDate));
+    setShowEmailDetails(Boolean(b.entrepreneurEmail && b.entrepreneurEmail !== app.email));
     setActiveTab("current");
   };
 
@@ -639,9 +646,19 @@ export default function ManagerWorkspace() {
                         className="h-10 bg-white"
                       />
                     </div>
-                    {agentProduct === "ip" && (
+                    <div className="sm:col-span-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowEmailDetails((prev) => !prev)}
+                        className="flex items-center gap-1 text-xs text-[#6440BF] hover:underline"
+                      >
+                        <ChevronDown className={`h-3 w-3 transition-transform ${showEmailDetails ? "rotate-180" : ""}`} />
+                        {showEmailDetails ? "Скрыть" : "Показать"} адреса для документов ФНС
+                      </button>
+                    </div>
+                    {showEmailDetails && agentProduct === "ip" && (
                       <div className="space-y-2 sm:col-span-2">
-                        <Label htmlFor="agent-entrepreneur-email">Email ИП <span className="text-xs font-normal text-slate-400">(Р21001, раздел 9)</span></Label>
+                        <Label htmlFor="agent-entrepreneur-email" className="text-sm">Email ИП <span className="text-xs font-normal text-slate-400">(Р21001, раздел 9)</span></Label>
                         <Input
                           id="agent-entrepreneur-email"
                           type="email"
@@ -652,17 +669,19 @@ export default function ManagerWorkspace() {
                         />
                       </div>
                     )}
-                    <div className="space-y-2 sm:col-span-2">
-                      <Label htmlFor="agent-reg-email">Email для направления результата из ФНС <span className="text-xs font-normal text-slate-400">(лист Б/заявителя)</span></Label>
-                      <Input
-                        id="agent-reg-email"
-                        type="email"
-                        value={registrationEmail}
-                        onChange={(event) => setRegistrationEmail(event.target.value)}
-                        placeholder="result@mail.ru"
-                        className="h-10 bg-white"
-                      />
-                    </div>
+                    {showEmailDetails && (
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="agent-reg-email" className="text-sm">Email для ФНС <span className="text-xs font-normal text-slate-400">(лист Б/заявителя)</span></Label>
+                        <Input
+                          id="agent-reg-email"
+                          type="email"
+                          value={registrationEmail}
+                          onChange={(event) => setRegistrationEmail(event.target.value)}
+                          placeholder="result@mail.ru"
+                          className="h-10 bg-white"
+                        />
+                      </div>
+                    )}
                     <div className="space-y-2 sm:col-span-2">
                       <Label className="text-sm font-semibold">Способ получения документов</Label>
                       <RadioGroup
@@ -774,13 +793,21 @@ export default function ManagerWorkspace() {
               </Card>
 
               <Card className="border-0 shadow-sm ring-1 ring-gray-200">
-                <CardHeader className="border-b border-gray-100 bg-slate-50/50 pb-4">
-                  <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setPassportOpen((prev) => !prev)}
+                  className="flex w-full items-center justify-between border-b border-gray-100 bg-slate-50/50 px-6 py-4 text-left transition-colors hover:bg-slate-100/80"
+                >
+                  <div className="flex items-center gap-2 text-base font-semibold text-slate-900">
                     <FileText className="h-4 w-4 text-slate-400" />
                     Паспорт и проверка личности
-                  </CardTitle>
-                  <CardDescription>Поля нужны для финальной проверки Р21001/Р11001 и банковского пакета.</CardDescription>
-                </CardHeader>
+                    {!passportOpen && (passportSeries || birthDate) && (
+                      <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">заполнен</span>
+                    )}
+                  </div>
+                  <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform ${passportOpen ? "rotate-180" : ""}`} />
+                </button>
+                {passportOpen && (
                 <CardContent className="space-y-4 pt-4">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
@@ -889,6 +916,7 @@ export default function ManagerWorkspace() {
                     )}
                   </div>
                 </CardContent>
+                )}
               </Card>
 
               <Card className="border-0 shadow-sm ring-1 ring-gray-200">
