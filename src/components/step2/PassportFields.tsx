@@ -55,7 +55,7 @@ export default function PassportFields({ passport, productType, flowType, ocrDon
     },
     {
       ...baseSections[1],
-      fields: baseSections[1].fields.filter((field) => ["passportSeries", "passportNumber", "issuedBy", "issueDate"].includes(field.key)),
+      fields: baseSections[1].fields.filter((field) => ["passportSeries", "passportNumber", "issuedBy", "issueDate", "divisionCode"].includes(field.key)),
     },
   ];
   const sections = flowType === "online_light"
