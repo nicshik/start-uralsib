@@ -16,7 +16,6 @@ import { UserCheck } from "lucide-react";
 import OcrCapture from "@/components/step2/OcrCapture";
 import OcrProgress from "@/components/step2/OcrProgress";
 import PassportFields from "@/components/step2/PassportFields";
-import AdditionalFields from "@/components/step2/AdditionalFields";
 
 type OcrPhase = "idle" | "scanning" | "checking" | "done";
 
@@ -77,11 +76,11 @@ export default function Step2Passport() {
     },
   );
   const showManagerPrompt = !isOnlineLight && applicantValidation.managerReasons.length > 0;
-  const canProceed = (state.passport.ocrCompleted || manualMode) && applicantValidation.isComplete;
+  const canProceed = ocrPhase === "done" || manualMode;
 
   const handleNext = () => {
-    dispatch({ type: "SET_STEP", payload: 3 });
-    trackEvent("step2_completed", { flowType: state.flowType, emailProvided: true });
+    dispatch({ type: "SET_STEP", payload: 2 });
+    trackEvent("step2_completed", { flowType: state.flowType });
     if (state.flowType === "assisted") {
       trackEvent("assisted_step_completed", { step: 2, flowType: "assisted" });
     }
@@ -95,7 +94,7 @@ export default function Step2Passport() {
       </AppHeader>
       <div className="border-b bg-card">
         <div className="max-w-2xl mx-auto px-4 py-3">
-          <ProgressHeader step={2} totalSteps={3} timeEstimate="5 минут" />
+          <ProgressHeader step={2} totalSteps={4} timeEstimate="5 минут" />
         </div>
       </div>
 
@@ -122,32 +121,6 @@ export default function Step2Passport() {
               <p className="text-xs text-muted-foreground text-center">
                 Данные заполнены автоматически — проверьте перед отправкой
               </p>
-            )}
-
-            <AdditionalFields
-              passport={state.passport}
-              productType={state.productType}
-              flowType={state.flowType}
-              business={state.business}
-              email={state.email}
-              phone={state.phone}
-              visitPreference={state.visitPreference}
-              visitRegion={state.visitRegion}
-              visitCity={state.visitCity}
-              visitOffice={state.visitOffice}
-              onUpdate={(payload) => dispatch({ type: "UPDATE_PASSPORT", payload })}
-              onBusinessUpdate={(payload) => dispatch({ type: "UPDATE_BUSINESS", payload })}
-              onPhoneUpdate={(phone) => dispatch({ type: "SET_PHONE", payload: phone })}
-              onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
-              paperDocuments={state.paperDocuments}
-              onPaperDocumentsUpdate={(value) => dispatch({ type: "SET_PAPER_DOCUMENTS", payload: value })}
-              onVisitUpdate={(payload) => dispatch({ type: "SET_VISIT", payload })}
-            />
-
-            {applicantValidation.missingFields.length > 0 && (
-              <div className="rounded-card border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-                {isOnlineLight ? "Для предварительной заявки осталось заполнить" : "Для отправки в ФНС осталось заполнить"}: {applicantValidation.missingFields.join(", ")}.
-              </div>
             )}
 
             {showManagerPrompt && (

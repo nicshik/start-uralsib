@@ -205,7 +205,7 @@ export default function Step1Business() {
       </AppHeader>
       <div className="border-b bg-card">
         <div className="max-w-2xl mx-auto px-4 py-3">
-          <ProgressHeader step={1} totalSteps={3} timeEstimate={isOoo ? "5 минут" : "3 минуты"} />
+          <ProgressHeader step={1} totalSteps={4} timeEstimate={isOoo ? "5 минут" : "3 минуты"} />
         </div>
       </div>
 

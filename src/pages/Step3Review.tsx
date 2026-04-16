@@ -154,7 +154,7 @@ export default function Step3Review() {
       </AppHeader>
       <div className="border-b bg-card">
         <div className="mx-auto max-w-2xl px-4 py-3">
-          <ProgressHeader step={3} totalSteps={3} />
+          <ProgressHeader step={4} totalSteps={4} />
         </div>
       </div>
 
@@ -263,7 +263,7 @@ export default function Step3Review() {
         </SummarySection>
 
         {isOnlineLight && (
-          <SummarySection title="Визит" icon={<MapPin className="h-4 w-4" />} onEdit={() => navigate("/step/2")}>
+          <SummarySection title="Визит" icon={<MapPin className="h-4 w-4" />} onEdit={() => navigate("/step/3")}>
             <SummaryGrid>
               <SummaryItem label="Регион" value={state.visitRegion} />
               <SummaryItem label="Город" value={state.visitCity} />
@@ -272,7 +272,7 @@ export default function Step3Review() {
           </SummarySection>
         )}
 
-        {!isOnlineLight && <SummarySection title="Получение документов" icon={<FileCheck2 className="h-4 w-4" />} onEdit={() => navigate("/step/2")}>
+        {!isOnlineLight && <SummarySection title="Получение документов" icon={<FileCheck2 className="h-4 w-4" />} onEdit={() => navigate("/step/3")}>
           <div className="space-y-4">
             <div className="rounded-lg border border-[#E5E0EB] bg-brand-light p-3">
               <div className="flex items-center gap-2 text-sm">

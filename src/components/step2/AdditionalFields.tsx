@@ -145,11 +145,102 @@ export default function AdditionalFields({
 
   return (
     <>
+      {isOnlineLight && (
+        <Card>
+          <CardContent className="p-4 space-y-4">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-primary" />
+              <p className="text-sm font-semibold">Выбрать удобное отделение банка</p>
+            </div>
+
+            <RadioGroup
+              value={visitPreference || ""}
+              onValueChange={(value) => handleVisitPreferenceChange(value as VisitPreference)}
+              className="grid gap-2 sm:grid-cols-2"
+            >
+              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                <RadioGroupItem value="manager_pick" className="mt-0.5" />
+                <span>
+                  <span className="block font-medium">Менеджер подберёт отделение</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Укажите регион, а время согласуем по телефону.</span>
+                </span>
+              </Label>
+              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+                <RadioGroupItem value="office" className="mt-0.5" />
+                <span>
+                  <span className="block font-medium">Выбрать отделение сейчас</span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Передадим выбранный офис сотруднику банка.</span>
+                </span>
+              </Label>
+            </RadioGroup>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Регион</Label>
+                <Select value={visitRegion || ""} onValueChange={(value) => handleVisitRegionChange(value as VisitRegion)}>
+                  <SelectTrigger className="h-10 bg-white">
+                    <SelectValue placeholder="Выберите регион" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.keys(OFFICES).map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Город</Label>
+                <Select value={visitCity || ""} onValueChange={handleVisitCityChange} disabled={!visitRegion}>
+                  <SelectTrigger className="h-10 bg-white">
+                    <SelectValue placeholder="Выберите город" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {visitCities.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {visitPreference === "office" && (
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Отделение</Label>
+                <Select
+                  value={visitOffice || ""}
+                  onValueChange={(value) => onVisitUpdate?.({ visitOffice: value })}
+                  disabled={!visitRegion || !visitCity}
+                >
+                  <SelectTrigger className="h-10 bg-white">
+                    <SelectValue placeholder="Выберите отделение" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {visitOffices.map((item) => (
+                      <SelectItem key={item} value={item}>
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Эти контакты и предпочтение по визиту используем для связи и предварительно укажем для оформления пакета документов.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardContent className="p-4 space-y-4">
           <div className="flex items-center gap-2">
             <Mail className="h-4 w-4 text-muted-foreground" />
-            <p className="font-semibold text-sm">Контакты</p>
+            <p className="font-semibold text-sm">Контактная информация</p>
           </div>
 
           <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
@@ -246,7 +337,10 @@ export default function AdditionalFields({
       {isOnlineLight && (
         <Card>
           <CardContent className="p-4 space-y-3">
-            <p className="text-sm font-semibold text-foreground">Необязательные поля</p>
+            <div>
+              <p className="text-sm font-semibold text-foreground">Необязательные поля</p>
+              <p className="text-xs text-muted-foreground mt-1">Если есть под рукой, укажите: сэкономите время в офисе.</p>
+            </div>
 
             <div className="space-y-2">
               <button
@@ -255,13 +349,10 @@ export default function AdditionalFields({
                 className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
               >
                 <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showInnSnils ? "rotate-180" : ""}`} />
-                <span>{showInnSnils ? "Скрыть" : "Добавить ИНН и СНИЛС (необязательно)"}</span>
+                <span>{showInnSnils ? "Скрыть" : "Добавить ИНН и СНИЛС"}</span>
               </button>
               {showInnSnils && (
                 <div className="space-y-3 rounded-lg border border-border p-3">
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Не обязательно сейчас — менеджер уточнит в офисе. Если есть под рукой, укажите: сэкономите время.
-                  </p>
                   <div className="grid grid-cols-2 gap-x-3 gap-y-3">
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">ИНН</Label>
@@ -294,7 +385,7 @@ export default function AdditionalFields({
                 className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
               >
                 <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showDelivery ? "rotate-180" : ""}`} />
-                <span>{showDelivery ? "Скрыть" : "Выбрать способ получения документов от ФНС (необязательно)"}</span>
+                <span>{showDelivery ? "Скрыть" : "Выбрать способ получения документов от ФНС"}</span>
               </button>
               {showDelivery && (
                 <div className="rounded-lg border border-border p-3">
@@ -325,96 +416,6 @@ export default function AdditionalFields({
         </Card>
       )}
 
-      {isOnlineLight && (
-        <Card>
-          <CardContent className="p-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-primary" />
-              <p className="text-sm font-semibold">Визит в отделение</p>
-            </div>
-
-            <RadioGroup
-              value={visitPreference || ""}
-              onValueChange={(value) => handleVisitPreferenceChange(value as VisitPreference)}
-              className="grid gap-2 sm:grid-cols-2"
-            >
-              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
-                <RadioGroupItem value="manager_pick" className="mt-0.5" />
-                <span>
-                  <span className="block font-medium">Менеджер подберёт отделение</span>
-                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Укажите регион, а время согласуем по телефону.</span>
-                </span>
-              </Label>
-              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
-                <RadioGroupItem value="office" className="mt-0.5" />
-                <span>
-                  <span className="block font-medium">Выбрать отделение сейчас</span>
-                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Передадим выбранный офис сотруднику банка.</span>
-                </span>
-              </Label>
-            </RadioGroup>
-
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Регион</Label>
-                <Select value={visitRegion || ""} onValueChange={(value) => handleVisitRegionChange(value as VisitRegion)}>
-                  <SelectTrigger className="h-10 bg-white">
-                    <SelectValue placeholder="Выберите регион" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.keys(OFFICES).map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Город</Label>
-                <Select value={visitCity || ""} onValueChange={handleVisitCityChange} disabled={!visitRegion}>
-                  <SelectTrigger className="h-10 bg-white">
-                    <SelectValue placeholder="Выберите город" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {visitCities.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {visitPreference === "office" && (
-              <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Отделение</Label>
-                <Select
-                  value={visitOffice || ""}
-                  onValueChange={(value) => onVisitUpdate?.({ visitOffice: value })}
-                  disabled={!visitRegion || !visitCity}
-                >
-                  <SelectTrigger className="h-10 bg-white">
-                    <SelectValue placeholder="Выберите отделение" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {visitOffices.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              Эти контакты и предпочтение по визиту используем для связи и предварительно укажем для оформления пакета документов.
-            </p>
-          </CardContent>
-        </Card>
-      )}
     </>
   );
 }
