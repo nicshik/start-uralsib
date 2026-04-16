@@ -896,6 +896,24 @@ export default function ManagerWorkspace() {
                       </div>
                     )}
                   </div>
+
+                  <div className="space-y-3 border-t border-gray-100 pt-4">
+                    <Label className="text-sm font-semibold">Сканы паспорта</Label>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 p-4 text-center transition-colors hover:border-[#6440BF]/50 hover:bg-violet-50/30">
+                        <FileText className="h-6 w-6 text-slate-300" />
+                        <span className="text-xs font-medium text-slate-600">Основной разворот</span>
+                        <span className="text-xs text-slate-400">страницы 2–3</span>
+                        <input type="file" accept="image/*,.pdf" className="sr-only" />
+                      </label>
+                      <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 p-4 text-center transition-colors hover:border-[#6440BF]/50 hover:bg-violet-50/30">
+                        <FileText className="h-6 w-6 text-slate-300" />
+                        <span className="text-xs font-medium text-slate-600">Сведения о регистрации</span>
+                        <span className="text-xs text-slate-400">страница с пропиской</span>
+                        <input type="file" accept="image/*,.pdf" className="sr-only" />
+                      </label>
+                    </div>
+                  </div>
                 </CardContent>
                 )}
               </Card>
