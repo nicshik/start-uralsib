@@ -93,7 +93,7 @@ export default function RkoRequest() {
 
   const rkoSteps = [
     { title: "Звонок менеджера", desc: "В течение 1 рабочего дня" },
-    { title: "Визит в отделение", desc: "Паспорт + подпись документов (около 15 мин)" },
+    { title: "Визит в отделение", desc: "Проверка и подписание документов (~15 мин)" },
     { title: "Открытие счёта", desc: "Банк активирует расчётный счёт" },
   ];
 
@@ -101,19 +101,19 @@ export default function RkoRequest() {
     return (
       <div className="min-h-screen bg-brand-light">
         <AppHeader />
-        <main className="mx-auto max-w-lg space-y-5 px-4 py-10">
-          <div className="space-y-3 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-[16px] bg-white ring-1 ring-[#E5E0EB]">
-              <CheckCircle2 className="h-7 w-7 text-[#34C759]" />
+        <main className="mx-auto max-w-lg space-y-3 px-4 py-5">
+          <div className="space-y-2 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[16px] bg-white ring-1 ring-[#E5E0EB]">
+              <CheckCircle2 className="h-6 w-6 text-[#34C759]" />
             </div>
-            <div className="space-y-1">
-              <h1 className="text-2xl font-medium tracking-tight">Заявка на открытие счёта принята</h1>
+            <div className="space-y-0.5">
+              <h1 className="text-xl font-medium tracking-tight">Заявка на открытие счёта принята</h1>
               <p className="text-sm text-muted-foreground">Менеджер позвонит в течение 1 рабочего дня, чтобы согласовать дальнейшие шаги.</p>
             </div>
           </div>
 
           <section className="rounded-[16px] border border-[#E5E0EB] bg-white">
-            <div className="flex items-start justify-between gap-4 border-b border-[#E5E0EB] p-5">
+            <div className="flex items-start justify-between gap-4 border-b border-[#E5E0EB] p-4">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#6440BF]">
                   <FileText className="h-5 w-5 text-white" />
@@ -128,24 +128,24 @@ export default function RkoRequest() {
                 {copied ? "Скопировано" : "Копировать"}
               </button>
             </div>
-            <div className="divide-y divide-[#E5E0EB] px-5">
-              <div className="flex items-start justify-between gap-4 py-3">
+            <div className="divide-y divide-[#E5E0EB] px-4">
+              <div className="flex items-start justify-between gap-4 py-2">
                 <span className="text-sm text-muted-foreground">Дата подачи</span>
                 <span className="text-right text-sm font-medium">{appDate}</span>
               </div>
-              <div className="flex items-start justify-between gap-4 py-3">
+              <div className="flex items-start justify-between gap-4 py-2">
                 <span className="text-sm text-muted-foreground">Клиент</span>
                 <span className="max-w-[60%] break-words text-right text-sm font-medium">{clientName}</span>
               </div>
-              <div className="flex items-start justify-between gap-4 py-3">
+              <div className="flex items-start justify-between gap-4 py-2">
                 <span className="text-sm text-muted-foreground">Отделение</span>
                 <span className="max-w-[60%] break-words text-right text-sm font-medium">{office}</span>
               </div>
             </div>
           </section>
 
-          <section className="rounded-[16px] border border-[#E5E0EB] bg-white p-5">
-            <p className="mb-4 text-sm font-semibold">Что дальше</p>
+          <section className="rounded-[16px] border border-[#E5E0EB] bg-white p-4">
+            <p className="mb-3 text-sm font-semibold">Что дальше</p>
             <div className="space-y-0">
               {rkoSteps.map((step, index) => (
                 <div key={step.title} className="flex gap-3">
@@ -153,7 +153,7 @@ export default function RkoRequest() {
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F0ECFA]">
                       <span className="text-xs font-bold text-primary">{index + 1}</span>
                     </div>
-                    {index < rkoSteps.length - 1 && <div className="my-1 h-8 w-px bg-border" />}
+                    {index < rkoSteps.length - 1 && <div className="my-0.5 h-6 w-px bg-border" />}
                   </div>
                   <div className="pt-1">
                     <p className="text-sm font-medium text-foreground">{step.title}</p>
@@ -166,14 +166,14 @@ export default function RkoRequest() {
 
           <Button
             variant="outline"
-            className="h-12 w-full"
+            className="h-10 w-full"
             onClick={() => navigate("/my-applications")}
           >
             Открыть мои заявки
           </Button>
           <Button
             variant="outline"
-            className="h-12 w-full"
+            className="h-10 w-full"
             onClick={() => {
               clearDraft();
               navigate("/");
