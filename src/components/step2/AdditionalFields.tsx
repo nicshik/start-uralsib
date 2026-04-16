@@ -144,180 +144,190 @@ export default function AdditionalFields({
   };
 
   return (
-    <Card>
-      <CardContent className="p-4 space-y-4">
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 text-muted-foreground" />
-          <p className="font-semibold text-sm">Контакты</p>
-        </div>
+    <>
+      <Card>
+        <CardContent className="p-4 space-y-4">
+          <div className="flex items-center gap-2">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+            <p className="font-semibold text-sm">Контакты</p>
+          </div>
 
-        <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">{businessEmailLabel}</Label>
-            <Input
-              type="email"
-              placeholder="example@mail.ru"
-              value={businessEmail}
-              onChange={(e) => handleBusinessEmailChange(e.target.value)}
-              className={`text-sm h-10 ${businessEmail && !isValidEmail(businessEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
-            />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">Телефон</Label>
-            <Input
-              value={phone || ""}
-              onChange={(e) => onPhoneUpdate?.(e.target.value)}
-              readOnly={!onPhoneUpdate}
-              className={`h-10 text-sm ${onPhoneUpdate ? "" : "bg-muted text-muted-foreground"}`}
-            />
-          </div>
-          {businessEmail && !isValidEmail(businessEmail) && (
-            <p className="text-xs sm:col-span-2 text-destructive">
-              Введите корректный email
-            </p>
-          )}
-        </div>
-
-        {!isOnlineLight && (
-          <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">Email для документов ФНС</Label>
-            <Input
-              type="email"
-              placeholder="example@mail.ru"
-              value={registrationResultEmail}
-              onChange={(e) => handleRegistrationResultEmailChange(e.target.value)}
-              className={`text-sm h-10 ${registrationResultEmail && !isValidEmail(registrationResultEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
-            />
-            <p className="text-xs text-muted-foreground">
-              ФНС направит результат регистрации на этот адрес. Можно оставить тот же email.
-            </p>
-            {registrationResultEmail && !isValidEmail(registrationResultEmail) && (
-              <p className="text-xs text-destructive">Введите корректный email для документов ФНС</p>
-            )}
-          </div>
-        )}
-
-        {isOnlineLight ? (
-          <div className="space-y-2">
-            <button
-              type="button"
-              onClick={() => setShowInnSnils(!showInnSnils)}
-              className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
-            >
-              <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showInnSnils ? "rotate-180" : ""}`} />
-              <span>{showInnSnils ? "Скрыть" : "Добавить ИНН и СНИЛС (необязательно)"}</span>
-            </button>
-            {showInnSnils && (
-              <div className="space-y-3 rounded-lg border border-border p-3">
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Не обязательно сейчас — менеджер уточнит в офисе. Если есть под рукой, укажите: сэкономите время.
-                </p>
-                <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">ИНН</Label>
-                    <Input
-                      placeholder="12 цифр"
-                      maxLength={12}
-                      value={passport.inn || ""}
-                      onChange={(e) => onUpdate({ inn: e.target.value })}
-                      className="text-sm h-10"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">СНИЛС</Label>
-                    <Input
-                      placeholder="___-___-___ __"
-                      value={passport.snils || ""}
-                      onChange={(e) => onUpdate({ snils: e.target.value })}
-                      className="text-sm h-10"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+          <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">
-                {productType === "ip" ? "ИНН (для банковского пакета)" : "ИНН"}
-              </Label>
+              <Label className="text-xs text-muted-foreground">{businessEmailLabel}</Label>
               <Input
-                placeholder="12 цифр"
-                maxLength={12}
-                value={passport.inn || ""}
-                onChange={(e) => onUpdate({ inn: e.target.value })}
-                className="text-sm h-10"
+                type="email"
+                placeholder="example@mail.ru"
+                value={businessEmail}
+                onChange={(e) => handleBusinessEmailChange(e.target.value)}
+                className={`text-sm h-10 ${businessEmail && !isValidEmail(businessEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">СНИЛС</Label>
+              <Label className="text-xs text-muted-foreground">Телефон</Label>
               <Input
-                placeholder="___-___-___ __"
-                value={passport.snils || ""}
-                onChange={(e) => onUpdate({ snils: e.target.value })}
-                className="text-sm h-10"
+                value={phone || ""}
+                onChange={(e) => onPhoneUpdate?.(e.target.value)}
+                readOnly={!onPhoneUpdate}
+                className={`h-10 text-sm ${onPhoneUpdate ? "" : "bg-muted text-muted-foreground"}`}
               />
             </div>
-          </div>
-        )}
-
-        {isOnlineLight && (
-          <div className="space-y-2">
-            <button
-              type="button"
-              onClick={() => setShowDelivery(!showDelivery)}
-              className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
-            >
-              <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showDelivery ? "rotate-180" : ""}`} />
-              <span>{showDelivery ? "Скрыть" : "Выбрать способ получения документов от ФНС (необязательно)"}</span>
-            </button>
-            {showDelivery && (
-              <div className="rounded-lg border border-border p-3">
-                <RadioGroup
-                  value={paperDocuments ? "paper" : "electronic"}
-                  onValueChange={(v) => onPaperDocumentsUpdate?.(v === "paper")}
-                  className="grid grid-cols-2 gap-3"
-                >
-                  <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
-                    <RadioGroupItem value="electronic" className="mt-0.5 shrink-0" />
-                    <span>
-                      <span className="block font-medium">Электронно</span>
-                      <span className="mt-0.5 block text-xs text-muted-foreground">На email из ФНС</span>
-                    </span>
-                  </label>
-                  <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
-                    <RadioGroupItem value="paper" className="mt-0.5 shrink-0" />
-                    <span>
-                      <span className="block font-medium">На бумаге</span>
-                      <span className="mt-0.5 block text-xs text-muted-foreground">Бумажный носитель из ФНС</span>
-                    </span>
-                  </label>
-                </RadioGroup>
-              </div>
-            )}
-          </div>
-        )}
-
-        {!isOnlineLight && (
-          <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">{registrationAddressLabel}</Label>
-            <Input
-              placeholder="Город, улица, дом, квартира"
-              value={registrationAddress}
-              onChange={(e) => handleRegistrationAddressChange(e.target.value)}
-              className="text-sm h-10"
-            />
-            {productType === "ip" && (
-              <p className="text-xs text-muted-foreground">
-                Укажите адрес регистрации по паспорту. Менеджер сверит ФИАС/ГАР при расхождении.
+            {businessEmail && !isValidEmail(businessEmail) && (
+              <p className="text-xs sm:col-span-2 text-destructive">
+                Введите корректный email
               </p>
             )}
           </div>
-        )}
 
-        {isOnlineLight && (
-          <div className="space-y-4 rounded-lg border border-[#E5E0EB] bg-brand-light p-4">
+          {!isOnlineLight && (
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Email для документов ФНС</Label>
+              <Input
+                type="email"
+                placeholder="example@mail.ru"
+                value={registrationResultEmail}
+                onChange={(e) => handleRegistrationResultEmailChange(e.target.value)}
+                className={`text-sm h-10 ${registrationResultEmail && !isValidEmail(registrationResultEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              />
+              <p className="text-xs text-muted-foreground">
+                ФНС направит результат регистрации на этот адрес. Можно оставить тот же email.
+              </p>
+              {registrationResultEmail && !isValidEmail(registrationResultEmail) && (
+                <p className="text-xs text-destructive">Введите корректный email для документов ФНС</p>
+              )}
+            </div>
+          )}
+
+          {!isOnlineLight && (
+            <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">
+                  {productType === "ip" ? "ИНН (для банковского пакета)" : "ИНН"}
+                </Label>
+                <Input
+                  placeholder="12 цифр"
+                  maxLength={12}
+                  value={passport.inn || ""}
+                  onChange={(e) => onUpdate({ inn: e.target.value })}
+                  className="text-sm h-10"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">СНИЛС</Label>
+                <Input
+                  placeholder="___-___-___ __"
+                  value={passport.snils || ""}
+                  onChange={(e) => onUpdate({ snils: e.target.value })}
+                  className="text-sm h-10"
+                />
+              </div>
+            </div>
+          )}
+
+          {!isOnlineLight && (
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">{registrationAddressLabel}</Label>
+              <Input
+                placeholder="Город, улица, дом, квартира"
+                value={registrationAddress}
+                onChange={(e) => handleRegistrationAddressChange(e.target.value)}
+                className="text-sm h-10"
+              />
+              {productType === "ip" && (
+                <p className="text-xs text-muted-foreground">
+                  Укажите адрес регистрации по паспорту. Менеджер сверит ФИАС/ГАР при расхождении.
+                </p>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {isOnlineLight && (
+        <Card>
+          <CardContent className="p-4 space-y-3">
+            <p className="text-sm font-semibold text-foreground">Необязательные поля</p>
+
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => setShowInnSnils(!showInnSnils)}
+                className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
+              >
+                <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showInnSnils ? "rotate-180" : ""}`} />
+                <span>{showInnSnils ? "Скрыть" : "Добавить ИНН и СНИЛС (необязательно)"}</span>
+              </button>
+              {showInnSnils && (
+                <div className="space-y-3 rounded-lg border border-border p-3">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Не обязательно сейчас — менеджер уточнит в офисе. Если есть под рукой, укажите: сэкономите время.
+                  </p>
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">ИНН</Label>
+                      <Input
+                        placeholder="12 цифр"
+                        maxLength={12}
+                        value={passport.inn || ""}
+                        onChange={(e) => onUpdate({ inn: e.target.value })}
+                        className="text-sm h-10"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">СНИЛС</Label>
+                      <Input
+                        placeholder="___-___-___ __"
+                        value={passport.snils || ""}
+                        onChange={(e) => onUpdate({ snils: e.target.value })}
+                        className="text-sm h-10"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => setShowDelivery(!showDelivery)}
+                className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
+              >
+                <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showDelivery ? "rotate-180" : ""}`} />
+                <span>{showDelivery ? "Скрыть" : "Выбрать способ получения документов от ФНС (необязательно)"}</span>
+              </button>
+              {showDelivery && (
+                <div className="rounded-lg border border-border p-3">
+                  <RadioGroup
+                    value={paperDocuments ? "paper" : "electronic"}
+                    onValueChange={(v) => onPaperDocumentsUpdate?.(v === "paper")}
+                    className="grid grid-cols-2 gap-3"
+                  >
+                    <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
+                      <RadioGroupItem value="electronic" className="mt-0.5 shrink-0" />
+                      <span>
+                        <span className="block font-medium">Электронно</span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground">На email из ФНС</span>
+                      </span>
+                    </label>
+                    <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
+                      <RadioGroupItem value="paper" className="mt-0.5 shrink-0" />
+                      <span>
+                        <span className="block font-medium">На бумаге</span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground">Бумажный носитель из ФНС</span>
+                      </span>
+                    </label>
+                  </RadioGroup>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {isOnlineLight && (
+        <Card>
+          <CardContent className="p-4 space-y-4">
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">Визит в отделение</p>
@@ -402,9 +412,9 @@ export default function AdditionalFields({
             <p className="text-xs leading-relaxed text-muted-foreground">
               Эти контакты и предпочтение по визиту используем для связи и предварительно укажем для оформления пакета документов.
             </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          </CardContent>
+        </Card>
+      )}
+    </>
   );
 }
