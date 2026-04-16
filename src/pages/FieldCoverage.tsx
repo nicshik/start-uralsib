@@ -355,7 +355,7 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ИП (18 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={14} total={18} icon={MonitorSmartphone} />
+              <StatBar label="Lite" filled={9} total={18} icon={MonitorSmartphone} />
               <StatBar label="Assisted" filled={18} total={18} icon={User} />
               <StatBar label="CRM" filled={18} total={18} icon={Briefcase} />
             </div>
@@ -366,7 +366,7 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ООО (28 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={11} total={28} icon={MonitorSmartphone} />
+              <StatBar label="Lite" filled={9} total={28} icon={MonitorSmartphone} />
               <StatBar label="Assisted" filled={27} total={28} icon={User} />
               <StatBar label="CRM" filled={28} total={28} icon={Briefcase} />
             </div>
