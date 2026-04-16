@@ -96,6 +96,7 @@ export default function ManagerWorkspace() {
   const [registrationAddress, setRegistrationAddress] = useState(state.passport.registrationAddress || "");
   const [legalLocation, setLegalLocation] = useState(state.business.legalLocation || "");
   const [typicalCharterNumber, setTypicalCharterNumber] = useState(state.business.typicalCharterNumber || "36");
+  const [capitalContribution, setCapitalContribution] = useState("money");
   const [confirmAccuracy, setConfirmAccuracy] = useState(false);
   const [passportOpen, setPassportOpen] = useState(false);
   const [showEmailDetails, setShowEmailDetails] = useState(false);
@@ -330,6 +331,7 @@ export default function ManagerWorkspace() {
     setDirectorTerm("");
     setCharterType("generated");
     setHasSeal("no");
+    setCapitalContribution("money");
     setEntrepreneurEmail("");
     setRegistrationEmail("");
     setFounderSharePercent("100");
@@ -378,6 +380,7 @@ export default function ManagerWorkspace() {
     setDirectorTerm(b.directorTerm || "");
     setCharterType(b.charterType || "generated");
     setHasSeal(b.hasSeal ? "yes" : "no");
+    setCapitalContribution("money");
     setEntrepreneurEmail(b.entrepreneurEmail || app.email);
     setRegistrationEmail(b.registrationResultEmail || app.email);
     setFounderSharePercent(b.founderSharePercent || "100");
@@ -738,8 +741,8 @@ export default function ManagerWorkspace() {
                             className="h-10 bg-white"
                           />
                         </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="agent-capital">Уставный капитал (мин. 10 000 ₽)</Label>
+                        <div className="space-y-2">
+                          <Label htmlFor="agent-capital">Размер УК (мин. 10 000 ₽)</Label>
                           <Input
                             id="agent-capital"
                             type="number"
@@ -749,6 +752,19 @@ export default function ManagerWorkspace() {
                             placeholder="10000"
                             className="h-10 bg-white"
                           />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Вид капитала <span className="text-xs font-normal text-slate-400">(Р11001, раздел 4)</span></Label>
+                          <Select value={capitalContribution} onValueChange={setCapitalContribution}>
+                            <SelectTrigger className="h-10 bg-white">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="money">Денежные средства</SelectItem>
+                              <SelectItem value="property">Имущество / права</SelectItem>
+                              <SelectItem value="mixed">Смешанный</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="space-y-2 sm:col-span-2">
                           <Label>Роль заявителя <span className="text-xs font-normal text-slate-400">(лист заявителя Р11001)</span></Label>
