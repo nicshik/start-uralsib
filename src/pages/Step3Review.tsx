@@ -61,8 +61,8 @@ function SummaryItem({ label, value, wide = false }: { label: string; value?: Re
 
   return (
     <div className={wide ? "sm:col-span-2" : ""}>
-      <dt className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{label}</dt>
-      <dd className="mt-1 break-words text-sm font-medium leading-relaxed text-foreground">{value}</dd>
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="mt-0.5 break-words text-sm font-medium leading-relaxed text-foreground">{value}</dd>
     </div>
   );
 }
@@ -153,26 +153,22 @@ export default function Step3Review() {
         </div>
       </div>
 
-      <main className="mx-auto max-w-2xl space-y-4 px-4 py-6">
-        <div className="space-y-2">
-          <h2 className="text-xl font-medium tracking-tight">
-            {isOnlineLight ? "Проверьте предварительную заявку" : "Проверьте заявку"}
-          </h2>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {isOnlineLight
-              ? "Эти данные передадим сотруднику банка. Остальное проверим и дозаполним в офисе."
-              : "После отправки изменить данные можно будет только через менеджера."}
-          </p>
-          <div className="flex flex-wrap gap-2 pt-1">
+      <main className="mx-auto max-w-2xl space-y-3 px-4 py-3">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xl font-medium tracking-tight">
+              {isOnlineLight ? "Проверьте предварительную заявку" : "Проверьте заявку"}
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
             <ValuePill>{isOoo ? "ООО" : "ИП"}</ValuePill>
             {tax && <ValuePill>{tax.name}</ValuePill>}
-            {primaryOkved && <ValuePill>Основной ОКВЭД {primaryOkved.code}</ValuePill>}
+            {primaryOkved && <ValuePill>ОКВЭД {primaryOkved.code}</ValuePill>}
           </div>
         </div>
 
         <SummarySection title="Бизнес" icon={<Briefcase className="h-4 w-4" />} onEdit={() => navigate("/step/1")}>
           <SummaryGrid>
-            <SummaryItem label="Форма" value={isOoo ? "ООО" : "ИП"} />
             <SummaryItem label="Налоги" value={tax?.name} />
             {isOoo && <SummaryItem label="Краткое название" value={state.business.companyName} wide />}
             {isOoo && <SummaryItem label="Полное название" value={companyFullName} wide />}
@@ -232,10 +228,20 @@ export default function Step3Review() {
         </SummarySection>
 
         <SummarySection title="Контакты" icon={<Mail className="h-4 w-4" />} onEdit={() => navigate("/step/3")}>
-          <SummaryGrid>
-            <SummaryItem label="Телефон" value={state.phone} />
-            <SummaryItem label={isOnlineLight ? "Email" : isOoo ? "Email юрлица" : "Email ИП"} value={businessEmail} />
-          </SummaryGrid>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            {state.phone && (
+              <div>
+                <p className="text-xs text-muted-foreground">Телефон</p>
+                <p className="text-sm font-medium">{state.phone}</p>
+              </div>
+            )}
+            {businessEmail && (
+              <div>
+                <p className="text-xs text-muted-foreground">{isOnlineLight ? "Email" : isOoo ? "Email юрлица" : "Email ИП"}</p>
+                <p className="text-sm font-medium">{businessEmail}</p>
+              </div>
+            )}
+          </div>
         </SummarySection>
 
         <SummarySection title="ОКВЭД" icon={<ShieldCheck className="h-4 w-4" />} onEdit={() => navigate("/step/1")}>
@@ -262,13 +268,28 @@ export default function Step3Review() {
           </div>
         </SummarySection>
 
-        {isOnlineLight && (
-          <SummarySection title="Визит" icon={<MapPin className="h-4 w-4" />} onEdit={() => navigate("/step/3")}>
-            <SummaryGrid>
-              <SummaryItem label="Регион" value={state.visitRegion} />
-              <SummaryItem label="Город" value={state.visitCity} />
-              <SummaryItem label="Формат" value={visitLabel} wide />
-            </SummaryGrid>
+        {isOnlineLight && state.visitRegion && (
+          <SummarySection title="Визит в офис" icon={<MapPin className="h-4 w-4" />} onEdit={() => navigate("/step/3")}>
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              {state.visitRegion && (
+                <div>
+                  <p className="text-xs text-muted-foreground">Регион</p>
+                  <p className="text-sm font-medium">{state.visitRegion}</p>
+                </div>
+              )}
+              {state.visitCity && (
+                <div>
+                  <p className="text-xs text-muted-foreground">Город</p>
+                  <p className="text-sm font-medium">{state.visitCity}</p>
+                </div>
+              )}
+              {visitLabel && (
+                <div>
+                  <p className="text-xs text-muted-foreground">Формат</p>
+                  <p className="text-sm font-medium">{visitLabel}</p>
+                </div>
+              )}
+            </div>
           </SummarySection>
         )}
 
@@ -313,28 +334,23 @@ export default function Step3Review() {
         </SummarySection>}
 
         {isOnlineLight && (
-          <SummarySection title="Что уточним в офисе" icon={<FileCheck2 className="h-4 w-4" />}>
-            <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
-              <li>Адрес регистрации и структурированный адрес по ФИАС/ГАР.</li>
-              <li>ИНН, СНИЛС и отдельный email для документов ФНС, если он отличается.</li>
-              {isOoo && (
-                <>
-                  <li>Данные учредителя, руководителя, роль заявителя и срок полномочий.</li>
-                  <li>Вид капитала, устав, печать и юридический адрес для Р11001.</li>
-                </>
-              )}
-              {!isOoo && <li>Гражданство, вид документа и недостающие поля для Р21001.</li>}
-            </ul>
-          </SummarySection>
+          <div className="rounded-[12px] border border-[#E5E0EB] bg-white px-4 py-3">
+            <p className="mb-2 text-xs font-medium text-muted-foreground">Уточним в офисе вместе с менеджером</p>
+            <div className="flex flex-wrap gap-1.5">
+              {["Адрес (ФИАС/ГАР)", "ИНН и СНИЛС", "Email для ФНС",
+                ...(isOoo ? ["Данные учредителя", "Устав и капитал", "Юр. адрес"] : ["Документ и гражданство"])
+              ].map((item) => (
+                <span key={item} className="inline-flex items-center rounded-md bg-brand-light px-2.5 py-1 text-xs font-medium text-foreground border border-[#E5E0EB]">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
 
-        <div className="flex items-start gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-xs text-emerald-900">
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-          <p className="leading-relaxed">
-            {isOnlineLight
-              ? "После отправки предварительной заявки сотрудник банка свяжется с вами, назначит визит и поможет дозаполнить данные регистрационного пакета для отправки в ФНС."
-              : "После отправки менеджер свяжется для уточнения деталей и назначит встречу в офисе — проверка документов, подписание заявления, открытие счёта."}
-          </p>
+        <div className="flex items-center gap-2.5 rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-900">
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+          <p>{isOnlineLight ? "Менеджер свяжется и назначит визит для дозаполнения пакета ФНС." : "Менеджер свяжется, уточнит детали и назначит встречу в офисе."}</p>
         </div>
       </main>
 
