@@ -406,20 +406,21 @@ export default function ManagerWorkspace() {
             <div className="mt-1 text-xs text-slate-400">ДО «Петровский», Окно 4</div>
           </div>
 
+          <button
+            onClick={handleNewApplication}
+            className="flex w-full items-center justify-center gap-2 rounded-md border border-[#6440BF]/50 bg-[#6440BF]/20 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#6440BF]/40"
+          >
+            <PlusCircle className="h-4 w-4" /> Новая заявка
+          </button>
+
           <nav className="space-y-1">
-            <button
-              onClick={handleNewApplication}
-              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
-            >
-              <PlusCircle className="h-4 w-4" /> Новая заявка
-            </button>
             <button
               onClick={() => setActiveTab("current")}
               className={`flex w-full flex-col items-start rounded-md px-3 py-2 text-sm font-medium transition-colors ${activeTab === "current" ? "bg-[#6440BF] text-white" : "text-slate-300 hover:bg-slate-800"}`}
             >
               <span className="flex items-center gap-3">
                 <ClipboardList className="h-4 w-4" />
-                {clientName ? `В работе` : "Рабочее место"}
+                {clientName ? "В работе" : "Рабочее место"}
               </span>
               {clientName && (
                 <span className={`ml-7 truncate text-xs font-normal ${activeTab === "current" ? "text-white/70" : "text-slate-400"}`}>
@@ -510,18 +511,24 @@ export default function ManagerWorkspace() {
         <>
         <header className="mb-8 flex items-end justify-between border-b border-gray-200 pb-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Рабочее место сотрудника</h1>
-            <p className="mt-1 text-sm text-slate-500">Номер заявки: #UR-849-21-APP</p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              {clientName || "Новая заявка"}
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              {clientName ? "Номер заявки: #UR-849-21-APP" : "Заполните данные клиента вместе с ним"}
+            </p>
           </div>
-          <div className="flex gap-2">
-            <span className="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-              <BadgeCheck className="mr-1.5 h-4 w-4" />
-              {sourceLabel}
-            </span>
-            <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-              Клиент рядом
-            </span>
-          </div>
+          {clientName && (
+            <div className="flex gap-2">
+              <span className="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                <BadgeCheck className="mr-1.5 h-4 w-4" />
+                {sourceLabel}
+              </span>
+              <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                Клиент рядом
+              </span>
+            </div>
+          )}
         </header>
 
         {completionStatus ? (
