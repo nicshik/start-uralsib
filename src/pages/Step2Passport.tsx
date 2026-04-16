@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { trackEvent } from "@/lib/analytics";
+import { detectGender } from "@/lib/detectGender";
 import { getApplicantValidation } from "@/lib/applicationValidation";
 import type { ValidationTarget } from "@/lib/applicationValidation";
 import { MOCK_PASSPORT_DATA } from "@/lib/mockData";
@@ -36,6 +37,15 @@ export default function Step2Passport() {
       dispatch({ type: "UPDATE_PASSPORT", payload: { documentType: "passport_rf" } });
     }
   }, [isOnlineLight]);
+
+  useEffect(() => {
+    if (!state.passport.gender && state.passport.middleName) {
+      const detected = detectGender(state.passport.middleName);
+      if (detected) {
+        dispatch({ type: "UPDATE_PASSPORT", payload: { gender: detected } });
+      }
+    }
+  }, [state.passport.middleName]);
 
   const startOcr = () => {
     trackEvent("ocr_started", { flowType: state.flowType });

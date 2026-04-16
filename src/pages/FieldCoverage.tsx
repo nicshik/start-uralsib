@@ -47,7 +47,7 @@ const MATRIX_DATA = [
       { name: "Имя", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Отчество", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Дата рождения", lite: "yes", assisted: "yes", crm: "yes" },
-      { name: "Пол", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "Пол", lite: "auto", assisted: "yes", crm: "yes" },
       { name: "Место рождения", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Гражданство", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Вид документа", lite: "auto", assisted: "yes", crm: "yes" },
@@ -79,7 +79,7 @@ const MATRIX_DATA = [
       { name: "Имя учредителя", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Отчество учредителя", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Дата рождения учредителя", lite: "yes", assisted: "yes", crm: "yes" },
-      { name: "Пол учредителя", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "Пол учредителя", lite: "auto", assisted: "yes", crm: "yes" },
       { name: "Место рождения учредителя", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Гражданство учредителя", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Документ учредителя (вид)", lite: "auto", assisted: "yes", crm: "yes" },
@@ -259,14 +259,14 @@ const DetailedTable = () => (
 
 export default function FieldCoverage() {
   const missingIP = [
-    "Пол", "Гражданство",
+    "Гражданство",
     "Адрес регистрации",
     "Способ получения", "ИНН", "СНИЛС",
   ];
 
   const missingOOO = [
     "Место нахождения ЮЛ", "Адрес ЮЛ (полный)",
-    "Количество учредителей", "Гражданство учредителя", "Пол учредителя",
+    "Количество учредителей", "Гражданство учредителя",
     "Адрес рег. учредителя",
     "Доля в УК", "Руководитель = учредитель", "Должность руководителя",
     "Срок избрания", "Роль заявителя", "Тип устава",
@@ -377,7 +377,7 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ИП (18 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={12} total={18} icon={MonitorSmartphone} />
+              <StatBar label="Lite" filled={13} total={18} icon={MonitorSmartphone} />
               <StatBar label="Assisted" filled={18} total={18} icon={User} />
               <StatBar label="CRM" filled={18} total={18} icon={Briefcase} />
             </div>
@@ -388,7 +388,7 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ООО (28 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={12} total={28} icon={MonitorSmartphone} />
+              <StatBar label="Lite" filled={13} total={28} icon={MonitorSmartphone} />
               <StatBar label="Assisted" filled={27} total={28} icon={User} />
               <StatBar label="CRM" filled={28} total={28} icon={Briefcase} />
             </div>
@@ -410,7 +410,7 @@ export default function FieldCoverage() {
             <Card className="p-8">
               <h3 className="text-xl font-medium text-foreground mb-6 flex items-center justify-between">
                 <span>ИП: Остаток для менеджера</span>
-                <span className="bg-brand-light text-muted-foreground px-3 py-1 rounded-lg text-sm">~6 полей</span>
+                <span className="bg-brand-light text-muted-foreground px-3 py-1 rounded-lg text-sm">~5 полей</span>
               </h3>
               <ul className="grid grid-cols-1 gap-y-3 text-sm text-foreground">
                 {missingIP.map((field, idx) => (
@@ -424,7 +424,7 @@ export default function FieldCoverage() {
             <Card className="p-8">
               <h3 className="text-xl font-medium text-foreground mb-6 flex items-center justify-between">
                 <span>ООО: Остаток для менеджера</span>
-                <span className="bg-accent text-primary px-3 py-1 rounded-lg text-sm">~16 полей</span>
+                <span className="bg-accent text-primary px-3 py-1 rounded-lg text-sm">~15 полей</span>
               </h3>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-foreground">
                 {missingOOO.map((field, idx) => (
