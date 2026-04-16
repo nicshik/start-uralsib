@@ -7,7 +7,7 @@ import { getBusinessEmail } from "@/lib/applicationValidation";
 import { Button } from "@/components/ui/button";
 import { SupportBlock } from "@/components/SupportBlock";
 import { AppHeader } from "@/components/AppHeader";
-import { Building2, Check, CheckCircle2, Clock, Copy, FileText, Phone } from "lucide-react";
+import { Building2, Check, CheckCircle2, Copy, FileText, Phone, Send } from "lucide-react";
 
 function DetailRow({ label, value }: { label: string; value?: ReactNode }) {
   if (!value) return null;
@@ -29,6 +29,10 @@ export default function Success() {
     const date = new Date();
     const num = Math.floor(10000 + Math.random() * 90000);
     return `УС-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-${num}`;
+  }, []);
+
+  const appDate = useMemo(() => {
+    return new Date().toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
   }, []);
 
   useEffect(() => {
@@ -65,10 +69,9 @@ export default function Success() {
       ? `${state.visitRegion}, ${state.visitCity}. Менеджер подберёт отделение`
       : undefined;
   const steps = [
-    { icon: CheckCircle2, title: "Заявка принята", desc: "Только что", done: true, link: "/my-applications", linkLabel: "Мои заявки" },
-    { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня", done: false },
-    { icon: Clock, title: "Назначение встречи", desc: "В удобное для вас время", done: false },
-    { icon: Building2, title: "Визит в офис", desc: "Подписание и открытие счёта", done: false },
+    { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня" },
+    { icon: Building2, title: "Визит в отделение", desc: "Паспорт + подпись документов (около 15 мин)" },
+    { icon: Send, title: "Подача в ФНС", desc: "Банк направит документы сам" },
   ];
 
   return (
@@ -81,8 +84,8 @@ export default function Success() {
             <CheckCircle2 className="h-7 w-7 text-[#34C759]" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">Заявка отправлена</h1>
-            <p className="text-sm text-muted-foreground">Менеджер свяжется с вами для согласования встречи</p>
+            <h1 className="text-2xl font-bold tracking-tight">Заявка на регистрацию {productLabel} принята</h1>
+            <p className="text-sm text-muted-foreground">Менеджер позвонит в течение 1 рабочего дня, чтобы согласовать дальнейшие шаги.</p>
           </div>
         </div>
 
@@ -104,6 +107,7 @@ export default function Success() {
           </div>
 
           <div className="p-5">
+            <DetailRow label="Дата подачи" value={appDate} />
             <DetailRow label="Форма бизнеса" value={productLabel} />
             <DetailRow label="Визит" value={visitValue} />
             <DetailRow label="Копия заявки" value={businessEmail ? businessEmail : "Email можно добавить через менеджера"} />
@@ -124,19 +128,14 @@ export default function Success() {
             {steps.map((step, index) => (
               <div key={step.title} className="flex gap-3">
                 <div className="flex flex-col items-center">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${step.done ? "bg-[#F0ECFA]" : "bg-muted"}`}>
-                    <step.icon className={`h-4 w-4 ${step.done ? "text-primary" : "text-muted-foreground/60"}`} />
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F0ECFA]">
+                    <span className="text-xs font-bold text-primary">{index + 1}</span>
                   </div>
                   {index < steps.length - 1 && <div className="my-1 h-8 w-px bg-border" />}
                 </div>
                 <div className="pt-1">
-                  <p className={`text-sm font-medium ${step.done ? "text-foreground" : "text-muted-foreground"}`}>{step.title}</p>
+                  <p className="text-sm font-medium text-foreground">{step.title}</p>
                   <p className="text-xs text-muted-foreground">{step.desc}</p>
-                  {'link' in step && step.link && (
-                    <a href={step.link} className="mt-0.5 inline-block text-xs font-medium text-primary hover:underline">
-                      {step.linkLabel}
-                    </a>
-                  )}
                 </div>
               </div>
             ))}
@@ -158,6 +157,12 @@ export default function Success() {
           </Button>
         </section>
 
+        <Button
+          className="h-12 w-full"
+          onClick={() => navigate("/my-applications")}
+        >
+          Открыть мои заявки
+        </Button>
         <Button
           variant="outline"
           className="h-12 w-full"
