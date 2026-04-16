@@ -96,6 +96,7 @@ export default function ManagerWorkspace() {
   const [legalLocation, setLegalLocation] = useState(state.business.legalLocation || "");
   const [typicalCharterNumber, setTypicalCharterNumber] = useState(state.business.typicalCharterNumber || "36");
   const [capitalContribution, setCapitalContribution] = useState("money");
+  const [nextInboxIndex, setNextInboxIndex] = useState(0);
   const [confirmAccuracy, setConfirmAccuracy] = useState(false);
   const [passportOpen, setPassportOpen] = useState(false);
   const [showEmailDetails, setShowEmailDetails] = useState(false);
@@ -389,6 +390,12 @@ export default function ManagerWorkspace() {
     setActiveTab("current");
   };
 
+  const handleNextClient = () => {
+    const next = MOCK_INCOMING_APPLICATIONS[nextInboxIndex % MOCK_INCOMING_APPLICATIONS.length];
+    loadApplicationToForm(next);
+    setNextInboxIndex((prev) => prev + 1);
+  };
+
   return (
     <div className="flex min-h-screen bg-[#F8F9FA] font-sans text-slate-800">
       <aside className="fixed left-0 top-0 z-10 flex h-full w-64 flex-col bg-[#1E293B] text-slate-200">
@@ -524,7 +531,7 @@ export default function ManagerWorkspace() {
                 ? "Пакет документов ушел на регистрацию. Счет будет активирован после отбивки из налоговой."
                 : "Данные сохранены. Недостающие поля нужно дозаполнить перед передачей пакета в ФНС."}
             </p>
-            <Button onClick={() => navigate("/assisted-start")} variant="outline" className="mt-4">
+            <Button onClick={handleNextClient} variant="outline" className="mt-4">
               Следующий клиент
             </Button>
           </div>
