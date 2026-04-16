@@ -79,22 +79,22 @@ export default function PassportFields({ passport, productType, flowType, ocrDon
     : baseSections;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {sections.map((section) => (
         <Card key={section.title}>
-          <CardContent className="p-4 space-y-3">
+          <CardContent className="p-3 space-y-2">
             <div className="flex items-center gap-2">
               <section.icon className="h-4 w-4 text-muted-foreground" />
               <p className="font-semibold text-sm">{section.title}</p>
             </div>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2">
               {section.fields.map((f) => (
                 <div key={f.key} className={`space-y-1 ${f.span === "full" ? "col-span-2" : ""}`}>
                   <Label className="text-xs text-muted-foreground">{f.label}</Label>
                   {f.key === "gender" ? (
                     <div className="flex items-center gap-1.5">
                       <Select value={data[f.key] || ""} onValueChange={(val) => onUpdate({ [f.key]: val })}>
-                        <SelectTrigger className="text-sm h-10">
+                        <SelectTrigger className="text-sm h-9">
                           <SelectValue placeholder="Выберите" />
                         </SelectTrigger>
                         <SelectContent>
@@ -109,7 +109,7 @@ export default function PassportFields({ passport, productType, flowType, ocrDon
                   ) : f.key === "citizenship" ? (
                     <div className="flex items-center gap-1.5">
                       <Select value={passport.citizenship || ""} onValueChange={(val) => onUpdate({ citizenship: val as PassportData["citizenship"] })}>
-                        <SelectTrigger className="text-sm h-10">
+                        <SelectTrigger className="text-sm h-9">
                           <SelectValue placeholder="Выберите" />
                         </SelectTrigger>
                         <SelectContent>
@@ -125,7 +125,7 @@ export default function PassportFields({ passport, productType, flowType, ocrDon
                   ) : f.key === "documentType" ? (
                     <div className="flex items-center gap-1.5">
                       <Select value={passport.documentType || ""} onValueChange={(val) => onUpdate({ documentType: val as PassportData["documentType"] })}>
-                        <SelectTrigger className="text-sm h-10">
+                        <SelectTrigger className="text-sm h-9">
                           <SelectValue placeholder="Выберите" />
                         </SelectTrigger>
                         <SelectContent>
@@ -143,7 +143,7 @@ export default function PassportFields({ passport, productType, flowType, ocrDon
                         value={data[f.key] || ""}
                         placeholder={f.placeholder}
                         onChange={(e) => onUpdate({ [f.key]: e.target.value })}
-                        className="text-sm h-10 pr-8"
+                        className="text-sm h-9 pr-8"
                       />
                       {ocrDone && data[f.key] && (
                         <Check className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-emerald-500" />

@@ -93,7 +93,7 @@ export default function Step2Passport() {
         </div>
       </div>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-3 space-y-3">
         {ocrPhase === "idle" && !manualMode && (
           <OcrCapture onStartOcr={startOcr} onManualMode={() => { setManualMode(true); trackEvent("manual_entry_selected", { flowType: state.flowType }); }} />
         )}

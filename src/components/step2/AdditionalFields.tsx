@@ -147,7 +147,7 @@ export default function AdditionalFields({
     <>
       {isOnlineLight && (
         <Card>
-          <CardContent className="p-4 space-y-4">
+          <CardContent className="p-3 space-y-3">
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">Выбрать удобное отделение банка</p>
@@ -156,29 +156,29 @@ export default function AdditionalFields({
             <RadioGroup
               value={visitPreference || ""}
               onValueChange={(value) => handleVisitPreferenceChange(value as VisitPreference)}
-              className="grid gap-2 sm:grid-cols-2"
+              className="grid gap-1.5 sm:grid-cols-2"
             >
-              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-2.5 text-sm [&:has([data-state=checked])]:border-primary">
                 <RadioGroupItem value="manager_pick" className="mt-0.5" />
                 <span>
                   <span className="block font-medium">Менеджер подберёт отделение</span>
-                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Укажите регион, а время согласуем по телефону.</span>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">Укажите регион, а время согласуем по телефону.</span>
                 </span>
               </Label>
-              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-3 text-sm [&:has([data-state=checked])]:border-primary">
+              <Label className="flex cursor-pointer items-start gap-2 rounded-lg border bg-white p-2.5 text-sm [&:has([data-state=checked])]:border-primary">
                 <RadioGroupItem value="office" className="mt-0.5" />
                 <span>
                   <span className="block font-medium">Выбрать отделение сейчас</span>
-                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Передадим выбранный офис сотруднику банка.</span>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">Передадим выбранный офис сотруднику банка.</span>
                 </span>
               </Label>
             </RadioGroup>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Регион</Label>
                 <Select value={visitRegion || ""} onValueChange={(value) => handleVisitRegionChange(value as VisitRegion)}>
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-9">
                     <SelectValue placeholder="Выберите регион" />
                   </SelectTrigger>
                   <SelectContent>
@@ -193,7 +193,7 @@ export default function AdditionalFields({
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Город</Label>
                 <Select value={visitCity || ""} onValueChange={handleVisitCityChange} disabled={!visitRegion}>
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-9">
                     <SelectValue placeholder="Выберите город" />
                   </SelectTrigger>
                   <SelectContent>
@@ -215,7 +215,7 @@ export default function AdditionalFields({
                   onValueChange={(value) => onVisitUpdate?.({ visitOffice: value })}
                   disabled={!visitRegion || !visitCity}
                 >
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-9">
                     <SelectValue placeholder="Выберите отделение" />
                   </SelectTrigger>
                   <SelectContent>
@@ -234,7 +234,7 @@ export default function AdditionalFields({
       )}
 
       <Card>
-        <CardContent className="p-4 space-y-4">
+        <CardContent className="p-3 space-y-3">
           <div>
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-muted-foreground" />
@@ -243,7 +243,7 @@ export default function AdditionalFields({
             <p className="text-xs text-muted-foreground mt-1 ml-6">Эти контакты используем для связи и предварительно укажем для оформления пакета документов.</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">{businessEmailLabel}</Label>
               <Input
@@ -251,7 +251,7 @@ export default function AdditionalFields({
                 placeholder="example@mail.ru"
                 value={businessEmail}
                 onChange={(e) => handleBusinessEmailChange(e.target.value)}
-                className={`text-sm h-10 ${businessEmail && !isValidEmail(businessEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                className={`text-sm h-9 ${businessEmail && !isValidEmail(businessEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
               />
             </div>
             <div className="space-y-1">
@@ -260,7 +260,7 @@ export default function AdditionalFields({
                 value={phone || ""}
                 onChange={(e) => onPhoneUpdate?.(e.target.value)}
                 readOnly={!onPhoneUpdate}
-                className={`h-10 text-sm ${onPhoneUpdate ? "" : "bg-muted text-muted-foreground"}`}
+                className={`h-9 text-sm ${onPhoneUpdate ? "" : "bg-muted text-muted-foreground"}`}
               />
             </div>
             {businessEmail && !isValidEmail(businessEmail) && (
@@ -278,7 +278,7 @@ export default function AdditionalFields({
                 placeholder="example@mail.ru"
                 value={registrationResultEmail}
                 onChange={(e) => handleRegistrationResultEmailChange(e.target.value)}
-                className={`text-sm h-10 ${registrationResultEmail && !isValidEmail(registrationResultEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                className={`text-sm h-9 ${registrationResultEmail && !isValidEmail(registrationResultEmail) ? "border-destructive focus-visible:ring-destructive" : ""}`}
               />
               <p className="text-xs text-muted-foreground">
                 ФНС направит результат регистрации на этот адрес. Можно оставить тот же email.
@@ -290,7 +290,7 @@ export default function AdditionalFields({
           )}
 
           {!isOnlineLight && (
-            <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2">
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">
                   {productType === "ip" ? "ИНН (для банковского пакета)" : "ИНН"}
@@ -300,7 +300,7 @@ export default function AdditionalFields({
                   maxLength={12}
                   value={passport.inn || ""}
                   onChange={(e) => onUpdate({ inn: e.target.value })}
-                  className="text-sm h-10"
+                  className="text-sm h-9"
                 />
               </div>
               <div className="space-y-1">
@@ -309,7 +309,7 @@ export default function AdditionalFields({
                   placeholder="___-___-___ __"
                   value={passport.snils || ""}
                   onChange={(e) => onUpdate({ snils: e.target.value })}
-                  className="text-sm h-10"
+                  className="text-sm h-9"
                 />
               </div>
             </div>
@@ -322,7 +322,7 @@ export default function AdditionalFields({
                 placeholder="Город, улица, дом, квартира"
                 value={registrationAddress}
                 onChange={(e) => handleRegistrationAddressChange(e.target.value)}
-                className="text-sm h-10"
+                className="text-sm h-9"
               />
               {productType === "ip" && (
                 <p className="text-xs text-muted-foreground">
@@ -353,7 +353,7 @@ export default function AdditionalFields({
               </button>
               {showInnSnils && (
                 <div className="space-y-3 rounded-lg border border-border p-3">
-                  <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-2">
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">ИНН</Label>
                       <Input
@@ -361,7 +361,7 @@ export default function AdditionalFields({
                         maxLength={12}
                         value={passport.inn || ""}
                         onChange={(e) => onUpdate({ inn: e.target.value })}
-                        className="text-sm h-10"
+                        className="text-sm h-9"
                       />
                     </div>
                     <div className="space-y-1">
@@ -370,7 +370,7 @@ export default function AdditionalFields({
                         placeholder="___-___-___ __"
                         value={passport.snils || ""}
                         onChange={(e) => onUpdate({ snils: e.target.value })}
-                        className="text-sm h-10"
+                        className="text-sm h-9"
                       />
                     </div>
                   </div>

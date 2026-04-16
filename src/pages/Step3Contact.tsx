@@ -40,7 +40,7 @@ export default function Step3Contact() {
         </div>
       </div>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-2xl mx-auto px-4 py-3 space-y-3">
         <AdditionalFields
           passport={state.passport}
           productType={state.productType}
