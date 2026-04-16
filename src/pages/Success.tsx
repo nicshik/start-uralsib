@@ -158,6 +158,7 @@ export default function Success() {
         </section>
 
         <Button
+          variant="outline"
           className="h-12 w-full"
           onClick={() => navigate("/my-applications")}
         >
