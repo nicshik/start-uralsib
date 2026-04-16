@@ -192,19 +192,19 @@ export default function RkoRequest() {
         <AutosaveIndicator />
       </AppHeader>
 
-      <main className="mx-auto max-w-2xl space-y-5 px-4 py-8">
+      <main className="mx-auto max-w-2xl space-y-3 px-4 py-4">
         <section className="overflow-hidden rounded-[16px] border border-[#E5E0EB] bg-white">
-          <div className="border-b border-[#E5E0EB] bg-[#F7F5FB] px-5 py-5">
+          <div className="border-b border-[#E5E0EB] bg-[#F7F5FB] px-4 py-3">
             <div className="flex items-start gap-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[8px] bg-white text-primary ring-1 ring-[#E5E0EB]">
                 <FileText className="h-5 w-5" />
               </div>
-              <div className="min-w-0 space-y-3">
+              <div className="min-w-0 space-y-1.5">
                 <div className="inline-flex rounded-[8px] bg-white px-2.5 py-1 text-xs font-medium text-primary ring-1 ring-[#E5E0EB]">
                   1 месяц обслуживания бесплатно
                 </div>
-                <div className="space-y-1">
-                  <h1 className="text-2xl font-medium tracking-tight">Заявка на открытие счёта</h1>
+                <div className="space-y-0.5">
+                  <h1 className="text-xl font-medium tracking-tight">Заявка на открытие счёта</h1>
                   <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
                     Первый месяц бесплатно при открытии счёта вместе с подачей документов.
                   </p>
@@ -213,52 +213,52 @@ export default function RkoRequest() {
             </div>
           </div>
 
-          <div className="space-y-4 p-5">
-            <div className="flex items-start gap-3 rounded-[12px] bg-brand-light p-4">
+          <div className="space-y-3 p-4">
+            <div className="flex items-start gap-3 rounded-[12px] bg-brand-light p-3">
               <Gift className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
                 <p className="text-sm font-semibold">Для новых клиентов</p>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Менеджер подготовит заявку на счёт вместе с регистрационным пакетом.
                 </p>
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="rko-name">ФИО</Label>
-              <Input id="rko-name" value={clientName} onChange={(event) => setClientName(event.target.value)} className="h-12 bg-[#F5F5F5]" />
+              <Input id="rko-name" value={clientName} onChange={(event) => setClientName(event.target.value)} className="h-10 bg-[#F5F5F5]" />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
                 <Label>Форма бизнеса</Label>
-                <div className="flex h-12 items-center gap-2 rounded-[8px] border border-[#E5E0EB] bg-[#F5F5F5] px-3 text-sm font-medium">
+                <div className="flex h-10 items-center gap-2 rounded-[8px] border border-[#E5E0EB] bg-[#F5F5F5] px-3 text-sm font-medium">
                   <Building2 className="h-4 w-4 text-primary" />
                   {productLabel}
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label htmlFor="rko-phone">Телефон</Label>
-                <Input id="rko-phone" value={phone} onChange={(event) => setPhone(event.target.value)} className="h-12 bg-[#F5F5F5]" />
+                <Input id="rko-phone" value={phone} onChange={(event) => setPhone(event.target.value)} className="h-10 bg-[#F5F5F5]" />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="rko-email">Email</Label>
               <Input
                 id="rko-email"
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className={`h-12 bg-[#F5F5F5] ${email && !isValidEmail(email) ? "border-destructive" : ""}`}
+                className={`h-10 bg-[#F5F5F5] ${email && !isValidEmail(email) ? "border-destructive" : ""}`}
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
                 <Label>Регион</Label>
                 <Select value={region} onValueChange={(value) => handleRegionChange(value as VisitRegion)}>
-                  <SelectTrigger className="h-12 bg-[#F5F5F5]">
+                  <SelectTrigger className="h-10 bg-[#F5F5F5]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -270,10 +270,10 @@ export default function RkoRequest() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label>Город</Label>
                 <Select value={city} onValueChange={handleCityChange}>
-                  <SelectTrigger className="h-12 bg-[#F5F5F5]">
+                  <SelectTrigger className="h-10 bg-[#F5F5F5]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -287,10 +287,10 @@ export default function RkoRequest() {
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label>Адрес отделения</Label>
               <Select value={office} onValueChange={setOffice}>
-                <SelectTrigger className="h-12 bg-[#F5F5F5]">
+                <SelectTrigger className="h-10 bg-[#F5F5F5]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
