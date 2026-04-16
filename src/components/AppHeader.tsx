@@ -12,7 +12,7 @@ export function AppHeader({ showBack = false, backTo = -1, children }: AppHeader
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 bg-[#6440BF] shadow-sm">
+    <header className="sticky top-0 z-50 bg-[#2D1B69] shadow-sm">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
         {showBack && (
           <button
