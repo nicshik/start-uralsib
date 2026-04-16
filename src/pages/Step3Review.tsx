@@ -8,7 +8,6 @@ import { OKVED_CODES, TAX_REGIMES } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ProgressHeader } from "@/components/ProgressHeader";
-import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import {
   Briefcase,
   Building2,
@@ -20,7 +19,6 @@ import {
   ShieldCheck,
   UserRound,
 } from "lucide-react";
-import { AppHeader } from "@/components/AppHeader";
 
 interface SummarySectionProps {
   title: string;
@@ -149,9 +147,6 @@ export default function Step3Review() {
 
   return (
     <div className="min-h-screen bg-brand-light pb-24">
-      <AppHeader showBack>
-        <AutosaveIndicator />
-      </AppHeader>
       <div className="border-b bg-card">
         <div className="mx-auto max-w-2xl px-4 py-3">
           <ProgressHeader step={4} totalSteps={4} />

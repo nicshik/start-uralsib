@@ -8,9 +8,7 @@ import type { ValidationTarget } from "@/lib/applicationValidation";
 import { MOCK_PASSPORT_DATA } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 import { ProgressHeader } from "@/components/ProgressHeader";
-import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
-import { AppHeader } from "@/components/AppHeader";
 import { UserCheck } from "lucide-react";
 
 import OcrCapture from "@/components/step2/OcrCapture";
@@ -89,9 +87,6 @@ export default function Step2Passport() {
 
   return (
     <div className="min-h-screen pb-24 bg-brand-light">
-      <AppHeader showBack>
-        <AutosaveIndicator />
-      </AppHeader>
       <div className="border-b bg-card">
         <div className="max-w-2xl mx-auto px-4 py-3">
           <ProgressHeader step={2} totalSteps={4} timeEstimate="5 минут" />

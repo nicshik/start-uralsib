@@ -5,8 +5,6 @@ import { trackEvent } from "@/lib/analytics";
 import { isValidEmail } from "@/lib/applicationValidation";
 import { Button } from "@/components/ui/button";
 import { ProgressHeader } from "@/components/ProgressHeader";
-import { AutosaveIndicator } from "@/components/AutosaveIndicator";
-import { AppHeader } from "@/components/AppHeader";
 import AdditionalFields from "@/components/step2/AdditionalFields";
 
 export default function Step3Contact() {
@@ -36,9 +34,6 @@ export default function Step3Contact() {
 
   return (
     <div className="min-h-screen pb-24 bg-brand-light">
-      <AppHeader showBack>
-        <AutosaveIndicator />
-      </AppHeader>
       <div className="border-b bg-card">
         <div className="max-w-2xl mx-auto px-4 py-3">
           <ProgressHeader step={3} totalSteps={4} timeEstimate="2 минуты" />

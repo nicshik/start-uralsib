@@ -11,10 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ProgressHeader } from "@/components/ProgressHeader";
-import { AutosaveIndicator } from "@/components/AutosaveIndicator";
 import { SupportBlock } from "@/components/SupportBlock";
 import { Search, X, Check, UserCheck, ChevronDown, Receipt, Briefcase, Sparkles, Building2, AlertCircle } from "lucide-react";
-import { AppHeader } from "@/components/AppHeader";
 import { AiOkvedSuggest } from "@/components/AiOkvedSuggest";
 import { getBusinessValidation, getCompanyFullName } from "@/lib/applicationValidation";
 import type { ValidationTarget } from "@/lib/applicationValidation";
@@ -200,9 +198,6 @@ export default function Step1Business() {
 
   return (
     <div className="min-h-screen pb-24 bg-brand-light">
-      <AppHeader showBack>
-        <AutosaveIndicator />
-      </AppHeader>
       <div className="border-b bg-card">
         <div className="max-w-2xl mx-auto px-4 py-3">
           <ProgressHeader step={1} totalSteps={4} timeEstimate={isOoo ? "5 минут" : "3 минуты"} />

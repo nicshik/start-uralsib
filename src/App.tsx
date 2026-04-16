@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useLayoutEffect } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -8,6 +8,8 @@ import { AppProvider } from "@/context/AppContext";
 import { MetrikaConsole } from "./components/MetrikaConsole";
 import { ChatWidget } from "./components/ChatWidget";
 import { RouteGuard } from "./components/RouteGuard";
+import { AppHeader } from "./components/AppHeader";
+import { AutosaveIndicator } from "./components/AutosaveIndicator";
 
 import Landing from "./pages/Landing";
 import AssistedStart from "./pages/AssistedStart";
@@ -27,6 +29,17 @@ import Coverage from "./pages/Coverage";
 import FieldCoverage from "./pages/FieldCoverage";
 import uralsibLogoClean from "@/assets/uralsib-logo-clean.webp";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
+
+function FormStepsLayout() {
+  return (
+    <>
+      <AppHeader showBack>
+        <AutosaveIndicator />
+      </AppHeader>
+      <Outlet />
+    </>
+  );
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -77,10 +90,12 @@ const App = () => (
             <Route path="/assisted-start" element={<AssistedStart />} />
             <Route path="/manager" element={<ManagerHandoff />} />
             <Route path="/sms-auth" element={<SmsAuth />} />
-            <Route path="/step/1" element={<RouteGuard requireSms><Step1Business /></RouteGuard>} />
-            <Route path="/step/2" element={<RouteGuard requireSms requireStep={1}><Step2Passport /></RouteGuard>} />
-            <Route path="/step/3" element={<RouteGuard requireSms requireStep={2}><Step3Contact /></RouteGuard>} />
-            <Route path="/step/4" element={<RouteGuard requireSms requireStep={3}><Step3Review /></RouteGuard>} />
+            <Route element={<FormStepsLayout />}>
+              <Route path="/step/1" element={<RouteGuard requireSms><Step1Business /></RouteGuard>} />
+              <Route path="/step/2" element={<RouteGuard requireSms requireStep={1}><Step2Passport /></RouteGuard>} />
+              <Route path="/step/3" element={<RouteGuard requireSms requireStep={2}><Step3Contact /></RouteGuard>} />
+              <Route path="/step/4" element={<RouteGuard requireSms requireStep={3}><Step3Review /></RouteGuard>} />
+            </Route>
             <Route path="/manager-request" element={<RouteGuard requireSms><ManagerRequest /></RouteGuard>} />
             <Route path="/success" element={<RouteGuard requireSms><Success /></RouteGuard>} />
             <Route path="/rko-request" element={<RouteGuard requireSms><RkoRequest /></RouteGuard>} />
