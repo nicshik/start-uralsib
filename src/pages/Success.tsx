@@ -63,11 +63,6 @@ export default function Success() {
 
   const businessEmail = getBusinessEmail(state.productType, state.business, state.email);
   const productLabel = state.productType === "ooo" ? "ООО" : "ИП";
-  const visitValue = state.visitPreference === "office"
-    ? state.visitOffice
-    : state.visitRegion && state.visitCity
-      ? `${state.visitRegion}, ${state.visitCity}. Менеджер подберёт отделение`
-      : undefined;
   const steps = [
     { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня" },
     { icon: Building2, title: "Визит в отделение", desc: "Паспорт + подпись документов (около 15 мин)" },
@@ -108,17 +103,7 @@ export default function Success() {
 
           <div className="p-5">
             <DetailRow label="Дата подачи" value={appDate} />
-            <DetailRow label="Форма бизнеса" value={productLabel} />
-            <DetailRow label="Визит" value={visitValue} />
-            <DetailRow label="Копия заявки" value={businessEmail ? businessEmail : "Email можно добавить через менеджера"} />
-            <DetailRow
-              label="Что передадим менеджеру"
-              value={`Номер заявки, ОКВЭД, налоговый режим${state.productType === "ooo" ? ", данные компании" : ""}`}
-            />
-            <DetailRow
-              label="Важно"
-              value="Для завершения регистрации потребуется визит в отделение с оригиналами документов"
-            />
+            <DetailRow label="Копия заявки отправлена на почту:" value={businessEmail ? businessEmail : "Email можно добавить через менеджера"} />
           </div>
         </section>
 
