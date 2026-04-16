@@ -1152,18 +1152,9 @@ export default function ManagerWorkspace() {
                     </RadioGroup>
                   </div>
 
-                  <div className="rounded-lg border border-blue-100 bg-blue-50 p-4">
-                    <p className="mb-2 text-sm font-semibold text-blue-950">3. Контроль перед подписанием</p>
-                    <ul className="space-y-1 text-sm text-blue-800">
-                      <li>Клиент находится рядом и подтверждает корректность данных.</li>
-                      <li>SMS-код вводится клиентом, не сотрудником.</li>
-                      <li>Заявка уходит в отдельный office/CRM канал Метрики.</li>
-                    </ul>
-                  </div>
-
                   <div className={`rounded-lg border p-4 ${isFnsReady ? "border-emerald-100 bg-emerald-50" : "border-amber-100 bg-amber-50"}`}>
                     <p className={`mb-2 text-sm font-semibold ${isFnsReady ? "text-emerald-950" : "text-amber-950"}`}>
-                      4. Готовность к ФНС
+                      3. Готовность к ФНС
                     </p>
                     {isFnsReady ? (
                       <p className="text-sm text-emerald-800">
@@ -1192,7 +1183,7 @@ export default function ManagerWorkspace() {
                       className="mt-0.5 h-4 w-4 accent-[#6440BF]"
                     />
                     <span className="text-sm text-slate-700">
-                      <span className="font-semibold">5. Подтверждение достоверности сведений</span>
+                      <span className="font-semibold">4. Подтверждение достоверности сведений</span>
                       <span className="ml-1 text-slate-500">(Р21001/Р11001, лист заявителя)</span>
                       <br />
                       Клиент подтверждает, что все указанные сведения достоверны и он несёт ответственность за их правильность.
