@@ -18,7 +18,6 @@ import {
   Hash,
   Inbox,
   MapPin,
-  MonitorUp,
   PlusCircle,
   Search,
   User,
@@ -442,12 +441,6 @@ export default function ManagerWorkspace() {
               <span className={`rounded-full px-1.5 py-0.5 text-xs font-bold ${activeTab === "inbox" ? "bg-white/20 text-white" : "bg-amber-500 text-white"}`}>
                 {MOCK_INCOMING_APPLICATIONS.length}
               </span>
-            </button>
-            <button
-              onClick={() => navigate("/assisted-start")}
-              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-slate-300 transition-colors hover:bg-slate-800"
-            >
-              <MonitorUp className="h-4 w-4" /> Заявка вместе с клиентом
             </button>
             <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm text-slate-300 transition-colors hover:bg-slate-800">
               <Search className="h-4 w-4" /> Поиск клиентов
