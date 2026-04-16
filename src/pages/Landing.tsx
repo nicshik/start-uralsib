@@ -346,7 +346,7 @@ export default function Landing() {
       <footer className="bg-brand-light border-t border-border">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
           {/* Contact card */}
-          <div className="rounded-card-lg bg-[#6440BF] text-white p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="rounded-card-lg bg-[#2D1B69] text-white p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="space-y-2">
               <p className="font-bold text-lg">Свяжитесь с нами</p>
               <div className="flex items-center gap-2 text-white/90 text-sm">
