@@ -206,7 +206,7 @@ export default function RkoRequest() {
                 <div className="space-y-0.5">
                   <h1 className="text-xl font-medium tracking-tight">Заявка на открытие счёта</h1>
                   <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-                    Первый месяц бесплатно при открытии счёта вместе с подачей документов.
+                    Менеджер подготовит заявку на счёт вместе с регистрационным пакетом.
                   </p>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function RkoRequest() {
               <div>
                 <p className="text-sm font-semibold">Для новых клиентов</p>
                 <p className="text-sm text-muted-foreground">
-                  Менеджер подготовит заявку на счёт вместе с регистрационным пакетом.
+                  Первый месяц бесплатно при открытии счёта вместе с подачей документов.
                 </p>
               </div>
             </div>
