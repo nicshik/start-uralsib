@@ -178,7 +178,7 @@ export default function AdditionalFields({
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Регион</Label>
                 <Select value={visitRegion || ""} onValueChange={(value) => handleVisitRegionChange(value as VisitRegion)}>
-                  <SelectTrigger className="h-10 bg-white">
+                  <SelectTrigger className="h-10">
                     <SelectValue placeholder="Выберите регион" />
                   </SelectTrigger>
                   <SelectContent>
@@ -193,7 +193,7 @@ export default function AdditionalFields({
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Город</Label>
                 <Select value={visitCity || ""} onValueChange={handleVisitCityChange} disabled={!visitRegion}>
-                  <SelectTrigger className="h-10 bg-white">
+                  <SelectTrigger className="h-10">
                     <SelectValue placeholder="Выберите город" />
                   </SelectTrigger>
                   <SelectContent>
@@ -215,7 +215,7 @@ export default function AdditionalFields({
                   onValueChange={(value) => onVisitUpdate?.({ visitOffice: value })}
                   disabled={!visitRegion || !visitCity}
                 >
-                  <SelectTrigger className="h-10 bg-white">
+                  <SelectTrigger className="h-10">
                     <SelectValue placeholder="Выберите отделение" />
                   </SelectTrigger>
                   <SelectContent>
@@ -229,18 +229,18 @@ export default function AdditionalFields({
               </div>
             )}
 
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              Эти контакты и предпочтение по визиту используем для связи и предварительно укажем для оформления пакета документов.
-            </p>
           </CardContent>
         </Card>
       )}
 
       <Card>
         <CardContent className="p-4 space-y-4">
-          <div className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-muted-foreground" />
-            <p className="font-semibold text-sm">Контактная информация</p>
+          <div>
+            <div className="flex items-center gap-2">
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              <p className="font-semibold text-sm">Контактная информация</p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1 ml-6">Эти контакты используем для связи и предварительно укажем для оформления пакета документов.</p>
           </div>
 
           <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2">
