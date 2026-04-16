@@ -7,7 +7,6 @@ import { getApplicantValidation, getBusinessValidation } from "@/lib/application
 import { TAX_REGIMES } from "@/lib/mockData";
 import {
   AlertCircle,
-  BadgeCheck,
   Building2,
   Briefcase,
   CalendarDays,
@@ -101,13 +100,6 @@ export default function ManagerWorkspace() {
   const [passportOpen, setPassportOpen] = useState(false);
   const [showEmailDetails, setShowEmailDetails] = useState(false);
 
-  const sourceLabel = hasOnlineData
-    ? state.applicationStatus === "online_light_submitted"
-      ? "Предзаявка Online Light"
-      : state.applicationStatus === "assisted_submitted"
-        ? "Assisted-заявка"
-        : "Клиент начал онлайн"
-    : "Новая заявка в офисе";
   const visitSummary = state.visitPreference === "office"
     ? state.visitOffice
     : state.visitRegion && state.visitCity
@@ -517,17 +509,6 @@ export default function ManagerWorkspace() {
               {clientName ? "Номер заявки: #UR-849-21-APP" : "Заполните данные клиента вместе с ним"}
             </p>
           </div>
-          {clientName && (
-            <div className="flex gap-2">
-              <span className="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                <BadgeCheck className="mr-1.5 h-4 w-4" />
-                {sourceLabel}
-              </span>
-              <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                Клиент рядом
-              </span>
-            </div>
-          )}
         </header>
 
         {completionStatus ? (
