@@ -5,15 +5,15 @@ import { UserMenu } from "@/components/UserMenu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, Building2, CheckCircle2, Clock, Plus, ChevronRight, CalendarDays, Hash } from "lucide-react";
+import { Briefcase, Building2, CheckCircle2, Clock, CreditCard, Plus, ChevronRight, CalendarDays, Hash } from "lucide-react";
 import { MOCK_INCOMING_APPLICATIONS } from "@/lib/mockApplications";
 
 type MockApplication = {
   id: string;
-  type: "ip" | "ooo";
+  type: "ip" | "ooo" | "rko";
   title: string;
   subtitle: string;
-  status: "submitted_to_fns" | "draft" | "online_light_submitted" | "assisted_submitted";
+  status: "submitted_to_fns" | "draft" | "online_light_submitted" | "assisted_submitted" | "rko_submitted" | "rko_active";
   statusLabel: string;
   date: string;
   applicationNumber: string;
@@ -30,6 +30,22 @@ function StatusBadge({ status }: { status: MockApplication["status"] }) {
       </Badge>
     );
   }
+  if (status === "rko_active") {
+    return (
+      <Badge className="gap-1.5 bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50">
+        <CheckCircle2 className="h-3 w-3" />
+        Счёт открыт
+      </Badge>
+    );
+  }
+  if (status === "rko_submitted") {
+    return (
+      <Badge variant="outline" className="gap-1.5 text-sky-700 border-sky-300 bg-sky-50 hover:bg-sky-50">
+        <Clock className="h-3 w-3" />
+        Заявка принята
+      </Badge>
+    );
+  }
   return (
     <Badge variant="outline" className="gap-1.5 text-amber-700 border-amber-300 bg-amber-50 hover:bg-amber-50">
       <Clock className="h-3 w-3" />
@@ -39,7 +55,7 @@ function StatusBadge({ status }: { status: MockApplication["status"] }) {
 }
 
 function ApplicationCard({ app, onContinue }: { app: MockApplication; onContinue?: () => void }) {
-  const Icon = app.type === "ip" ? Briefcase : Building2;
+  const Icon = app.type === "rko" ? CreditCard : app.type === "ip" ? Briefcase : Building2;
 
   return (
     <Card className="overflow-hidden transition-shadow hover:shadow-md">

@@ -2,18 +2,18 @@ import type { PassportData, BusinessData } from "@/context/AppContext";
 
 export interface MockIncomingApplication {
   id: string;
-  type: "ip" | "ooo";
+  type: "ip" | "ooo" | "rko";
   title: string;
   subtitle: string;
-  status: "submitted_to_fns" | "draft" | "online_light_submitted" | "assisted_submitted";
+  status: "submitted_to_fns" | "draft" | "online_light_submitted" | "assisted_submitted" | "rko_submitted" | "rko_active";
   statusLabel: string;
   date: string;
   applicationNumber: string;
   phone: string;
   email: string;
   paperDocuments: boolean;
-  passport: PassportData;
-  business: BusinessData;
+  passport?: PassportData;
+  business?: BusinessData;
 }
 
 export const MOCK_INCOMING_APPLICATIONS: MockIncomingApplication[] = [
@@ -114,5 +114,31 @@ export const MOCK_INCOMING_APPLICATIONS: MockIncomingApplication[] = [
       applicantRole: "founder_individual",
       hasSeal: false,
     },
+  },
+  {
+    id: "3",
+    type: "rko",
+    title: "Расчётный счёт — ИП Иванов",
+    subtitle: "Открыт · тариф Стартовый",
+    status: "rko_active",
+    statusLabel: "Счёт открыт",
+    date: "15 апр 2025",
+    applicationNumber: "РС-2025-04-1103",
+    phone: "+7 (916) 123-45-67",
+    email: "ivanov.ivan@gmail.com",
+    paperDocuments: false,
+  },
+  {
+    id: "4",
+    type: "rko",
+    title: "Расчётный счёт — ООО Ромашка",
+    subtitle: "Заявка на открытие счёта",
+    status: "rko_submitted",
+    statusLabel: "Заявка принята",
+    date: "14 апр 2025",
+    applicationNumber: "РС-2025-04-1089",
+    phone: "+7 (903) 987-65-43",
+    email: "romashka@yandex.ru",
+    paperDocuments: false,
   },
 ];
