@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette, Handshake, LayoutDashboard } from "lucide-react";
+import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette, Handshake, LayoutDashboard, Video, ChevronDown } from "lucide-react";
 import { UserMenu } from "@/components/UserMenu";
 import { useState, useEffect, useRef } from "react";
 import heroCard3d from "@/assets/hero-card-3d.webp";
@@ -50,6 +50,7 @@ export default function Landing() {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isSmsOpen, setIsSmsOpen] = useState(false);
   const [isLoginSmsOpen, setIsLoginSmsOpen] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -434,6 +435,24 @@ export default function Landing() {
                 </div>
               </button>
             </div>
+            <button
+              onClick={() => setShowDemo((v) => !v)}
+              className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left w-full"
+            >
+              <Video className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-muted-foreground">Демо-видео</p>
+                <p className="text-xs text-muted-foreground/70">Видеодемонстрация работы сервиса</p>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${showDemo ? "rotate-180" : ""}`} />
+            </button>
+            {showDemo && (
+              <div className="rounded-lg overflow-hidden bg-black aspect-video mt-1">
+                <video className="w-full h-full object-contain" controls preload="metadata" playsInline>
+                  <source src="/demo.mp4" type="video/mp4" />
+                </video>
+              </div>
+            )}
           </div>
 
           {/* Copyright */}
