@@ -51,7 +51,7 @@ export default function PassportFields({ passport, productType, flowType, ocrDon
   const onlineLightSections = [
     {
       ...baseSections[0],
-      fields: baseSections[0].fields.filter((field) => ["lastName", "firstName", "middleName", "birthDate"].includes(field.key)),
+      fields: baseSections[0].fields.filter((field) => ["lastName", "firstName", "middleName", "birthDate", "birthPlace"].includes(field.key)),
     },
     {
       ...baseSections[1],
