@@ -32,9 +32,9 @@ const MATRIX_DATA = [
       { name: "Налоговый режим", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Основной и доп. ОКВЭД", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Телефон и Email контактный", lite: "yes", assisted: "yes", crm: "yes" },
-      { name: "Email для направления результата", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "Email для направления результата", lite: "auto", assisted: "yes", crm: "yes" },
       { name: "Способ получения документов", lite: "crm", assisted: "crm", crm: "yes" },
-      { name: "Подтверждение достоверности", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "Подтверждение достоверности", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Предпочтение по визиту", lite: "yes", assisted: "no", crm: "no" },
     ],
   },
@@ -47,7 +47,7 @@ const MATRIX_DATA = [
       { name: "Паспорт: Серия, Номер, Кем/Когда выдан", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Паспорт: Код подразделения", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Адрес регистрации по месту жительства", lite: "crm", assisted: "yes", crm: "yes" },
-      { name: "Email ИП", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "Email ИП", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "ИНН, СНИЛС", lite: "crm", assisted: "yes", crm: "yes" },
     ],
   },
@@ -58,7 +58,7 @@ const MATRIX_DATA = [
       { name: "Полное наименование", lite: "auto", assisted: "yes", crm: "yes" },
       { name: "Место нахождения ЮЛ (субъект РФ)", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Адрес ЮЛ (полный)", lite: "crm", assisted: "yes", crm: "yes" },
-      { name: "Email юридического лица", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "Email юридического лица", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Вид капитала", lite: "auto", assisted: "auto", crm: "yes" },
       { name: "Размер уставного капитала", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Тип устава, Номер типового устава", lite: "crm", assisted: "yes", crm: "yes" },
@@ -238,17 +238,17 @@ const DetailedTable = () => (
 export default function FieldCoverage() {
   const missingIP = [
     "Пол", "Место рождения", "Гражданство", "Вид документа",
-    "Код подразделения", "Адрес регистрации", "Email ИП",
-    "Email для ФНС", "Способ получения", "ИНН", "СНИЛС",
+    "Код подразделения", "Адрес регистрации",
+    "Способ получения", "ИНН", "СНИЛС",
   ];
 
   const missingOOO = [
-    "Место нахождения ЮЛ", "Адрес ЮЛ (полный)", "Email ЮЛ",
-    "Гражданство учредителя", "Вид документа", "Пол учредителя",
+    "Место нахождения ЮЛ", "Адрес ЮЛ (полный)",
+    "Количество учредителей", "Гражданство учредителя", "Вид документа", "Пол учредителя",
     "Место рождения учр.", "Код подразделения учр.", "Адрес рег. учредителя",
     "Доля в УК", "Руководитель = учредитель", "Должность руководителя",
     "Срок избрания", "Роль заявителя", "Тип устава",
-    "Номер типового устава", "Печать", "Email для ФНС",
+    "Номер типового устава", "Печать",
     "Способ получения", "ИНН + СНИЛС учредителя",
   ];
 
@@ -355,7 +355,7 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ИП (18 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={11} total={18} icon={MonitorSmartphone} />
+              <StatBar label="Lite" filled={14} total={18} icon={MonitorSmartphone} />
               <StatBar label="Assisted" filled={18} total={18} icon={User} />
               <StatBar label="CRM" filled={18} total={18} icon={Briefcase} />
             </div>
@@ -366,8 +366,8 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ООО (28 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={8} total={28} icon={MonitorSmartphone} />
-              <StatBar label="Assisted" filled={26} total={28} icon={User} />
+              <StatBar label="Lite" filled={11} total={28} icon={MonitorSmartphone} />
+              <StatBar label="Assisted" filled={27} total={28} icon={User} />
               <StatBar label="CRM" filled={28} total={28} icon={Briefcase} />
             </div>
           </div>
@@ -388,7 +388,7 @@ export default function FieldCoverage() {
             <Card className="p-8">
               <h3 className="text-xl font-medium text-foreground mb-6 flex items-center justify-between">
                 <span>ИП: Остаток для менеджера</span>
-                <span className="bg-brand-light text-muted-foreground px-3 py-1 rounded-lg text-sm">~11 полей</span>
+                <span className="bg-brand-light text-muted-foreground px-3 py-1 rounded-lg text-sm">~9 полей</span>
               </h3>
               <ul className="grid grid-cols-1 gap-y-3 text-sm text-foreground">
                 {missingIP.map((field, idx) => (
@@ -402,7 +402,7 @@ export default function FieldCoverage() {
             <Card className="p-8">
               <h3 className="text-xl font-medium text-foreground mb-6 flex items-center justify-between">
                 <span>ООО: Остаток для менеджера</span>
-                <span className="bg-accent text-primary px-3 py-1 rounded-lg text-sm">~20 полей</span>
+                <span className="bg-accent text-primary px-3 py-1 rounded-lg text-sm">~19 полей</span>
               </h3>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-foreground">
                 {missingOOO.map((field, idx) => (
