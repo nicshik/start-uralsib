@@ -65,7 +65,7 @@ export default function Success() {
   const productLabel = state.productType === "ooo" ? "ООО" : "ИП";
   const steps = [
     { icon: Phone, title: "Звонок менеджера", desc: "В течение 1 рабочего дня" },
-    { icon: Building2, title: "Визит в отделение", desc: "Паспорт + подпись документов (около 15 мин)" },
+    { icon: Building2, title: "Визит в отделение", desc: "Проверка и подписание документов (~15 мин)" },
     { icon: Send, title: "Подача в ФНС", desc: "Банк направит документы сам" },
   ];
 
