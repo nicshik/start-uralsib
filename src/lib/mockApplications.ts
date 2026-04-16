@@ -134,7 +134,7 @@ export const MOCK_INCOMING_APPLICATIONS: MockIncomingApplication[] = [
     title: "Расчётный счёт — ООО Ромашка",
     subtitle: "Заявка на открытие счёта",
     status: "rko_submitted",
-    statusLabel: "Заявка принята",
+    statusLabel: "Заявка принята: в финансовом отделе",
     date: "14 апр 2025",
     applicationNumber: "РС-2025-04-1089",
     phone: "+7 (903) 987-65-43",

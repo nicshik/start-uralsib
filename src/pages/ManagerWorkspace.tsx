@@ -479,6 +479,7 @@ export default function ManagerWorkspace() {
                             {isSubmitted ? <CheckCircle2 className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
                             {app.statusLabel}
                           </span>
+                          {app.type !== "rko" && (
                           <Button
                             size="sm"
                             className="bg-[#6440BF] hover:bg-[#503399]"
@@ -486,6 +487,7 @@ export default function ManagerWorkspace() {
                           >
                             Открыть в CRM
                           </Button>
+                          )}
                         </div>
                       </div>
                     </CardContent>
