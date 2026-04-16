@@ -25,7 +25,9 @@ interface Props {
   onBusinessUpdate?: (payload: Partial<BusinessData>) => void;
   onPhoneUpdate?: (phone: string) => void;
   onEmailUpdate: (email: string) => void;
-  onVisitUpdate?: (payload: {
+  paperDocuments?: boolean;
+  onPaperDocumentsUpdate?: (value: boolean) => void;
+  onVisitUpdate?: (update: {
     visitPreference?: VisitPreference;
     visitRegion?: string;
     visitCity?: string;
@@ -48,10 +50,13 @@ export default function AdditionalFields({
   onBusinessUpdate,
   onPhoneUpdate,
   onEmailUpdate,
+  paperDocuments,
+  onPaperDocumentsUpdate,
   onVisitUpdate,
 }: Props) {
   const isOnlineLight = flowType === "online_light";
   const [showInnSnils, setShowInnSnils] = useState(false);
+  const [showDelivery, setShowDelivery] = useState(false);
   const isOoo = productType === "ooo";
   const registrationAddress = isOoo
     ? business?.founderRegistrationAddress || passport.registrationAddress || ""
@@ -254,6 +259,43 @@ export default function AdditionalFields({
                 className="text-sm h-10"
               />
             </div>
+          </div>
+        )}
+
+        {isOnlineLight && (
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => setShowDelivery(!showDelivery)}
+              className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
+            >
+              <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showDelivery ? "rotate-180" : ""}`} />
+              <span>{showDelivery ? "Скрыть" : "Выбрать способ получения документов от ФНС (необязательно)"}</span>
+            </button>
+            {showDelivery && (
+              <div className="rounded-lg border border-border p-3">
+                <RadioGroup
+                  value={paperDocuments ? "paper" : "electronic"}
+                  onValueChange={(v) => onPaperDocumentsUpdate?.(v === "paper")}
+                  className="grid grid-cols-2 gap-3"
+                >
+                  <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
+                    <RadioGroupItem value="electronic" className="mt-0.5 shrink-0" />
+                    <span>
+                      <span className="block font-medium">Электронно</span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">На email из ФНС</span>
+                    </span>
+                  </label>
+                  <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-[#E5E0EB] bg-brand-light p-3 text-sm [&:has([data-state=checked])]:border-primary [&:has([data-state=checked])]:bg-accent">
+                    <RadioGroupItem value="paper" className="mt-0.5 shrink-0" />
+                    <span>
+                      <span className="block font-medium">На бумаге</span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">Бумажный носитель из ФНС</span>
+                    </span>
+                  </label>
+                </RadioGroup>
+              </div>
+            )}
           </div>
         )}
 

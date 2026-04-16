@@ -139,6 +139,8 @@ export default function Step2Passport() {
               onBusinessUpdate={(payload) => dispatch({ type: "UPDATE_BUSINESS", payload })}
               onPhoneUpdate={(phone) => dispatch({ type: "SET_PHONE", payload: phone })}
               onEmailUpdate={(email) => dispatch({ type: "SET_EMAIL", payload: email })}
+              paperDocuments={state.paperDocuments}
+              onPaperDocumentsUpdate={(value) => dispatch({ type: "SET_PAPER_DOCUMENTS", payload: value })}
               onVisitUpdate={(payload) => dispatch({ type: "SET_VISIT", payload })}
             />
 
