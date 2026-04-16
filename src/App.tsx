@@ -64,6 +64,11 @@ const App = () => (
       <AppProvider>
         <Toaster />
         <Sonner />
+        {/* Persistent hidden images keep decoded logo in browser memory — prevents flash on navigation */}
+        <div aria-hidden="true" className="absolute top-0 left-0 w-0 h-0 overflow-hidden pointer-events-none">
+          <img src={uralsibLogoClean} alt="" fetchPriority="high" decoding="sync" />
+          <img src={uralsibLogoDark} alt="" fetchPriority="high" decoding="sync" />
+        </div>
         <BrowserRouter>
           <PreloadCriticalAssets />
           <ScrollToTop />
