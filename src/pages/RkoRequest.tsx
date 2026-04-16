@@ -38,7 +38,7 @@ export default function RkoRequest() {
   const appNumber = useMemo(() => {
     const date = new Date();
     const num = Math.floor(10000 + Math.random() * 90000);
-    return `RS-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-${num}`;
+    return `РС-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-${num}`;
   }, []);
 
   const appDate = useMemo(() => {
@@ -107,7 +107,7 @@ export default function RkoRequest() {
               <CheckCircle2 className="h-7 w-7 text-[#34C759]" />
             </div>
             <div className="space-y-1">
-              <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта принята</h1>
+              <h1 className="text-2xl font-medium tracking-tight">Заявка на открытие счёта принята</h1>
               <p className="text-sm text-muted-foreground">Менеджер позвонит в течение 1 рабочего дня, чтобы согласовать дальнейшие шаги.</p>
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function RkoRequest() {
                   1 месяц обслуживания бесплатно
                 </div>
                 <div className="space-y-1">
-                  <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта</h1>
+                  <h1 className="text-2xl font-medium tracking-tight">Заявка на открытие счёта</h1>
                   <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
                     Первый месяц бесплатно при открытии счёта вместе с подачей документов.
                   </p>

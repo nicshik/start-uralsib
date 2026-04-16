@@ -8,7 +8,7 @@ export function SupportBlock({ compact = false }: { compact?: boolean }) {
       <div className="text-center py-2">
         <span className="text-[13px] text-muted-foreground">Нужна помощь?</span>{" "}
         <button
-          className="text-[13px] text-foreground/60 border-b border-border hover:text-foreground hover:border-foreground/40 transition-all"
+          className="text-[13px] text-primary hover:text-primary-hover underline transition-colors"
           onClick={() => openChat()}
         >
           Напишите нам

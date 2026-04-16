@@ -105,7 +105,7 @@ export default function ManagerRequest() {
             )}
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-2xl font-medium tracking-tight">
               {submitted ? "Заявка отправлена менеджеру" : "Проверим заявку с менеджером"}
             </h1>
             <p className="mx-auto max-w-md text-sm text-muted-foreground">

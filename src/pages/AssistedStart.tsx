@@ -46,7 +46,7 @@ export default function AssistedStart() {
         <section className="space-y-6">
           <div className="space-y-3">
             <div className="max-w-2xl space-y-2">
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h1 className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
                 Заявка на открытие ИП или ООО
               </h1>
               <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">

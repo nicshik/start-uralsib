@@ -72,7 +72,7 @@ export default function ManagerHandoff() {
           <div className="mx-auto w-14 h-14 rounded-2xl bg-accent flex items-center justify-center">
             <UserCheck className="h-7 w-7 text-accent-foreground" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Поможем подобрать форму и оформить заявку</h1>
+          <h1 className="text-2xl font-medium tracking-tight">Поможем подобрать форму и оформить заявку</h1>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
             Менеджер поможет подготовить все документы и ответит на вопросы. Ваши ответы уже сохранены — не придётся повторять.
           </p>

@@ -39,7 +39,7 @@ function EditButton({ onClick }: { onClick: () => void }) {
 
 function SummarySection({ title, icon, onEdit, children }: SummarySectionProps) {
   return (
-    <section className="rounded-lg border border-[#E5E0EB] bg-white">
+    <section className="rounded-[12px] border border-[#E5E0EB] bg-white">
       <div className="flex items-center justify-between gap-3 border-b border-[#E5E0EB] px-4 py-3">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-primary">
@@ -160,7 +160,7 @@ export default function Step3Review() {
 
       <main className="mx-auto max-w-2xl space-y-4 px-4 py-6">
         <div className="space-y-2">
-          <h2 className="text-xl font-bold tracking-tight">
+          <h2 className="text-xl font-medium tracking-tight">
             {isOnlineLight ? "Проверьте предварительную заявку" : "Проверьте заявку"}
           </h2>
           <p className="text-sm leading-relaxed text-muted-foreground">

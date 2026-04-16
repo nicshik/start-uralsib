@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette, Handshake, LayoutDashboard } from "lucide-react";
 import { UserMenu } from "@/components/UserMenu";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import heroCard3d from "@/assets/hero-card-3d.webp";
 import uralsibLogo from "@/assets/uralsib-logo-clean.webp";
 import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
@@ -14,6 +14,31 @@ import { ProductQuiz } from "@/components/ProductQuiz";
 import { SmsAuthDialog } from "@/pages/SmsAuth";
 import { openChat } from "@/components/ChatWidget";
 
+
+function ScrollReveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[600ms] ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -139,12 +164,12 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row items-center md:items-center gap-8 md:gap-12">
             {/* Text */}
             <div className="flex-1 text-center md:text-left space-y-5">
-              <h1 className="text-2xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight tracking-tight text-white">
+              <h1 className="text-3xl sm:text-3xl md:text-[2.5rem] font-bold leading-tight tracking-tight text-white">
                 <span>Зарегистрируйте ИП или ООО</span>
                 <span className="hidden sm:block" />
                 <span className="text-white/90"></span>
               </h1>
-              <p className="text-white/60 text-sm md:text-base max-w-lg font-sans">
+              <p className="text-[#C4B7E0] text-sm md:text-base max-w-lg font-sans">
                 Заполните заявку онлайн.<br />
                 Менеджер поможет завершить процесс.
               </p>
@@ -155,11 +180,11 @@ export default function Landing() {
                     const el = document.getElementById("cta-cards");
                     el?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="px-8 py-3 rounded-xl bg-white text-[#2D1B69] font-semibold text-base hover:bg-white/90 transition-colors shadow-lg shadow-black/20"
+                  className="px-10 py-3.5 rounded-full bg-white text-[#6440BF] font-medium text-base hover:bg-white/95 transition-all shadow-[0_4px_16px_rgba(100,64,191,0.3)] hover:shadow-[0_6px_24px_rgba(100,64,191,0.4)]"
                 >
                   Оставить заявку
                 </button>
-                <div className="flex items-center gap-4 text-white/50 text-xs">
+                <div className="flex items-center gap-4 text-[#C4B7E0]/70 text-xs">
                   <span className="inline-flex items-center gap-1"><Shield className="h-3 w-3" /> Бесплатно</span>
                   <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> ~10 минут на заявку</span>
                 </div>
@@ -203,7 +228,7 @@ export default function Landing() {
               <button
                 key={item.type}
                 onClick={item.onClick}
-                className="group flex items-center gap-5 rounded-xl border border-border bg-white p-5 text-left transition-all duration-200 hover:border-primary hover:shadow-md sm:flex-row sm:items-center sm:p-5"
+                className="group flex items-center gap-5 rounded-[16px] border border-border bg-white p-5 text-left transition-all duration-200 hover:border-primary hover:shadow-md hover:-translate-y-0.5 sm:flex-row sm:items-center sm:p-5"
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-light-purple">
                   <item.icon className="h-5 w-5 text-primary" />
@@ -217,7 +242,7 @@ export default function Landing() {
           </div>
           <button
             onClick={openQuiz}
-            className="w-full text-left rounded-xl border border-border bg-white p-5 hover:border-primary hover:shadow-md transition-all duration-200 group flex items-center gap-5"
+            className="w-full text-left rounded-[16px] border border-border bg-white p-5 hover:border-primary hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group flex items-center gap-5"
           >
             <div className="w-12 h-12 rounded-lg bg-light-purple flex items-center justify-center shrink-0">
               <UserCheck className="h-5 w-5 text-primary" />
@@ -230,8 +255,8 @@ export default function Landing() {
         </div>
 
         {/* Benefits */}
-        <div className="max-w-4xl mx-auto space-y-6">
-          <h2 className="text-xl font-bold tracking-tight text-center">Удобный и понятный сервис</h2>
+        <ScrollReveal className="max-w-4xl mx-auto space-y-6">
+          <h2 className="text-xl font-medium tracking-tight text-center">Удобный и понятный сервис</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="flex items-start gap-4 rounded-xl border border-border bg-white p-5">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-light-purple">
@@ -261,10 +286,10 @@ export default function Landing() {
               </div>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* FAQ */}
-        <div className="max-w-4xl mx-auto rounded-xl border border-border bg-white overflow-hidden">
+        <ScrollReveal className="max-w-4xl mx-auto rounded-xl border border-border bg-white overflow-hidden">
           <Accordion type="single" collapsible>
             <AccordionItem value="1" className="border-b border-border last:border-0">
               <AccordionTrigger className="px-6 py-4 text-left text-base">Это полностью онлайн?</AccordionTrigger>
@@ -314,7 +339,7 @@ export default function Landing() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </div>
+        </ScrollReveal>
       </main>
 
       {/* Footer */}
@@ -334,10 +359,14 @@ export default function Landing() {
               </div>
             </div>
             <div className="flex gap-3">
-              {["VK", "TG", "OK"].map((soc) => (
-                <div key={soc} className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 transition-colors flex items-center justify-center text-white text-xs font-bold cursor-pointer">
-                  {soc}
-                </div>
+              {[
+                { key: "vk", label: "ВКонтакте", icon: <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.596-.19 1.362 1.259 2.174 1.815.613.42 1.08.328 1.08.328l2.168-.03s1.132-.07.595-.964c-.044-.073-.313-.66-1.609-1.866-1.357-1.263-1.175-1.059.459-3.244.995-1.33 1.392-2.142 1.268-2.49-.118-.331-.847-.244-.847-.244l-2.441.015s-.181-.025-.315.056c-.131.079-.215.263-.215.263s-.387 1.028-.9 1.902c-1.085 1.849-1.52 1.946-1.696 1.832-.412-.266-.309-1.07-.309-1.64 0-1.782.271-2.525-.527-2.716-.265-.063-.46-.105-1.138-.112-.869-.009-1.604.003-2.02.207-.277.136-.491.437-.361.454.16.022.523.098.716.36.248.338.24 1.097.24 1.097s.143 2.098-.333 2.357c-.327.178-.775-.185-1.737-1.846-.493-.852-.866-1.794-.866-1.794s-.072-.176-.2-.27c-.155-.114-.372-.15-.372-.15l-2.322.016s-.348.01-.476.161C3.726 7.63 3.9 7.9 3.9 7.9s1.817 4.244 3.874 6.381c1.886 1.96 4.03 1.832 4.03 1.832l.981.003z"/></svg> },
+                { key: "tg", label: "Telegram", icon: <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> },
+                { key: "ok", label: "Одноклассники", icon: <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M14.505 17.44a11.599 11.599 0 0 0 2.626-1.107c.46-.284.674-.87.51-1.388a1.14 1.14 0 0 0-1.595-.585 9.339 9.339 0 0 1-8.094.002 1.138 1.138 0 0 0-1.594.583c-.165.52.05 1.104.51 1.39a11.598 11.598 0 0 0 2.629 1.108l-2.465 2.467a1.14 1.14 0 0 0 0 1.611 1.14 1.14 0 0 0 1.611 0L12 18.952l2.357 2.357a1.14 1.14 0 0 0 1.611 0 1.14 1.14 0 0 0 0-1.61l-2.463-2.26zM12 12.11c3.24 0 5.865-2.627 5.865-5.867C17.865 2.98 15.24.355 12 .355 8.76.355 6.135 2.98 6.135 6.243c0 3.24 2.625 5.867 5.865 5.867zm0-9.454a3.59 3.59 0 0 1 3.585 3.587A3.59 3.59 0 0 1 12 9.83a3.59 3.59 0 0 1-3.585-3.587A3.59 3.59 0 0 1 12 2.656z"/></svg> }
+              ].map((soc) => (
+                <a key={soc.key} href="#" aria-label={soc.label} className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 transition-colors flex items-center justify-center text-white cursor-pointer">
+                  {soc.icon}
+                </a>
               ))}
             </div>
           </div>

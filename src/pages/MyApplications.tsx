@@ -58,7 +58,7 @@ function ApplicationCard({ app, onContinue }: { app: MockApplication; onContinue
   const Icon = app.type === "rko" ? CreditCard : app.type === "ip" ? Briefcase : Building2;
 
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-md">
+    <Card className="overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
       <CardContent className="p-0">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-5">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-light-purple">
@@ -111,14 +111,14 @@ export default function MyApplications() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-brand-light">
       <AppHeader>
         <UserMenu variant="dark" />
       </AppHeader>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Мои заявки</h1>
+          <h1 className="text-2xl font-medium tracking-tight">Мои заявки</h1>
           <p className="text-sm text-muted-foreground mt-0.5">История ваших обращений в Уралсиб</p>
         </div>
 

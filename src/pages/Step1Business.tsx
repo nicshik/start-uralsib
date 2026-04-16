@@ -242,7 +242,7 @@ export default function Step1Business() {
         {subStep === "tax" && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div>
-              <h2 className="text-xl font-bold tracking-tight">Налоги для {productLabel}</h2>
+              <h2 className="text-xl font-medium tracking-tight">Налоги для {productLabel}</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 {isOoo ? "Выберите систему налогообложения для вашей компании" : "Выберите подходящий режим (можно будет изменить позже)."}
               </p>
@@ -273,7 +273,7 @@ export default function Step1Business() {
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-xl font-bold tracking-tight">Чем будет заниматься {isOoo ? "компания" : "ваш бизнес"}?</h2>
+                <h2 className="text-xl font-medium tracking-tight">Чем будет заниматься {isOoo ? "компания" : "ваш бизнес"}?</h2>
                 <p className="text-sm text-muted-foreground mt-1">Выберите коды и отметьте основной вид деятельности для ФНС</p>
               </div>
               <button
@@ -412,7 +412,7 @@ export default function Step1Business() {
         {subStep === "ooo" && isOoo && (
           <section className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div>
-              <h2 className="text-xl font-bold tracking-tight">
+              <h2 className="text-xl font-medium tracking-tight">
                 {isOnlineLight ? "Параметры компании" : "Данные компании"}
               </h2>
               <p className="text-sm text-muted-foreground mt-1">

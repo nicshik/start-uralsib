@@ -84,7 +84,7 @@ export default function Success() {
             <CheckCircle2 className="h-7 w-7 text-[#34C759]" />
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">Заявка на регистрацию {productLabel} принята</h1>
+            <h1 className="text-2xl font-medium tracking-tight">Заявка на регистрацию {productLabel} принята</h1>
             <p className="text-sm text-muted-foreground">Менеджер позвонит в течение 1 рабочего дня, чтобы согласовать дальнейшие шаги.</p>
           </div>
         </div>
