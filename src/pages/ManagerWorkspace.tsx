@@ -551,9 +551,8 @@ export default function ManagerWorkspace() {
                 <CardHeader className="border-b border-gray-100 bg-slate-50/50 pb-4">
                   <CardTitle className="flex items-center gap-2 text-base font-semibold">
                     <User className="h-4 w-4 text-slate-400" />
-                    Вводные клиента
+                    Данные клиента
                   </CardTitle>
-                  <CardDescription>Данные можно собрать здесь или продолжить assisted-заявку с сайта.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5 pt-4">
                   {visitSummary && (
@@ -956,9 +955,6 @@ export default function ManagerWorkspace() {
                       <AlertCircle className="h-4 w-4" />
                       Сложный ИП-сценарий
                     </CardTitle>
-                    <CardDescription>
-                      Причины перевода к менеджеру по данным Р21001.
-                    </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-4">
                     <ul className="list-disc space-y-1 pl-4 text-sm text-amber-900">
@@ -975,11 +971,8 @@ export default function ManagerWorkspace() {
                   <CardHeader className="border-b border-gray-100 bg-amber-50/70 pb-4">
                     <CardTitle className="flex items-center gap-2 text-base font-semibold text-amber-950">
                       <AlertCircle className="h-4 w-4" />
-                      Оформление с помощью менеджера
+                      Данные для регистрации ООО
                     </CardTitle>
-                    <CardDescription>
-                      Причины перевода и поля, которые менеджер проверяет перед подготовкой пакета.
-                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4 pt-4">
                     {managerReasons.length > 0 ? (
