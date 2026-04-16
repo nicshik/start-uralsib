@@ -448,7 +448,13 @@ export default function Landing() {
             </button>
             {showDemo && (
               <div className="rounded-lg overflow-hidden bg-black aspect-video mt-1">
-                <video className="w-full h-full object-contain" controls preload="metadata" playsInline>
+                <video
+                  className="w-full h-full object-contain"
+                  controls
+                  preload="metadata"
+                  playsInline
+                  poster={`https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/media/demo-poster.jpg`}
+                >
                   <source
                     src={`https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/media/demo.mp4`}
                     type="video/mp4"
