@@ -3,7 +3,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, MapPin } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Mail, MapPin } from "lucide-react";
 import type { BusinessData, FlowType, PassportData, ProductType } from "@/context/AppContext";
 import { isValidEmail } from "@/lib/applicationValidation";
 import { OFFICES, getDefaultVisitCity, getDefaultVisitOffice, getOffices } from "@/lib/offices";
@@ -50,6 +51,7 @@ export default function AdditionalFields({
   onVisitUpdate,
 }: Props) {
   const isOnlineLight = flowType === "online_light";
+  const [showInnSnils, setShowInnSnils] = useState(false);
   const isOoo = productType === "ooo";
   const registrationAddress = isOoo
     ? business?.founderRegistrationAddress || passport.registrationAddress || ""
@@ -190,7 +192,46 @@ export default function AdditionalFields({
           </div>
         )}
 
-        {!isOnlineLight && (
+        {isOnlineLight ? (
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => setShowInnSnils(!showInnSnils)}
+              className="flex w-full items-center gap-2 rounded-lg border border-dashed border-primary/40 px-3 py-2 text-xs font-medium text-primary hover:bg-brand-light transition-colors"
+            >
+              <ChevronDown className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${showInnSnils ? "rotate-180" : ""}`} />
+              <span>{showInnSnils ? "Скрыть" : "Добавить ИНН и СНИЛС (необязательно)"}</span>
+            </button>
+            {showInnSnils && (
+              <div className="space-y-3 rounded-lg border border-border p-3">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Не обязательно сейчас — менеджер уточнит в офисе. Если есть под рукой, укажите: сэкономите время.
+                </p>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">ИНН</Label>
+                    <Input
+                      placeholder="12 цифр"
+                      maxLength={12}
+                      value={passport.inn || ""}
+                      onChange={(e) => onUpdate({ inn: e.target.value })}
+                      className="text-sm h-10"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">СНИЛС</Label>
+                    <Input
+                      placeholder="___-___-___ __"
+                      value={passport.snils || ""}
+                      onChange={(e) => onUpdate({ snils: e.target.value })}
+                      className="text-sm h-10"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
           <div className="grid grid-cols-2 gap-x-3 gap-y-3">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">

@@ -58,8 +58,8 @@ const MATRIX_DATA = [
       { name: "Код подразделения", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Адрес регистрации по месту жительства", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Email ИП", lite: "yes", assisted: "yes", crm: "yes" },
-      { name: "ИНН", lite: "crm", assisted: "yes", crm: "yes" },
-      { name: "СНИЛС", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "ИНН", lite: "yes", assisted: "yes", crm: "yes" },
+      { name: "СНИЛС", lite: "yes", assisted: "yes", crm: "yes" },
     ],
   },
   {
@@ -90,8 +90,8 @@ const MATRIX_DATA = [
       { name: "Код подразделения учредителя", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Адрес регистрации учредителя", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Доля учредителя в УК", lite: "crm", assisted: "auto", crm: "yes" },
-      { name: "ИНН учредителя", lite: "crm", assisted: "yes", crm: "yes" },
-      { name: "СНИЛС учредителя", lite: "crm", assisted: "yes", crm: "yes" },
+      { name: "ИНН учредителя", lite: "yes", assisted: "yes", crm: "yes" },
+      { name: "СНИЛС учредителя", lite: "yes", assisted: "yes", crm: "yes" },
       { name: "Руководитель является учредителем", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Должность руководителя", lite: "crm", assisted: "yes", crm: "yes" },
       { name: "Срок избрания руководителя", lite: "crm", assisted: "yes", crm: "yes" },
@@ -261,7 +261,7 @@ export default function FieldCoverage() {
   const missingIP = [
     "Гражданство",
     "Адрес регистрации",
-    "Способ получения", "ИНН", "СНИЛС",
+    "Способ получения",
   ];
 
   const missingOOO = [
@@ -271,7 +271,7 @@ export default function FieldCoverage() {
     "Доля в УК", "Руководитель = учредитель", "Должность руководителя",
     "Срок избрания", "Роль заявителя", "Тип устава",
     "Номер типового устава", "Печать",
-    "Способ получения", "ИНН + СНИЛС учредителя",
+    "Способ получения",
   ];
 
   return (
@@ -377,7 +377,7 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ИП (18 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={13} total={18} icon={MonitorSmartphone} />
+              <StatBar label="Lite" filled={15} total={18} icon={MonitorSmartphone} />
               <StatBar label="Assisted" filled={18} total={18} icon={User} />
               <StatBar label="CRM" filled={18} total={18} icon={Briefcase} />
             </div>
@@ -388,7 +388,7 @@ export default function FieldCoverage() {
                 </div>
                 <h3 className="text-2xl font-medium text-foreground">ООО (28 полей)</h3>
               </div>
-              <StatBar label="Lite" filled={13} total={28} icon={MonitorSmartphone} />
+              <StatBar label="Lite" filled={15} total={28} icon={MonitorSmartphone} />
               <StatBar label="Assisted" filled={27} total={28} icon={User} />
               <StatBar label="CRM" filled={28} total={28} icon={Briefcase} />
             </div>
@@ -410,7 +410,7 @@ export default function FieldCoverage() {
             <Card className="p-8">
               <h3 className="text-xl font-medium text-foreground mb-6 flex items-center justify-between">
                 <span>ИП: Остаток для менеджера</span>
-                <span className="bg-brand-light text-muted-foreground px-3 py-1 rounded-lg text-sm">~5 полей</span>
+                <span className="bg-brand-light text-muted-foreground px-3 py-1 rounded-lg text-sm">~3 полей</span>
               </h3>
               <ul className="grid grid-cols-1 gap-y-3 text-sm text-foreground">
                 {missingIP.map((field, idx) => (
@@ -424,7 +424,7 @@ export default function FieldCoverage() {
             <Card className="p-8">
               <h3 className="text-xl font-medium text-foreground mb-6 flex items-center justify-between">
                 <span>ООО: Остаток для менеджера</span>
-                <span className="bg-accent text-primary px-3 py-1 rounded-lg text-sm">~15 полей</span>
+                <span className="bg-accent text-primary px-3 py-1 rounded-lg text-sm">~13 полей</span>
               </h3>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-foreground">
                 {missingOOO.map((field, idx) => (
