@@ -355,27 +355,27 @@ export default function Landing() {
           </div>
 
           {/* Project docs */}
-          <div className="rounded-xl border border-border bg-white p-5 space-y-3">
-            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide"><p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Рабочая документация по проекту</p></p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="rounded-xl border border-dashed border-border bg-white/60 p-5 space-y-3 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest">для команды · рабочая документация</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
               <button
                 onClick={() => navigate("/coverage")}
-                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
               >
-                <BarChart3 className="h-5 w-5 text-primary shrink-0" />
+                <BarChart3 className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">Матрица покрытия полей</p>
-                  <p className="text-xs text-muted-foreground">Какие данные собираются на каждом этапе</p>
+                  <p className="text-sm font-medium text-muted-foreground">Матрица покрытия полей</p>
+                  <p className="text-xs text-muted-foreground/70">Какие данные собираются на каждом этапе</p>
                 </div>
               </button>
               <button
                 onClick={() => navigate("/design")}
-                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
               >
-                <Palette className="h-5 w-5 text-primary shrink-0" />
+                <Palette className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">Дизайн-код</p>
-                  <p className="text-xs text-muted-foreground">Визуальные стандарты и компоненты</p>
+                  <p className="text-sm font-medium text-muted-foreground">Дизайн-код</p>
+                  <p className="text-xs text-muted-foreground/70">Визуальные стандарты и компоненты</p>
                 </div>
               </button>
               <button
@@ -383,12 +383,12 @@ export default function Landing() {
                   trackEvent("assisted_entry_link_click", { placement: "footer" });
                   navigate("/assisted-start");
                 }}
-                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
               >
-                <Handshake className="h-5 w-5 text-primary shrink-0" />
+                <Handshake className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">Оформление с менеджером</p>
-                  <p className="text-xs text-muted-foreground">Ассистированный сценарий подачи заявки</p>
+                  <p className="text-sm font-medium text-muted-foreground">Оформление с менеджером</p>
+                  <p className="text-xs text-muted-foreground/70">Ассистированный сценарий подачи заявки</p>
                 </div>
               </button>
               <button
@@ -396,12 +396,12 @@ export default function Landing() {
                   trackEvent("crm_entry_link_click", { placement: "footer" });
                   navigate("/office-agent");
                 }}
-                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted transition-colors text-left"
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
               >
-                <LayoutDashboard className="h-5 w-5 text-primary shrink-0" />
+                <LayoutDashboard className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">CRM менеджера</p>
-                  <p className="text-xs text-muted-foreground">Рабочее пространство сотрудника банка</p>
+                  <p className="text-sm font-medium text-muted-foreground">CRM менеджера</p>
+                  <p className="text-xs text-muted-foreground/70">Рабочее пространство сотрудника банка</p>
                 </div>
               </button>
             </div>
