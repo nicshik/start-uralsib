@@ -11,7 +11,7 @@ import { trackEvent } from "@/lib/analytics";
 import { getBusinessEmail, isValidEmail } from "@/lib/applicationValidation";
 import { OFFICES, getDefaultVisitCity, getDefaultVisitOffice, getOffices, isVisitRegion } from "@/lib/offices";
 import type { VisitRegion } from "@/lib/offices";
-import { Building2, CheckCircle2, FileText, Gift, Phone } from "lucide-react";
+import { Building2, Check, CheckCircle2, Copy, FileText, Gift, Phone, Send } from "lucide-react";
 
 export default function RkoRequest() {
   const navigate = useNavigate();
@@ -33,6 +33,23 @@ export default function RkoRequest() {
   const [city, setCity] = useState(initialCity);
   const [office, setOffice] = useState(initialOffice);
   const [submitted, setSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const appNumber = useMemo(() => {
+    const date = new Date();
+    const num = Math.floor(10000 + Math.random() * 90000);
+    return `RS-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-${num}`;
+  }, []);
+
+  const appDate = useMemo(() => {
+    return new Date().toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+  }, []);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(appNumber);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const cities = useMemo(() => Object.keys(OFFICES[region].cities), [region]);
   const offices = useMemo(() => getOffices(region, city), [city, region]);
@@ -74,47 +91,88 @@ export default function RkoRequest() {
     });
   };
 
+  const rkoSteps = [
+    { title: "Звонок менеджера", desc: "В течение 1 рабочего дня" },
+    { title: "Визит в отделение", desc: "Паспорт + подпись документов (около 15 мин)" },
+    { title: "Открытие счёта", desc: "Банк активирует расчётный счёт" },
+  ];
+
   if (submitted) {
     return (
       <div className="min-h-screen bg-brand-light">
         <AppHeader />
-        <main className="mx-auto max-w-lg space-y-4 px-4 py-10">
-          <section className="overflow-hidden rounded-[16px] border border-[#E5E0EB] bg-white">
-            <div className="bg-[#F7F5FB] px-5 py-6 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-[16px] bg-white text-primary ring-1 ring-[#E5E0EB]">
-                <CheckCircle2 className="h-7 w-7" />
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта отправлена</h1>
-              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                Менеджер рассмотрит её вместе с документами для регистрации {productLabel}
-              </p>
+        <main className="mx-auto max-w-lg space-y-5 px-4 py-10">
+          <div className="space-y-3 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-[16px] bg-white ring-1 ring-[#E5E0EB]">
+              <CheckCircle2 className="h-7 w-7 text-[#34C759]" />
             </div>
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold tracking-tight">Заявка на открытие счёта принята</h1>
+              <p className="text-sm text-muted-foreground">Менеджер позвонит в течение 1 рабочего дня, чтобы согласовать дальнейшие шаги.</p>
+            </div>
+          </div>
 
-            <div className="space-y-4 p-5">
-              <div className="rounded-[12px] border border-[#E5E0EB] bg-white p-4">
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Что дальше</p>
-                <div className="mt-3 flex items-start gap-3">
-                  <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Держите телефон рядом. Если понадобится уточнить отделение или тариф, менеджер подскажет следующий шаг.
-                  </p>
+          <section className="rounded-[16px] border border-[#E5E0EB] bg-white">
+            <div className="flex items-start justify-between gap-4 border-b border-[#E5E0EB] p-5">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[#6440BF]">
+                  <FileText className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Номер заявки</p>
+                  <p className="font-mono text-base font-bold tracking-wide">{appNumber}</p>
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div className="rounded-[12px] bg-brand-light p-4">
-                  <p className="text-xs text-muted-foreground">Клиент</p>
-                  <p className="mt-1 break-words text-sm font-semibold">{clientName}</p>
-                </div>
-                <div className="rounded-[12px] bg-brand-light p-4">
-                  <p className="text-xs text-muted-foreground">Отделение</p>
-                  <p className="mt-1 break-words text-sm font-semibold">{office}</p>
-                </div>
+              <button onClick={handleCopy} className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-primary hover:underline">
+                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied ? "Скопировано" : "Копировать"}
+              </button>
+            </div>
+            <div className="divide-y divide-[#E5E0EB] px-5">
+              <div className="flex items-start justify-between gap-4 py-3">
+                <span className="text-sm text-muted-foreground">Дата подачи</span>
+                <span className="text-right text-sm font-medium">{appDate}</span>
+              </div>
+              <div className="flex items-start justify-between gap-4 py-3">
+                <span className="text-sm text-muted-foreground">Клиент</span>
+                <span className="max-w-[60%] break-words text-right text-sm font-medium">{clientName}</span>
+              </div>
+              <div className="flex items-start justify-between gap-4 py-3">
+                <span className="text-sm text-muted-foreground">Отделение</span>
+                <span className="max-w-[60%] break-words text-right text-sm font-medium">{office}</span>
               </div>
             </div>
           </section>
 
+          <section className="rounded-[16px] border border-[#E5E0EB] bg-white p-5">
+            <p className="mb-4 text-sm font-semibold">Что дальше</p>
+            <div className="space-y-0">
+              {rkoSteps.map((step, index) => (
+                <div key={step.title} className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F0ECFA]">
+                      <span className="text-xs font-bold text-primary">{index + 1}</span>
+                    </div>
+                    {index < rkoSteps.length - 1 && <div className="my-1 h-8 w-px bg-border" />}
+                  </div>
+                  <div className="pt-1">
+                    <p className="text-sm font-medium text-foreground">{step.title}</p>
+                    <p className="text-xs text-muted-foreground">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <Button
+            variant="outline"
+            className="h-12 w-full"
+            onClick={() => navigate("/my-applications")}
+          >
+            Открыть мои заявки
+          </Button>
+          <Button
+            variant="outline"
             className="h-12 w-full"
             onClick={() => {
               clearDraft();
