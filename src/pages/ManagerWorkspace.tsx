@@ -254,17 +254,6 @@ export default function ManagerWorkspace() {
       }
     };
 
-    if (isFnsReady && state.applicationStatus !== "fns_ready") {
-      persistApplication("fns_ready", false);
-      trackEvent("application_ready_for_documents", {
-        flowType: "office_crm",
-        product: agentProduct,
-        applicationStatus: "fns_ready",
-      });
-      trackEvent("fns_ready", { flowType: "office_crm", product: agentProduct, applicationStatus: "fns_ready" });
-      return;
-    }
-
     const nextStatus = isFnsReady ? "submitted_to_fns" : "office_crm_completed";
     persistApplication(nextStatus, true);
 
@@ -1194,11 +1183,7 @@ export default function ManagerWorkspace() {
                     <div className="space-y-2 text-sm text-slate-500">
                       <div className="flex items-center gap-2">
                         <FileText className="h-4 w-4" />
-                        {isFnsReady
-                          ? state.applicationStatus === "fns_ready"
-                            ? "Клиент получит SMS-код для подписания"
-                            : "Пакет заполнен. Подтвердите готовность перед отправкой"
-                          : "Сохраните заявку и продолжите дозаполнение"}
+                        {isFnsReady ? "Клиент получит SMS-код для подписания" : "Сохраните заявку и дозаполните позже"}
                       </div>
                       {!canComplete && officeCrmMissingFields.length > 0 && (
                         <p className="max-w-xl text-xs text-amber-700">
@@ -1207,11 +1192,7 @@ export default function ManagerWorkspace() {
                       )}
                     </div>
                     <Button onClick={handleSign} disabled={!canComplete || !confirmAccuracy} className="bg-[#6440BF] px-8 hover:bg-[#503399]">
-                      {isFnsReady
-                        ? state.applicationStatus === "fns_ready"
-                          ? "Передать пакет в ФНС"
-                          : "Подтвердить готовность пакета"
-                        : "Сохранить и отметить как дозаполнено"}
+                      {isFnsReady ? "Передать пакет в ФНС" : "Сохранить и дозаполнить позже"}
                     </Button>
                   </div>
                 </CardContent>
