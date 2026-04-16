@@ -233,6 +233,11 @@ export default function Step3Review() {
             {!isOnlineLight && <SummaryItem label="ИНН" value={state.passport.inn} />}
             {!isOnlineLight && <SummaryItem label="СНИЛС" value={state.passport.snils} />}
             {!isOnlineLight && <SummaryItem label={isOoo ? "Адрес регистрации учредителя" : "Адрес регистрации"} value={registrationAddress} wide />}
+          </SummaryGrid>
+        </SummarySection>
+
+        <SummarySection title="Контакты" icon={<Mail className="h-4 w-4" />} onEdit={() => navigate("/step/3")}>
+          <SummaryGrid>
             <SummaryItem label="Телефон" value={state.phone} />
             <SummaryItem label={isOnlineLight ? "Email" : isOoo ? "Email юрлица" : "Email ИП"} value={businessEmail} />
           </SummaryGrid>
