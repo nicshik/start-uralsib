@@ -12,12 +12,14 @@ import {
   Briefcase,
   CalendarDays,
   CheckCircle2,
+  ClipboardList,
   FileText,
   Hash,
   Inbox,
   MapPin,
   MonitorUp,
   PenTool,
+  PlusCircle,
   Search,
   User,
 } from "lucide-react";
@@ -298,10 +300,53 @@ export default function ManagerWorkspace() {
     setCompletionStatus(nextStatus);
   };
 
+  const handleNewApplication = () => {
+    setAgentProduct("ip");
+    setClientName("");
+    setClientPhone("");
+    setClientEmail("");
+    setClientInn("");
+    setBirthDate("");
+    setGender("");
+    setBirthPlace("");
+    setCitizenship("ru");
+    setDocumentType("passport_rf");
+    setPassportSeries("");
+    setPassportNumber("");
+    setIssuedBy("");
+    setIssueDate("");
+    setDivisionCode("");
+    setSnils("");
+    setRegistrationAddress("");
+    setCompanyName("");
+    setCompanyNameFull("");
+    setCharterCapital("10000");
+    setTax("usn6");
+    setOkvedText("");
+    setFounderAddress("");
+    setAddress("");
+    setDirectorPosition("Генеральный директор");
+    setDirectorTerm("");
+    setCharterType("generated");
+    setHasSeal("no");
+    setEntrepreneurEmail("");
+    setRegistrationEmail("");
+    setFounderSharePercent("100");
+    setDirectorIsFounderState(true);
+    setApplicantRole("founder_individual");
+    setPaperDocuments(false);
+    setLegalLocation("");
+    setTypicalCharterNumber("36");
+    setConfirmAccuracy(false);
+    setManagerNotes("");
+    setCompletionStatus(null);
+    setActiveTab("current");
+  };
+
   const loadApplicationToForm = (app: MockIncomingApplication) => {
     const p = app.passport;
     const b = app.business;
-    setAgentProduct(app.type);
+    setAgentProduct(app.type === "ooo" ? "ooo" : "ip");
     const fullName = [p.lastName, p.firstName, p.middleName].filter(Boolean).join(" ");
     setClientName(fullName);
     setClientPhone(app.phone);
@@ -363,10 +408,24 @@ export default function ManagerWorkspace() {
 
           <nav className="space-y-1">
             <button
-              onClick={() => setActiveTab("current")}
-              className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${activeTab === "current" ? "bg-[#6440BF] text-white" : "text-slate-300 hover:bg-slate-800"}`}
+              onClick={handleNewApplication}
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
             >
-              <CheckCircle2 className="h-4 w-4" /> Текущая заявка
+              <PlusCircle className="h-4 w-4" /> Новая заявка
+            </button>
+            <button
+              onClick={() => setActiveTab("current")}
+              className={`flex w-full flex-col items-start rounded-md px-3 py-2 text-sm font-medium transition-colors ${activeTab === "current" ? "bg-[#6440BF] text-white" : "text-slate-300 hover:bg-slate-800"}`}
+            >
+              <span className="flex items-center gap-3">
+                <ClipboardList className="h-4 w-4" />
+                {clientName ? `В работе` : "Рабочее место"}
+              </span>
+              {clientName && (
+                <span className={`ml-7 truncate text-xs font-normal ${activeTab === "current" ? "text-white/70" : "text-slate-400"}`}>
+                  {clientName}
+                </span>
+              )}
             </button>
             <button
               onClick={() => setActiveTab("inbox")}
