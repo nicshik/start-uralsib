@@ -19,7 +19,6 @@ import {
   Inbox,
   MapPin,
   MonitorUp,
-  PenTool,
   PlusCircle,
   Search,
   User,
@@ -1119,15 +1118,6 @@ export default function ManagerWorkspace() {
               )}
 
               <Card className="border-0 shadow-sm ring-1 ring-gray-200">
-                <CardHeader className="bg-[#1E293B] text-white">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <PenTool className="h-5 w-5" />
-                    Завершение заявки в офисе
-                  </CardTitle>
-                  <CardDescription className="text-slate-300">
-                    Сотрудник сверяет данные, выбирает РКО и передает пакет на подписание клиенту.
-                  </CardDescription>
-                </CardHeader>
                 <CardContent className="space-y-8 pt-6">
                   <div className="space-y-3">
                     <Label className="flex items-center gap-2 text-base font-semibold">
