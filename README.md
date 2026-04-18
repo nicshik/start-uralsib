@@ -35,6 +35,22 @@ npm run test      # unit-тесты
 
 В репозитории используется npm. `package-lock.json` является единственным lock-файлом.
 
+## Переменные окружения
+
+Для локального запуска скопируйте `.env.example` в `.env` и заполните значения Supabase:
+
+```bash
+cp .env.example .env
+```
+
+```bash
+VITE_SUPABASE_PROJECT_ID="your-project-id"
+VITE_SUPABASE_URL="https://your-project-id.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="your-public-anon-key"
+```
+
+Эти значения используются для загрузки demo-видео и poster из Supabase Storage. `.env` не хранится в репозитории.
+
 ## Основные сценарии
 
 - `/` — лендинг и старт регистрации.
