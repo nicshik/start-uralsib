@@ -10,6 +10,7 @@ import { ChatWidget } from "./components/ChatWidget";
 import { RouteGuard } from "./components/RouteGuard";
 import { AppHeader } from "./components/AppHeader";
 import { AutosaveIndicator } from "./components/AutosaveIndicator";
+import { isDemoToolsEnabled } from "@/lib/demoTools";
 
 import Landing from "./pages/Landing";
 import AssistedStart from "./pages/AssistedStart";
@@ -100,9 +101,9 @@ const App = () => (
             <Route path="/success" element={<RouteGuard requireSms><Success /></RouteGuard>} />
             <Route path="/rko-request" element={<RouteGuard requireSms><RkoRequest /></RouteGuard>} />
             <Route path="/my-applications" element={<RouteGuard requireSms><MyApplications /></RouteGuard>} />
-            <Route path="/office-agent" element={<ManagerWorkspace />} />
-            <Route path="/design" element={<Coverage />} />
-            <Route path="/coverage" element={<FieldCoverage />} />
+            <Route path="/office-agent" element={isDemoToolsEnabled ? <ManagerWorkspace /> : <NotFound />} />
+            <Route path="/design" element={isDemoToolsEnabled ? <Coverage /> : <NotFound />} />
+            <Route path="/coverage" element={isDemoToolsEnabled ? <FieldCoverage /> : <NotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

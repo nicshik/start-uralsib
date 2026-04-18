@@ -1,3 +1,5 @@
+import { hasDebugParam, isDemoToolsEnabled } from "@/lib/demoTools";
+
 export type AnalyticsEvent = {
   event: string;
   timestamp: string;
@@ -14,7 +16,9 @@ export function trackEvent(event: string, data?: Record<string, unknown>) {
     data,
   };
   events.push(entry);
-  console.log(`[analytics] ${event}`, data ?? '');
+  if (isDemoToolsEnabled && hasDebugParam()) {
+    console.log(`[analytics] ${event}`, data ?? "");
+  }
   listeners.forEach((fn) => fn());
 }
 

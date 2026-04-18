@@ -34,6 +34,8 @@ const INITIAL_MESSAGES: Message[] = [
 
 let chatWidgetOpen: (() => void) | null = null;
 
+// Imperative opener used by CTA blocks outside the dialog tree.
+// eslint-disable-next-line react-refresh/only-export-components
 export function openChat() {
   chatWidgetOpen?.();
 }

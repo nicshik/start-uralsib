@@ -4,6 +4,7 @@ import { Activity, X, ChevronDown, ChevronUp, Clock, Bug } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { hasDebugParam, isDemoToolsEnabled } from "@/lib/demoTools";
 
 export function MetrikaConsole() {
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
@@ -12,9 +13,7 @@ export function MetrikaConsole() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Hidden by default, enable with ?debug=true
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('debug') === 'true') {
+    if (isDemoToolsEnabled && hasDebugParam()) {
       setIsVisible(true);
     }
 

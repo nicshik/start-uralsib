@@ -721,7 +721,7 @@ export default function ManagerWorkspace() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="agent-capital">Размер УК (мин. 10 000 ₽)</Label>
+                          <Label htmlFor="agent-capital">Размер УК (мин. 10 000 ₽)</Label>
                           <Input
                             id="agent-capital"
                             type="number"

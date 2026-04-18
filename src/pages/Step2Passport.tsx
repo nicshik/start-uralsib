@@ -33,7 +33,7 @@ export default function Step2Passport() {
     if (isOnlineLight && !state.passport.documentType) {
       dispatch({ type: "UPDATE_PASSPORT", payload: { documentType: "passport_rf" } });
     }
-  }, [isOnlineLight]);
+  }, [dispatch, isOnlineLight, state.passport.documentType]);
 
   useEffect(() => {
     if (!state.passport.gender && state.passport.middleName) {
@@ -42,7 +42,7 @@ export default function Step2Passport() {
         dispatch({ type: "UPDATE_PASSPORT", payload: { gender: detected } });
       }
     }
-  }, [state.passport.middleName]);
+  }, [dispatch, state.passport.gender, state.passport.middleName]);
 
   const startOcr = () => {
     trackEvent("ocr_started", { flowType: state.flowType });
