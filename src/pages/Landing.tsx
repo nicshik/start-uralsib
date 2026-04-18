@@ -453,10 +453,10 @@ export default function Landing() {
                   controls
                   preload="metadata"
                   playsInline
-                  poster={`https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/media/demo-poster.jpg`}
+                  poster={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/media/demo-poster.jpg`}
                 >
                   <source
-                    src={`https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/media/demo.mp4`}
+                    src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/media/demo.mp4`}
                     type="video/mp4"
                   />
                 </video>
