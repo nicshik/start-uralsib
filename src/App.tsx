@@ -1,7 +1,5 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useLayoutEffect } from "react";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
@@ -70,49 +68,44 @@ function PreloadCriticalAssets() {
   return null;
 }
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AppProvider>
-        <Toaster />
-        <Sonner />
-        {/* Persistent hidden images keep decoded logo in browser memory — prevents flash on navigation */}
-        <div aria-hidden="true" className="absolute top-0 left-0 w-0 h-0 overflow-hidden pointer-events-none">
-          <img src={uralsibLogoClean} alt="" fetchPriority="high" decoding="sync" />
-          <img src={uralsibLogoDark} alt="" fetchPriority="high" decoding="sync" />
-        </div>
-        <BrowserRouter>
-          <PreloadCriticalAssets />
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/assisted-start" element={<AssistedStart />} />
-            <Route path="/manager" element={<ManagerHandoff />} />
-            <Route path="/sms-auth" element={<SmsAuth />} />
-            <Route element={<FormStepsLayout />}>
-              <Route path="/step/1" element={<RouteGuard requireSms><Step1Business /></RouteGuard>} />
-              <Route path="/step/2" element={<RouteGuard requireSms requireStep={1}><Step2Passport /></RouteGuard>} />
-              <Route path="/step/3" element={<RouteGuard requireSms requireStep={2}><Step3Contact /></RouteGuard>} />
-              <Route path="/step/4" element={<RouteGuard requireSms requireStep={3}><Step3Review /></RouteGuard>} />
-            </Route>
-            <Route path="/manager-request" element={<RouteGuard requireSms><ManagerRequest /></RouteGuard>} />
-            <Route path="/success" element={<RouteGuard requireSms><Success /></RouteGuard>} />
-            <Route path="/rko-request" element={<RouteGuard requireSms><RkoRequest /></RouteGuard>} />
-            <Route path="/my-applications" element={<RouteGuard requireSms><MyApplications /></RouteGuard>} />
-            <Route path="/office-agent" element={<ManagerWorkspace />} />
-            <Route path="/design" element={<Coverage />} />
-            <Route path="/coverage" element={<FieldCoverage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        
-        <ChatWidget />
-        <MetrikaConsole />
-      </AppProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <TooltipProvider>
+    <AppProvider>
+      <Toaster />
+      {/* Persistent hidden images keep decoded logo in browser memory — prevents flash on navigation */}
+      <div aria-hidden="true" className="absolute top-0 left-0 w-0 h-0 overflow-hidden pointer-events-none">
+        <img src={uralsibLogoClean} alt="" fetchPriority="high" decoding="sync" />
+        <img src={uralsibLogoDark} alt="" fetchPriority="high" decoding="sync" />
+      </div>
+      <BrowserRouter>
+        <PreloadCriticalAssets />
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/assisted-start" element={<AssistedStart />} />
+          <Route path="/manager" element={<ManagerHandoff />} />
+          <Route path="/sms-auth" element={<SmsAuth />} />
+          <Route element={<FormStepsLayout />}>
+            <Route path="/step/1" element={<RouteGuard requireSms><Step1Business /></RouteGuard>} />
+            <Route path="/step/2" element={<RouteGuard requireSms requireStep={1}><Step2Passport /></RouteGuard>} />
+            <Route path="/step/3" element={<RouteGuard requireSms requireStep={2}><Step3Contact /></RouteGuard>} />
+            <Route path="/step/4" element={<RouteGuard requireSms requireStep={3}><Step3Review /></RouteGuard>} />
+          </Route>
+          <Route path="/manager-request" element={<RouteGuard requireSms><ManagerRequest /></RouteGuard>} />
+          <Route path="/success" element={<RouteGuard requireSms><Success /></RouteGuard>} />
+          <Route path="/rko-request" element={<RouteGuard requireSms><RkoRequest /></RouteGuard>} />
+          <Route path="/my-applications" element={<RouteGuard requireSms><MyApplications /></RouteGuard>} />
+          <Route path="/office-agent" element={<ManagerWorkspace />} />
+          <Route path="/design" element={<Coverage />} />
+          <Route path="/coverage" element={<FieldCoverage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+
+      <ChatWidget />
+      <MetrikaConsole />
+    </AppProvider>
+  </TooltipProvider>
 );
 
 export default App;
