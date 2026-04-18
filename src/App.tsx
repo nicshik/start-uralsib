@@ -102,8 +102,8 @@ const App = () => (
             <Route path="/rko-request" element={<RouteGuard requireSms><RkoRequest /></RouteGuard>} />
             <Route path="/my-applications" element={<RouteGuard requireSms><MyApplications /></RouteGuard>} />
             <Route path="/office-agent" element={<ManagerWorkspace />} />
-            <Route path="/design" element={isDemoToolsEnabled ? <Coverage /> : <NotFound />} />
-            <Route path="/coverage" element={isDemoToolsEnabled ? <FieldCoverage /> : <NotFound />} />
+            <Route path="/design" element={<Coverage />} />
+            <Route path="/coverage" element={<FieldCoverage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
