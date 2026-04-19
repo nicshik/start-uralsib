@@ -29,6 +29,7 @@ import uralsibLogoDark from "@/assets/uralsib-logo-dark.webp";
 const ManagerWorkspace = lazy(() => import("./pages/ManagerWorkspace"));
 const Coverage = lazy(() => import("./pages/Coverage"));
 const FieldCoverage = lazy(() => import("./pages/FieldCoverage"));
+const Hypotheses = lazy(() => import("./pages/Hypotheses"));
 
 function FormStepsLayout() {
   return (
@@ -100,6 +101,7 @@ const App = () => (
             <Route path="/office-agent" element={<ManagerWorkspace />} />
             <Route path="/design" element={<Coverage />} />
             <Route path="/coverage" element={<FieldCoverage />} />
+            <Route path="/hypotheses" element={<Hypotheses />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

@@ -4,7 +4,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette, Handshake, LayoutDashboard, Video, ChevronDown } from "lucide-react";
+import { Shield, Clock, AlertCircle, UserCheck, Briefcase, Building2, MessageCircle, Phone, LogIn, ClipboardCheck, BarChart3, Palette, Handshake, LayoutDashboard, Video, ChevronDown, Lightbulb, Github } from "lucide-react";
 import { UserMenu } from "@/components/UserMenu";
 import { useState, useEffect, useRef } from "react";
 import heroCard3d from "@/assets/hero-card-3d.webp";
@@ -386,8 +386,21 @@ export default function Landing() {
 
           {/* Project docs */}
           <div className="rounded-xl border border-dashed border-border bg-white/60 p-5 space-y-3 opacity-70 hover:opacity-100 transition-opacity duration-300">
-            <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest">для команды · рабочая документация</p>
+            <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest">для команды и заказчика · рабочая документация</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+              <button
+                onClick={() => {
+                  trackEvent("hypotheses_link_click", { placement: "footer" });
+                  navigate("/hypotheses");
+                }}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
+              >
+                <Lightbulb className="h-4 w-4 text-muted-foreground shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Продуктовые гипотезы</p>
+                  <p className="text-xs text-muted-foreground/70">8 гипотез MVP и ключевой инсайт экосистемы</p>
+                </div>
+              </button>
               <button
                 onClick={() => navigate("/coverage")}
                 className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
@@ -396,16 +409,6 @@ export default function Landing() {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Матрица покрытия полей</p>
                   <p className="text-xs text-muted-foreground/70">Какие данные собираются на каждом этапе</p>
-                </div>
-              </button>
-              <button
-                onClick={() => navigate("/design")}
-                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
-              >
-                <Palette className="h-4 w-4 text-muted-foreground shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Дизайн-код</p>
-                  <p className="text-xs text-muted-foreground/70">Визуальные стандарты и компоненты</p>
                 </div>
               </button>
               <button
@@ -434,6 +437,29 @@ export default function Landing() {
                   <p className="text-xs text-muted-foreground/70">Рабочее пространство сотрудника банка</p>
                 </div>
               </button>
+              <button
+                onClick={() => navigate("/design")}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
+              >
+                <Palette className="h-4 w-4 text-muted-foreground shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Дизайн-код</p>
+                  <p className="text-xs text-muted-foreground/70">Визуальные стандарты и компоненты</p>
+                </div>
+              </button>
+              <a
+                href="https://github.com/nicshik/start-uralsib"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("github_link_click", { placement: "footer" })}
+                className="flex items-center gap-3 rounded-lg p-3 hover:bg-muted/60 transition-colors text-left"
+              >
+                <Github className="h-4 w-4 text-muted-foreground shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">GitHub</p>
+                  <p className="text-xs text-muted-foreground/70">Исходный код проекта на GitHub</p>
+                </div>
+              </a>
             </div>
             <button
               onClick={() => setShowDemo((v) => !v)}
